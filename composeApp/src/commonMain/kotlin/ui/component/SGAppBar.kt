@@ -12,8 +12,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import cmp_template.composeapp.generated.resources.Res
-import cmp_template.composeapp.generated.resources.back_button
+import cmp_earthquake.composeapp.generated.resources.Res
+import cmp_earthquake.composeapp.generated.resources.back_button
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)

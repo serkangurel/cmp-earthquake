@@ -1,4 +1,4 @@
-rootProject.name = "cmp-template"
+rootProject.name = "cmp-earthquake"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

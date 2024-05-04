@@ -9,9 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import cmp_template.composeapp.generated.resources.Res
-import cmp_template.composeapp.generated.resources.screen_detail
-import cmp_template.composeapp.generated.resources.screen_home
+import cmp_earthquake.composeapp.generated.resources.Res
+import cmp_earthquake.composeapp.generated.resources.screen_detail
+import cmp_earthquake.composeapp.generated.resources.screen_home
 import di.commonModule
 import di.platformModule
 import io.github.aakira.napier.DebugAntilog

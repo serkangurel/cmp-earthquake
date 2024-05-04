@@ -31,7 +31,6 @@ kotlin {
             implementation(libs.koin.android)
         }
         iosMain.dependencies {
-            implementation(libs.stately.common)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -45,12 +44,6 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.napier)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.screenmodel)
-            implementation(libs.voyager.bottom.sheet.navigator)
-            implementation(libs.voyager.tab.navigator)
-            implementation(libs.voyager.transitions)
-            implementation(libs.voyager.koin)
 
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.navigation.compose)
@@ -59,7 +52,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.sgmobile.template"
+    namespace = "com.sgmobile.earthquake"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -67,7 +60,7 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "com.sgmobile.template"
+        applicationId = "com.sgmobile.earthquake"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

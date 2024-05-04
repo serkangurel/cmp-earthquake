@@ -1,4 +1,4 @@
-package com.sgmobile.template
+package com.sgmobile.earthquake
 
 import App
 import android.os.Bundle

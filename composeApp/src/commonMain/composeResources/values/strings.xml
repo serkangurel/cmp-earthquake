@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">cmp-template</string>
+    <string name="app_name">cmp-earthquake</string>
     <string name="screen_home">Home</string>
     <string name="screen_detail">Detail</string>
     <string name="back_button">Back</string>
