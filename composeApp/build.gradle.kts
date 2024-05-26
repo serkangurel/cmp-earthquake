@@ -1,7 +1,10 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -29,8 +32,10 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
+            implementation(libs.ktor.client.android)
         }
         iosMain.dependencies {
+            implementation(libs.ktor.client.ios)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -41,12 +46,19 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.napier)
-
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.navigation.compose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.napier)
+            implementation(libs.ktorfit)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.json)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
     }
 }
@@ -85,3 +97,12 @@ android {
     }
 }
 
+dependencies {
+    with(libs.ktorfit.ksp) {
+        add("kspCommonMainMetadata", this)
+        add("kspAndroid", this)
+        add("kspIosX64", this)
+        add("kspIosArm64", this)
+        add("kspIosSimulatorArm64", this)
+    }
+}

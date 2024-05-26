@@ -5,11 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import data.EarthquakeRepository
+import data.model.EarthquakeRowItemModel
+import io.github.aakira.napier.log
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
 
-class DetailViewModel : ViewModel(), KoinComponent {
+class DetailViewModel(
+    private val earthquakeRepository: EarthquakeRepository
+) : ViewModel() {
     var uiState by mutableStateOf(DetailUiState())
         private set
 
@@ -18,14 +22,34 @@ class DetailViewModel : ViewModel(), KoinComponent {
             uiState = uiState.copy(
                 isLoading = true
             )
-            delay(2000L)
-            uiState = uiState.copy(
-                isLoading = false,
-                uiModel = DetailUiModel(
-                    itemCount = 50
-                )
+            delay(1000L)
+            earthquakeRepository.getUsgsEarthquakes(
+                timeInterval = "all_day",
+                onSuccess = { response ->
+                    val list = response.features?.map {
+                        EarthquakeRowItemModel(
+                            place = it.properties?.place.orEmpty(),
+                            magnitude = it.properties?.mag.toString(),
+                            depth = "1",
+                            date = "date",
+                            time = "time"
+                        )
+                    } ?: listOf()
+                    uiState = uiState.copy(
+                        isLoading = false,
+                        uiModel = DetailUiModel(
+                            earhtquakeRowItemList = list
+                        )
+                    )
+                }, onFailure = {
+                }
             )
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        log(tag = "Napier") { "onCleared" }
     }
 }
 
@@ -35,5 +59,5 @@ data class DetailUiState(
 )
 
 data class DetailUiModel(
-    val itemCount: Int
+    val earhtquakeRowItemList: List<EarthquakeRowItemModel>
 )

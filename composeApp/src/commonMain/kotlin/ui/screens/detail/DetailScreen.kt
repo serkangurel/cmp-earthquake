@@ -2,19 +2,20 @@ package ui.screens.detail
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
+import ui.component.EarthquakeRowItem
 import ui.component.SGLoading
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel = viewModel { DetailViewModel() }
+    viewModel: DetailViewModel = koinViewModel<DetailViewModel>()
 ) {
     if (viewModel.uiState.isLoading) {
         SGLoading()
@@ -34,14 +35,10 @@ fun DetailContent(
     uiModel: DetailUiModel
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
-        items(uiModel.itemCount) {
-            Text(
-                text = "Item$it",
-                modifier = Modifier.padding(16.dp)
-            )
+        items(uiModel.earhtquakeRowItemList) { item ->
+            EarthquakeRowItem(item)
         }
     }
 }

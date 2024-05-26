@@ -13,7 +13,9 @@ import cmp_earthquake.composeapp.generated.resources.Res
 import cmp_earthquake.composeapp.generated.resources.screen_detail
 import cmp_earthquake.composeapp.generated.resources.screen_home
 import di.commonModule
+import di.networkModule
 import di.platformModule
+import di.viewModelModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.aakira.napier.log
@@ -91,6 +93,11 @@ private fun initKoin(
 ) {
     startKoin {
         appDeclaration()
-        modules(commonModule(), platformModule())
+        modules(
+            commonModule(),
+            viewModelModule(),
+            platformModule(),
+            networkModule()
+        )
     }
 }
