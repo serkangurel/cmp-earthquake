@@ -1,27 +1,27 @@
 [versions]
-agp = "8.2.2"
+agp = "8.5.0"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
 androidx-activityCompose = "1.9.0"
-androidx-appcompat = "1.6.1"
+androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.13.1"
 androidx-espresso-core = "3.5.1"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.1.5"
-androidx-lifecycle = "2.8.0-beta01"
+androidx-lifecycle = "2.8.0"
 androidx-navigation = "2.8.0-alpha02"
-compose = "1.6.7"
-compose-plugin = "1.6.10-beta02"
+compose = "1.6.8"
+compose-plugin = "1.6.11"
 junit = "4.13.2"
-kotlin = "2.0.0-RC1"
-koin = "3.5.3"
+kotlin = "2.0.0"
+koin = "3.6.0-Beta4"
 koin-compose = "1.2.0-Beta4"
 napier = "2.6.1"
 voyager = "1.0.0"
 stately = "2.0.6"
-ksp = "2.0.0-RC1-1.0.20"
+ksp = "2.0.0-1.0.22"
 ktorfit = "2.0.0-beta1"
 ktor = "2.3.10"
 
@@ -70,5 +70,6 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }

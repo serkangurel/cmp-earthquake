@@ -22,10 +22,10 @@ import org.koin.dsl.module
 fun networkModule(): Module = module {
     singleOf(::provideHttpClient)
     singleOf(::provideKtorfitForUsgs) {
-        named("usgs")
+        named(NetworkConstants.KTORFIT_USGS)
     }
     single {
-        provideUsgsApi(get(named("usgs")))
+        provideUsgsApi(get(named(NetworkConstants.KTORFIT_USGS)))
     }
     singleOf(::EarthquakeRepository)
 }

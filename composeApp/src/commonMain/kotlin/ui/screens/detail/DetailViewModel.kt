@@ -6,14 +6,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import data.EarthquakeRepository
+import data.model.CoordinateListItem
 import data.model.EarthquakeRowItemModel
-import io.github.aakira.napier.log
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
     private val earthquakeRepository: EarthquakeRepository
 ) : ViewModel() {
+
     var uiState by mutableStateOf(DetailUiState())
         private set
 
@@ -22,7 +23,7 @@ class DetailViewModel(
             uiState = uiState.copy(
                 isLoading = true
             )
-            delay(1000L)
+            delay(500L)
             earthquakeRepository.getUsgsEarthquakes(
                 timeInterval = "all_day",
                 onSuccess = { response ->
@@ -30,7 +31,7 @@ class DetailViewModel(
                         EarthquakeRowItemModel(
                             place = it.properties?.place.orEmpty(),
                             magnitude = it.properties?.mag.toString(),
-                            depth = "1",
+                            depth = it.geometry?.coordinates?.get(CoordinateListItem.Depth.index).toString(),
                             date = "date",
                             time = "time"
                         )
@@ -45,11 +46,6 @@ class DetailViewModel(
                 }
             )
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        log(tag = "Napier") { "onCleared" }
     }
 }
 
