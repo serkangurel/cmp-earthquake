@@ -1,6 +1,5 @@
 package ui.component
 
-import SGScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,13 +19,13 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun SGAppBar(
     modifier: Modifier = Modifier,
-    currentScreen: SGScreen,
+    screenTitle: String,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
 ) {
     TopAppBar(
         modifier = modifier,
-        title = { Text(stringResource(currentScreen.title)) },
+        title = { Text(screenTitle) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),

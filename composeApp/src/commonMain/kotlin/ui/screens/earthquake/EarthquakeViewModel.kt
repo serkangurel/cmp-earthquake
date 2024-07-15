@@ -1,4 +1,4 @@
-package ui.screens.detail
+package ui.screens.earthquake
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,11 +11,11 @@ import data.model.EarthquakeRowItemModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class DetailViewModel(
+class EarthquakeViewModel(
     private val earthquakeRepository: EarthquakeRepository
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(DetailUiState())
+    var uiState by mutableStateOf(EarthquakeUiState())
         private set
 
     init {
@@ -27,7 +27,7 @@ class DetailViewModel(
             earthquakeRepository.getUsgsEarthquakes(
                 timeInterval = "all_day",
                 onSuccess = { response ->
-                    val list = response.features?.map {
+                    val list = response.features?.take(15)?.map {
                         EarthquakeRowItemModel(
                             place = it.properties?.place.orEmpty(),
                             magnitude = it.properties?.mag.toString(),
@@ -38,7 +38,7 @@ class DetailViewModel(
                     } ?: listOf()
                     uiState = uiState.copy(
                         isLoading = false,
-                        uiModel = DetailUiModel(
+                        uiModel = EarthquakeUiModel(
                             earhtquakeRowItemList = list
                         )
                     )
@@ -49,11 +49,11 @@ class DetailViewModel(
     }
 }
 
-data class DetailUiState(
+data class EarthquakeUiState(
     val isLoading: Boolean = false,
-    val uiModel: DetailUiModel? = null
+    val uiModel: EarthquakeUiModel? = null
 )
 
-data class DetailUiModel(
+data class EarthquakeUiModel(
     val earhtquakeRowItemList: List<EarthquakeRowItemModel>
 )

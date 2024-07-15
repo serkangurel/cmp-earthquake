@@ -1,4 +1,4 @@
-package ui.screens.detail
+package ui.screens.earthquake
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,9 +13,9 @@ import ui.component.SGLoading
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun DetailScreen(
+fun EarthquakeScreen(
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel = koinViewModel<DetailViewModel>()
+    viewModel: EarthquakeViewModel = koinViewModel<EarthquakeViewModel>()
 ) {
     if (viewModel.uiState.isLoading) {
         SGLoading()
@@ -25,14 +25,14 @@ fun DetailScreen(
             .fillMaxSize()
     ) {
         viewModel.uiState.uiModel?.let { uiModel ->
-            DetailContent(uiModel)
+            EarthquakeContent(uiModel)
         }
     }
 }
 
 @Composable
-fun DetailContent(
-    uiModel: DetailUiModel
+fun EarthquakeContent(
+    uiModel: EarthquakeUiModel
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()

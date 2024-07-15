@@ -1,8 +1,7 @@
-package ui.screens.home
+package ui.screens.settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,17 +11,14 @@ import org.koin.core.annotation.KoinExperimentalAPI
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun HomeScreen(
+fun SettingsScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel =  koinViewModel<HomeViewModel>(),
-    onButtonClicked: () -> Unit
+    viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>()
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Button(onClick = onButtonClicked) {
-            Text("Go To Detail")
-        }
+        Text("Settings Screen")
     }
 }

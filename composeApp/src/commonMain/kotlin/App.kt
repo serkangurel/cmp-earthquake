@@ -1,17 +1,31 @@
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Map
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import cmp_earthquake.composeapp.generated.resources.Res
-import cmp_earthquake.composeapp.generated.resources.screen_detail
-import cmp_earthquake.composeapp.generated.resources.screen_home
 import di.commonModule
 import di.networkModule
 import di.platformModule
@@ -19,18 +33,33 @@ import di.viewModelModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.aakira.napier.log
-import org.jetbrains.compose.resources.StringResource
+import kotlinx.serialization.Serializable
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 import ui.component.SGAppBar
-import ui.screens.detail.DetailScreen
-import ui.screens.home.HomeScreen
+import ui.screens.earthquake.EarthquakeScreen
+import ui.screens.map.MapScreen
+import ui.screens.settings.SettingsScreen
 import ui.theme.AppTheme
 
-enum class SGScreen(val title: StringResource) {
-    Home(title = Res.string.screen_home),
-    Detail(title = Res.string.screen_detail)
-}
+@Serializable
+sealed class Screens(val label: String)
+
+@Serializable
+data object Earthquakes : Screens(label = "Earthquakes")
+
+@Serializable
+data object Map : Screens(label = "Map")
+
+@Serializable
+data object Settings : Screens(label = "Settings")
+
+data class BottomNavigationItem(
+    val screen: Screens,
+    val label: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector
+)
 
 @Composable
 fun App(
@@ -42,36 +71,102 @@ fun App(
         darkTheme = darkTheme,
         dynamicColor = dynamicColor
     ) {
-        // Get current back stack entry
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        // Get the name of the current screen
-        val currentScreen = SGScreen.valueOf(
-            backStackEntry?.destination?.route ?: SGScreen.Home.name
+        var selectedItemIndex by rememberSaveable {
+            mutableStateOf(0)
+        }
+
+        var screenTitle by rememberSaveable {
+            mutableStateOf(Earthquakes.label)
+        }
+
+        val items = listOf(
+            BottomNavigationItem(
+                screen = Earthquakes,
+                label = Earthquakes.label,
+                selectedIcon = Icons.Filled.Home,
+                unselectedIcon = Icons.Outlined.Home
+            ),
+            BottomNavigationItem(
+                screen = Map,
+                label = Map.label,
+                selectedIcon = Icons.Filled.Map,
+                unselectedIcon = Icons.Outlined.Map
+            ),
+            BottomNavigationItem(
+                screen = Settings,
+                label = Settings.label,
+                selectedIcon = Icons.Filled.Settings,
+                unselectedIcon = Icons.Outlined.Settings
+            ),
         )
 
         Scaffold(
             topBar = {
                 SGAppBar(
-                    currentScreen = currentScreen,
-                    canNavigateBack = navController.previousBackStackEntry != null,
+                    screenTitle = screenTitle,
+                    canNavigateBack = false,
                     navigateUp = { navController.navigateUp() }
                 )
-            }
+            },
+            bottomBar = {
+                NavigationBar {
+                    items.forEachIndexed { index, item ->
+                        NavigationBarItem(
+                            selected = selectedItemIndex == index,
+                            onClick = {
+                                selectedItemIndex = index
+                                screenTitle = item.label
+                                navController.navigate(item.screen) {
+                                    navController.graph.findStartDestination().route?.let { route ->
+                                        popUpTo(route) {
+                                            saveState = true
+                                        }
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            label = {
+                                Text(text = item.label)
+                            },
+                            alwaysShowLabel = true,
+                            icon = {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex) {
+                                        item.selectedIcon
+                                    } else
+                                        item.unselectedIcon,
+                                    contentDescription = item.label
+                                )
+                            }
+                        )
+                    }
+                }
+            },
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = SGScreen.Home.name,
+                startDestination = Earthquakes,
+                enterTransition = {
+                    EnterTransition.None
+                },
+                exitTransition = {
+                    ExitTransition.None
+                },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                composable(route = SGScreen.Home.name) {
-                    HomeScreen {
-                        navController.navigate(SGScreen.Detail.name)
-                    }
+                composable<Earthquakes> {
+                    EarthquakeScreen()
                 }
-                composable(route = SGScreen.Detail.name) {
-                    DetailScreen()
+
+                composable<Map> {
+                    MapScreen()
+                }
+
+                composable<Settings> {
+                    SettingsScreen()
                 }
             }
         }

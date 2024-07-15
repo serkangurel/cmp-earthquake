@@ -17,5 +17,6 @@ class EarthquakeRepository(
         }.onFailure {
             onFailure.invoke(it)
         }
+
     }
 }

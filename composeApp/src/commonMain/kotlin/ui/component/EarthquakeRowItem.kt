@@ -71,7 +71,7 @@ internal fun EarthquakeRowItem(
                     contentDescription = null
                 )
                 Text(
-                    modifier = Modifier.padding(start = 2.dp),
+                    modifier = Modifier.padding(start = 4.dp),
                     text = model.date,
                     color = Color.Black,
                     fontSize = 14.sp
@@ -83,7 +83,7 @@ internal fun EarthquakeRowItem(
                     contentDescription = null
                 )
                 Text(
-                    modifier = Modifier.padding(start = 2.dp),
+                    modifier = Modifier.padding(start = 4.dp),
                     text = model.time,
                     color = Color.Black,
                     fontSize = 14.sp
@@ -98,7 +98,7 @@ internal fun EarthquakeRowItem(
                     contentDescription = null
                 )
                 Text(
-                    modifier = Modifier.padding(start = 2.dp),
+                    modifier = Modifier.padding(start = 4.dp),
                     text = "${model.depth} km",
                     color = Color.Black,
                     fontSize = 14.sp
