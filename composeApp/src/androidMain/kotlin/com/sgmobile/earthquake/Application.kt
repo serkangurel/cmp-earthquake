@@ -1,7 +1,6 @@
 package com.sgmobile.earthquake
 
 import android.app.Application
-import appInit
 import org.koin.android.ext.koin.androidContext
 
 class Application : Application() {
