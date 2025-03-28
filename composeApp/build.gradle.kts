@@ -20,7 +20,7 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -31,7 +31,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
@@ -45,7 +45,6 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
@@ -72,10 +71,6 @@ kotlin {
 android {
     namespace = "com.sgmobile.earthquake"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
         applicationId = "com.sgmobile.earthquake"
@@ -104,6 +99,7 @@ android {
 }
 
 dependencies {
+    debugImplementation(compose.uiTooling)
     with(libs.ktorfit.ksp) {
         add("kspCommonMainMetadata", this)
         add("kspAndroid", this)
