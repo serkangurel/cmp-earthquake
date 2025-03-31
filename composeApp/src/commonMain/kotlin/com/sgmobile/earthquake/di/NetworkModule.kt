@@ -3,6 +3,7 @@ package com.sgmobile.earthquake.di
 import com.sgmobile.earthquake.data.EarthquakeRepository
 import com.sgmobile.earthquake.data.NetworkConstants
 import com.sgmobile.earthquake.data.UsgsApi
+import com.sgmobile.earthquake.data.createUsgsApi
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.ktorfit
 import io.github.aakira.napier.Napier
@@ -54,4 +55,4 @@ private fun provideKtorfitForUsgs(httpClient: HttpClient): Ktorfit = ktorfit {
     httpClient(httpClient)
 }
 
-private fun provideUsgsApi(ktorfit: Ktorfit): UsgsApi = ktorfit.create()
+private fun provideUsgsApi(ktorfit: Ktorfit): UsgsApi = ktorfit.createUsgsApi()

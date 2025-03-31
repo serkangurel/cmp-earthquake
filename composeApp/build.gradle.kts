@@ -36,7 +36,6 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.koin.android)
             implementation(libs.ktor.client.android)
         }
         iosMain.dependencies {

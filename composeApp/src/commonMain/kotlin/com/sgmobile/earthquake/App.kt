@@ -28,10 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.sgmobile.earthquake.di.commonModule
-import com.sgmobile.earthquake.di.networkModule
-import com.sgmobile.earthquake.di.platformModule
-import com.sgmobile.earthquake.di.viewModelModule
+import com.sgmobile.earthquake.di.getKoinConfiguration
 import com.sgmobile.earthquake.ui.component.SGAppBar
 import com.sgmobile.earthquake.ui.screens.earthquake.EarthquakeScreen
 import com.sgmobile.earthquake.ui.screens.map.MapScreen
@@ -42,8 +39,7 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.aakira.napier.log
 import kotlinx.serialization.Serializable
-import org.koin.core.context.startKoin
-import org.koin.dsl.KoinAppDeclaration
+import org.koin.compose.KoinMultiplatformApplication
 
 @Serializable
 sealed class Screens(val label: String)
@@ -70,136 +66,121 @@ fun App(
     dynamicColor: Boolean,
     navController: NavHostController = rememberNavController()
 ) {
-    AppTheme(
-        darkTheme = darkTheme,
-        dynamicColor = dynamicColor
+    KoinMultiplatformApplication(
+        config = getKoinConfiguration()
     ) {
-        SetSystemBarsLightAppearance(
-            isAppearanceLightStatusBars = !darkTheme,
-            isAppearanceLightNavigationBars = !darkTheme
-        )
-        var selectedItemIndex by rememberSaveable {
-            mutableStateOf(0)
-        }
+        AppTheme(
+            darkTheme = darkTheme,
+            dynamicColor = dynamicColor
+        ) {
+            SetSystemBarsLightAppearance(
+                isAppearanceLightStatusBars = !darkTheme,
+                isAppearanceLightNavigationBars = !darkTheme
+            )
+            var selectedItemIndex by rememberSaveable {
+                mutableStateOf(0)
+            }
 
-        var screenTitle by rememberSaveable {
-            mutableStateOf(Earthquakes.label)
-        }
+            var screenTitle by rememberSaveable {
+                mutableStateOf(Earthquakes.label)
+            }
 
-        val items = listOf(
-            BottomNavigationItem(
-                screen = Earthquakes,
-                label = Earthquakes.label,
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Outlined.Home
-            ),
-            BottomNavigationItem(
-                screen = Map,
-                label = Map.label,
-                selectedIcon = Icons.Filled.Map,
-                unselectedIcon = Icons.Outlined.Map
-            ),
-            BottomNavigationItem(
-                screen = Settings,
-                label = Settings.label,
-                selectedIcon = Icons.Filled.Settings,
-                unselectedIcon = Icons.Outlined.Settings
-            ),
-        )
+            val items = listOf(
+                BottomNavigationItem(
+                    screen = Earthquakes,
+                    label = Earthquakes.label,
+                    selectedIcon = Icons.Filled.Home,
+                    unselectedIcon = Icons.Outlined.Home
+                ),
+                BottomNavigationItem(
+                    screen = Map,
+                    label = Map.label,
+                    selectedIcon = Icons.Filled.Map,
+                    unselectedIcon = Icons.Outlined.Map
+                ),
+                BottomNavigationItem(
+                    screen = Settings,
+                    label = Settings.label,
+                    selectedIcon = Icons.Filled.Settings,
+                    unselectedIcon = Icons.Outlined.Settings
+                ),
+            )
 
-        Scaffold(
-            topBar = {
-                SGAppBar(
-                    screenTitle = screenTitle,
-                    canNavigateBack = false,
-                    navigateUp = { navController.navigateUp() }
-                )
-            },
-            bottomBar = {
-                NavigationBar {
-                    items.forEachIndexed { index, item ->
-                        NavigationBarItem(
-                            selected = selectedItemIndex == index,
-                            onClick = {
-                                selectedItemIndex = index
-                                screenTitle = item.label
-                                navController.navigate(item.screen) {
-                                    navController.graph.findStartDestination().route?.let { route ->
-                                        popUpTo(route) {
-                                            saveState = true
+            Scaffold(
+                topBar = {
+                    SGAppBar(
+                        screenTitle = screenTitle,
+                        canNavigateBack = false,
+                        navigateUp = { navController.navigateUp() }
+                    )
+                },
+                bottomBar = {
+                    NavigationBar {
+                        items.forEachIndexed { index, item ->
+                            NavigationBarItem(
+                                selected = selectedItemIndex == index,
+                                onClick = {
+                                    selectedItemIndex = index
+                                    screenTitle = item.label
+                                    navController.navigate(item.screen) {
+                                        navController.graph.findStartDestination().route?.let { route ->
+                                            popUpTo(route) {
+                                                saveState = true
+                                            }
                                         }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
+                                },
+                                label = {
+                                    Text(text = item.label)
+                                },
+                                alwaysShowLabel = true,
+                                icon = {
+                                    Icon(
+                                        imageVector = if (index == selectedItemIndex) {
+                                            item.selectedIcon
+                                        } else
+                                            item.unselectedIcon,
+                                        contentDescription = item.label
+                                    )
                                 }
-                            },
-                            label = {
-                                Text(text = item.label)
-                            },
-                            alwaysShowLabel = true,
-                            icon = {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex) {
-                                        item.selectedIcon
-                                    } else
-                                        item.unselectedIcon,
-                                    contentDescription = item.label
-                                )
-                            }
-                        )
+                            )
+                        }
                     }
-                }
-            },
-        ) { innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = Earthquakes,
-                enterTransition = {
-                    EnterTransition.None
                 },
-                exitTransition = {
-                    ExitTransition.None
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                composable<Earthquakes> {
-                    EarthquakeScreen()
-                }
+            ) { innerPadding ->
+                NavHost(
+                    navController = navController,
+                    startDestination = Earthquakes,
+                    enterTransition = {
+                        EnterTransition.None
+                    },
+                    exitTransition = {
+                        ExitTransition.None
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                ) {
+                    composable<Earthquakes> {
+                        EarthquakeScreen()
+                    }
 
-                composable<Map> {
-                    MapScreen()
-                }
+                    composable<Map> {
+                        MapScreen()
+                    }
 
-                composable<Settings> {
-                    SettingsScreen()
+                    composable<Settings> {
+                        SettingsScreen()
+                    }
                 }
             }
         }
     }
 }
 
-fun appInit(appDeclaration: KoinAppDeclaration = {}) {
+fun appInit() {
     Napier.base(DebugAntilog())
-
     log(tag = "Napier") { "Application Started" }
-
-    initKoin(
-        appDeclaration
-    )
-}
-
-private fun initKoin(
-    appDeclaration: KoinAppDeclaration = {}
-) {
-    startKoin {
-        appDeclaration()
-        modules(
-            commonModule(),
-            viewModelModule(),
-            platformModule(),
-            networkModule()
-        )
-    }
 }
