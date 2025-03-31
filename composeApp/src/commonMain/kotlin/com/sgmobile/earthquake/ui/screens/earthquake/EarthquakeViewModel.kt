@@ -10,6 +10,12 @@ import com.sgmobile.earthquake.data.model.CoordinateListItem
 import com.sgmobile.earthquake.data.model.EarthquakeRowItemModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 
 class EarthquakeViewModel(
     private val earthquakeRepository: EarthquakeRepository
@@ -28,12 +34,31 @@ class EarthquakeViewModel(
                 timeInterval = "all_day",
                 onSuccess = { response ->
                     val list = response.features?.take(15)?.map {
+
+                        val dateInMillis = it.properties?.time ?: 0L
+                        val dateInstant = Instant.fromEpochMilliseconds(dateInMillis)
+                        val dateLocal = dateInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+
+                        //dd.MM.yyyy HH:mm
+                        val dateFormat = LocalDateTime.Format {
+                            dayOfMonth()
+                            char('.')
+                            monthNumber()
+                            char('.')
+                            year()
+                            char(' ')
+                            hour()
+                            char(':')
+                            minute()
+                        }
+                        val formattedDate = dateLocal.format(dateFormat)
+
                         EarthquakeRowItemModel(
                             place = it.properties?.place.orEmpty(),
                             magnitude = it.properties?.mag.toString(),
-                            depth = it.geometry?.coordinates?.get(CoordinateListItem.Depth.index).toString(),
-                            date = "date",
-                            time = "time"
+                            depth = it.geometry?.coordinates?.get(CoordinateListItem.Depth.index)
+                                .toString(),
+                            date = formattedDate
                         )
                     } ?: listOf()
                     uiState = uiState.copy(

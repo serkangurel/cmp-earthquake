@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cmp_earthquake.composeapp.generated.resources.Res
 import cmp_earthquake.composeapp.generated.resources.ic_calendar
-import cmp_earthquake.composeapp.generated.resources.ic_clock
 import cmp_earthquake.composeapp.generated.resources.ic_depth
 import com.sgmobile.earthquake.data.model.EarthquakeRowItemModel
 import org.jetbrains.compose.resources.painterResource
@@ -65,33 +63,22 @@ internal fun EarthquakeRowItem(
         ) {
             Text(
                 text = model.place,
-                fontSize = 14.sp
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    modifier = Modifier.size(14.dp),
+                    modifier = Modifier.size(12.dp),
                     painter = painterResource(Res.drawable.ic_calendar),
                     contentDescription = null
                 )
                 Text(
                     modifier = Modifier.padding(start = 4.dp),
                     text = model.date,
-                    fontSize = 14.sp
-                )
-
-                Spacer(Modifier.width(12.dp))
-                Icon(
-                    modifier = Modifier.size(14.dp),
-                    painter = painterResource(Res.drawable.ic_clock),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.padding(start = 4.dp),
-                    text = model.time,
-                    fontSize = 14.sp
+                    fontSize = 12.sp
                 )
             }
             Row(
@@ -99,14 +86,14 @@ internal fun EarthquakeRowItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    modifier = Modifier.size(14.dp),
+                    modifier = Modifier.size(12.dp),
                     painter = painterResource(Res.drawable.ic_depth),
                     contentDescription = null
                 )
                 Text(
                     modifier = Modifier.padding(start = 4.dp),
                     text = "${model.depth} km",
-                    fontSize = 14.sp
+                    fontSize = 12.sp
                 )
             }
         }
