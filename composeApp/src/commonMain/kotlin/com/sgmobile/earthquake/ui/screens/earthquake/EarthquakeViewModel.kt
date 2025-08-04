@@ -10,13 +10,15 @@ import com.sgmobile.earthquake.data.model.CoordinateListItem
 import com.sgmobile.earthquake.data.model.EarthquakeRowItemModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class EarthquakeViewModel(
     private val earthquakeRepository: EarthquakeRepository
 ) : ViewModel() {
@@ -41,7 +43,7 @@ class EarthquakeViewModel(
 
                         //dd.MM.yyyy HH:mm
                         val dateFormat = LocalDateTime.Format {
-                            dayOfMonth()
+                            day()
                             char('.')
                             monthNumber()
                             char('.')

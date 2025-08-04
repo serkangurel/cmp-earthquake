@@ -6,8 +6,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.sgmobile.earthquake.data.model.EarthquakeRowItemModel
 import com.sgmobile.earthquake.ui.component.EarthquakeRowItem
 import com.sgmobile.earthquake.ui.component.SGLoading
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -39,4 +41,19 @@ fun EarthquakeContent(
             EarthquakeRowItem(item)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EarthquakeContent() {
+    EarthquakeContent(
+        uiModel = EarthquakeUiModel(
+            listOf(
+                EarthquakeRowItemModel("1", "1km", "1", "1"),
+                EarthquakeRowItemModel("2", "2km", "2", "2"),
+                EarthquakeRowItemModel("3", "3km", "3", "3"),
+                EarthquakeRowItemModel("4", "4km", "4", "4")
+            )
+        )
+    )
 }

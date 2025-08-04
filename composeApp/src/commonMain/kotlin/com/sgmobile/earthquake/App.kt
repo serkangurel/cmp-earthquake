@@ -18,17 +18,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sgmobile.earthquake.di.getKoinConfiguration
+import com.sgmobile.earthquake.extension.isRouteMatching
 import com.sgmobile.earthquake.ui.component.SGAppBar
 import com.sgmobile.earthquake.ui.screens.earthquake.EarthquakeScreen
 import com.sgmobile.earthquake.ui.screens.map.MapScreen
@@ -40,26 +40,27 @@ import io.github.aakira.napier.Napier
 import io.github.aakira.napier.log
 import kotlinx.serialization.Serializable
 import org.koin.compose.KoinMultiplatformApplication
+import org.koin.core.annotation.KoinExperimentalAPI
 
 @Serializable
-sealed class Screens(val label: String)
+sealed class Screens(val label: String) {
+    @Serializable
+    data object Earthquakes : Screens("Earthquakes")
 
-@Serializable
-data object Earthquakes : Screens(label = "Earthquakes")
+    @Serializable
+    data object Map : Screens("Map")
 
-@Serializable
-data object Map : Screens(label = "Map")
-
-@Serializable
-data object Settings : Screens(label = "Settings")
+    @Serializable
+    data object Settings : Screens("Settings")
+}
 
 data class BottomNavigationItem(
     val screen: Screens,
-    val label: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 )
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App(
     darkTheme: Boolean,
@@ -77,82 +78,77 @@ fun App(
                 isAppearanceLightStatusBars = !darkTheme,
                 isAppearanceLightNavigationBars = !darkTheme
             )
-            var selectedItemIndex by rememberSaveable {
-                mutableStateOf(0)
-            }
 
-            var screenTitle by rememberSaveable {
-                mutableStateOf(Earthquakes.label)
+            val bottomNavItems = remember {
+                listOf(
+                    BottomNavigationItem(
+                        screen = Screens.Earthquakes,
+                        selectedIcon = Icons.Filled.Home,
+                        unselectedIcon = Icons.Outlined.Home
+                    ),
+                    BottomNavigationItem(
+                        screen = Screens.Map,
+                        selectedIcon = Icons.Filled.Map,
+                        unselectedIcon = Icons.Outlined.Map
+                    ),
+                    BottomNavigationItem(
+                        screen = Screens.Settings,
+                        selectedIcon = Icons.Filled.Settings,
+                        unselectedIcon = Icons.Outlined.Settings
+                    )
+                )
             }
-
-            val items = listOf(
-                BottomNavigationItem(
-                    screen = Earthquakes,
-                    label = Earthquakes.label,
-                    selectedIcon = Icons.Filled.Home,
-                    unselectedIcon = Icons.Outlined.Home
-                ),
-                BottomNavigationItem(
-                    screen = Map,
-                    label = Map.label,
-                    selectedIcon = Icons.Filled.Map,
-                    unselectedIcon = Icons.Outlined.Map
-                ),
-                BottomNavigationItem(
-                    screen = Settings,
-                    label = Settings.label,
-                    selectedIcon = Icons.Filled.Settings,
-                    unselectedIcon = Icons.Outlined.Settings
-                ),
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            val selectedItemIndex by rememberUpdatedState(
+                bottomNavItems.indexOfFirst { item ->
+                    currentDestination?.isRouteMatching(item.screen) ?: false
+                }.coerceAtLeast(0)
             )
-
             Scaffold(
                 topBar = {
                     SGAppBar(
-                        screenTitle = screenTitle,
+                        screenTitle = bottomNavItems[selectedItemIndex].screen.label,
                         canNavigateBack = false,
                         navigateUp = { navController.navigateUp() }
                     )
                 },
                 bottomBar = {
                     NavigationBar {
-                        items.forEachIndexed { index, item ->
+                        bottomNavItems.forEachIndexed { index, item ->
                             NavigationBarItem(
                                 selected = selectedItemIndex == index,
                                 onClick = {
-                                    selectedItemIndex = index
-                                    screenTitle = item.label
                                     navController.navigate(item.screen) {
-                                        navController.graph.findStartDestination().route?.let { route ->
-                                            popUpTo(route) {
-                                                saveState = true
-                                            }
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
                                         }
                                         launchSingleTop = true
                                         restoreState = true
                                     }
                                 },
                                 label = {
-                                    Text(text = item.label)
+                                    Text(item.screen.label)
                                 },
                                 alwaysShowLabel = true,
                                 icon = {
                                     Icon(
-                                        imageVector = if (index == selectedItemIndex) {
+                                        imageVector = if (selectedItemIndex == index) {
                                             item.selectedIcon
-                                        } else
-                                            item.unselectedIcon,
-                                        contentDescription = item.label
+                                        } else {
+                                            item.unselectedIcon
+                                        },
+                                        contentDescription = item.screen.label
                                     )
                                 }
                             )
                         }
                     }
-                },
+                }
             ) { innerPadding ->
                 NavHost(
                     navController = navController,
-                    startDestination = Earthquakes,
+                    startDestination = Screens.Earthquakes,
                     enterTransition = {
                         EnterTransition.None
                     },
@@ -163,17 +159,9 @@ fun App(
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
-                    composable<Earthquakes> {
-                        EarthquakeScreen()
-                    }
-
-                    composable<Map> {
-                        MapScreen()
-                    }
-
-                    composable<Settings> {
-                        SettingsScreen()
-                    }
+                    composable<Screens.Earthquakes> { EarthquakeScreen() }
+                    composable<Screens.Map> { MapScreen() }
+                    composable<Screens.Settings> { SettingsScreen() }
                 }
             }
         }
