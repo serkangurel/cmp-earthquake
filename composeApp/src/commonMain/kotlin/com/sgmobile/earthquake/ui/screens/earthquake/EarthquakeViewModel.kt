@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgmobile.earthquake.data.EarthquakeRepository
-import com.sgmobile.earthquake.data.model.CoordinateListItem
-import com.sgmobile.earthquake.data.model.EarthquakeRowItemModel
+import com.sgmobile.earthquake.data.usgs.CoordinateListItem
+import com.sgmobile.earthquake.ui.screens.earthquake.model.EarthquakeRowItemModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
@@ -15,10 +15,12 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import org.koin.android.annotation.KoinViewModel
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
+@KoinViewModel
 class EarthquakeViewModel(
     private val earthquakeRepository: EarthquakeRepository
 ) : ViewModel() {

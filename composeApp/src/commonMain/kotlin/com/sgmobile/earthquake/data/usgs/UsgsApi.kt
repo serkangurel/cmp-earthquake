@@ -1,6 +1,5 @@
-package com.sgmobile.earthquake.data
+package com.sgmobile.earthquake.data.usgs
 
-import com.sgmobile.earthquake.data.model.UsgsResponse
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Path
 

@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.data.model
+package com.sgmobile.earthquake.data.usgs
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

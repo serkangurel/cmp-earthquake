@@ -1,7 +1,10 @@
 package com.sgmobile.earthquake.data
 
-import com.sgmobile.earthquake.data.model.UsgsResponse
+import com.sgmobile.earthquake.data.usgs.UsgsApi
+import com.sgmobile.earthquake.data.usgs.UsgsResponse
+import org.koin.core.annotation.Single
 
+@Single
 class EarthquakeRepository(
     private val usgsApi: UsgsApi
 ) {

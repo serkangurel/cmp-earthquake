@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cmp_earthquake.composeapp.generated.resources.Res
 import cmp_earthquake.composeapp.generated.resources.ic_calendar
-import com.sgmobile.earthquake.data.model.EarthquakeRowItemModel
+import com.sgmobile.earthquake.ui.screens.earthquake.model.EarthquakeRowItemModel
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
