@@ -7,16 +7,7 @@ class EarthquakeRepository(
 ) {
     suspend fun getUsgsEarthquakes(
         timeInterval: String,
-        onSuccess: (UsgsResponse) -> Unit,
-        onFailure: (Throwable) -> Unit
-    ) {
-        runCatching {
-            usgsApi.getEarthquakes(timeInterval)
-        }.onSuccess {
-            onSuccess.invoke(it)
-        }.onFailure {
-            onFailure.invoke(it)
-        }
-
+    ): Result<UsgsResponse> = runCatching {
+        usgsApi.getEarthquakes(timeInterval)
     }
 }

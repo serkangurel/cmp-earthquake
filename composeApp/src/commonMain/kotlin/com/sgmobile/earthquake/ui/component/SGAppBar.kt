@@ -27,7 +27,8 @@ fun SGAppBar(
         modifier = modifier,
         title = { Text(screenTitle) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         navigationIcon = {
             if (canNavigateBack) {

@@ -75,7 +75,7 @@ fun App(
             dynamicColor = dynamicColor
         ) {
             SetSystemBarsLightAppearance(
-                isAppearanceLightStatusBars = !darkTheme,
+                isAppearanceLightStatusBars = darkTheme,
                 isAppearanceLightNavigationBars = !darkTheme
             )
 

@@ -33,45 +33,47 @@ class EarthquakeViewModel(
             )
             delay(500L)
             earthquakeRepository.getUsgsEarthquakes(
-                timeInterval = "all_day",
-                onSuccess = { response ->
-                    val list = response.features?.take(15)?.map {
+                timeInterval = "all_day"
+            ).onSuccess { response ->
+                val list = response.features?.take(15)?.map {
 
-                        val dateInMillis = it.properties?.time ?: 0L
-                        val dateInstant = Instant.fromEpochMilliseconds(dateInMillis)
-                        val dateLocal = dateInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+                    val dateInMillis = it.properties?.time ?: 0L
+                    val dateInstant = Instant.fromEpochMilliseconds(dateInMillis)
+                    val dateLocal = dateInstant.toLocalDateTime(TimeZone.currentSystemDefault())
 
-                        //dd.MM.yyyy HH:mm
-                        val dateFormat = LocalDateTime.Format {
-                            day()
-                            char('.')
-                            monthNumber()
-                            char('.')
-                            year()
-                            char(' ')
-                            hour()
-                            char(':')
-                            minute()
-                        }
-                        val formattedDate = dateLocal.format(dateFormat)
+                    //dd.MM.yyyy HH:mm
+                    val dateFormat = LocalDateTime.Format {
+                        day()
+                        char('.')
+                        monthNumber()
+                        char('.')
+                        year()
+                        char(' ')
+                        hour()
+                        char(':')
+                        minute()
+                    }
+                    val formattedDate = dateLocal.format(dateFormat)
 
-                        EarthquakeRowItemModel(
-                            place = it.properties?.place.orEmpty(),
-                            magnitude = it.properties?.mag.toString(),
-                            depth = it.geometry?.coordinates?.get(CoordinateListItem.Depth.index)
-                                .toString(),
-                            date = formattedDate
-                        )
-                    } ?: listOf()
-                    uiState = uiState.copy(
-                        isLoading = false,
-                        uiModel = EarthquakeUiModel(
-                            earhtquakeRowItemList = list
-                        )
+                    EarthquakeRowItemModel(
+                        place = it.properties?.place.orEmpty(),
+                        magnitude = it.properties?.mag.toString(),
+                        depth = it.geometry?.coordinates?.get(CoordinateListItem.Depth.index)
+                            .toString(),
+                        date = formattedDate
                     )
-                }, onFailure = {
-                }
-            )
+                } ?: listOf()
+                uiState = uiState.copy(
+                    isLoading = false,
+                    uiModel = EarthquakeUiModel(
+                        earhtquakeRowItemList = list
+                    )
+                )
+            }.onFailure {
+                uiState = uiState.copy(
+                    isLoading = true
+                )
+            }
         }
     }
 }

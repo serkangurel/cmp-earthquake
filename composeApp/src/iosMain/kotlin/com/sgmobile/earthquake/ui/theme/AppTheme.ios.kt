@@ -11,7 +11,7 @@ actual fun AppTheme(
 ) {
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColorsScheme else LightColorsScheme,
-        typography = AppTypography(),
+        typography = AppTypography,
         content = content
     )
 }
