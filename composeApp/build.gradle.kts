@@ -61,6 +61,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.viewmodel.navigation)
+            api(libs.koin.annotations)
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.json)
@@ -74,6 +75,14 @@ kotlin {
             implementation(libs.kotlinx.datetime)
         }
     }
+    sourceSets.named("commonMain").configure {
+        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+    }
+}
+
+ksp {
+    arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 android {
@@ -106,6 +115,13 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
     with(libs.ktorfit.ksp) {
+        add("kspCommonMainMetadata", this)
+        add("kspAndroid", this)
+        add("kspIosX64", this)
+        add("kspIosArm64", this)
+        add("kspIosSimulatorArm64", this)
+    }
+    with(libs.koin.ksp.compiler) {
         add("kspCommonMainMetadata", this)
         add("kspAndroid", this)
         add("kspIosX64", this)

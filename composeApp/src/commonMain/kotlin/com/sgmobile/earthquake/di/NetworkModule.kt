@@ -14,45 +14,47 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.core.module.Module
-import org.koin.core.module.dsl.named
-import org.koin.core.module.dsl.singleOf
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-fun networkModule(): Module = module {
-    singleOf(::provideHttpClient)
-    singleOf(::provideKtorfitForUsgs) {
-        named(NetworkConstants.KTORFIT_USGS)
-    }
-    single {
-        provideUsgsApi(get(named(NetworkConstants.KTORFIT_USGS)))
-    }
-    singleOf(::EarthquakeRepository)
-}
-
-private fun provideHttpClient(): HttpClient = HttpClient {
-    install(Logging) {
-        level = LogLevel.ALL
-        logger = object : Logger {
-            override fun log(message: String) {
-                Napier.v(tag = "HTTP Client", message = message)
+@Module
+class NetworkModule {
+    @Single
+    fun provideHttpClient(): HttpClient = HttpClient {
+        install(Logging) {
+            level = LogLevel.ALL
+            logger = object : Logger {
+                override fun log(message: String) {
+                    Napier.v(tag = "HTTP Client", message = message)
+                }
             }
         }
+        install(ContentNegotiation) {
+            json(Json {
+                prettyPrint = true
+                isLenient = true
+                encodeDefaults = true
+                ignoreUnknownKeys = true
+            })
+        }
     }
-    install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-            isLenient = true
-            encodeDefaults = true
-            ignoreUnknownKeys = true
-        })
+
+    @Single
+    @KtorfitUsgs
+    fun provideKtorfitForUsgs(
+        httpClient: HttpClient
+    ): Ktorfit = ktorfit {
+        baseUrl(NetworkConstants.BASE_URL_USGS)
+        httpClient(httpClient)
     }
-}
 
-private fun provideKtorfitForUsgs(httpClient: HttpClient): Ktorfit = ktorfit {
-    baseUrl(NetworkConstants.BASE_URL_USGS)
-    httpClient(httpClient)
-}
+    @Single
+    fun provideUsgsApi(
+        @KtorfitUsgs ktorfit: Ktorfit
+    ): UsgsApi = ktorfit.createUsgsApi()
 
-private fun provideUsgsApi(ktorfit: Ktorfit): UsgsApi = ktorfit.createUsgsApi()
+    @Single
+    fun provideEarthquakeRepository(
+        usgsApi: UsgsApi
+    ): EarthquakeRepository = EarthquakeRepository(usgsApi)
+}

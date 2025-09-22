@@ -1,7 +1,8 @@
 package com.sgmobile.earthquake.di
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import org.koin.core.annotation.Module
 
-fun commonModule(): Module = module {
+@Module
+class CommonModule {
+
 }
