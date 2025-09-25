@@ -5,6 +5,7 @@ import org.koin.ksp.generated.module
 
 fun getKoinConfiguration(): KoinConfiguration = KoinConfiguration {
     modules(
-        AppModule().module
+        AppModule().module,
+        PlatformModule().module
     )
 }
