@@ -6,6 +6,6 @@ import org.koin.ksp.generated.module
 fun getKoinConfiguration(): KoinConfiguration = KoinConfiguration {
     modules(
         AppModule().module,
-        PlatformModule().module
+        ContextModule().module,
     )
 }

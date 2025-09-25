@@ -4,16 +4,21 @@ package com.sgmobile.earthquake.di
 
 import android.content.Context
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Provided
 import org.koin.core.annotation.Single
 import org.koin.core.scope.Scope
 
+actual class ContextWrapper(val context: Context)
+
 @Module
-actual class PlatformModule {
+actual class ContextModule {
     @Single
-    actual fun providePlatformHelper(scope: Scope): PlatformHelper = PlatformHelperAndroid(scope)
+    actual fun provideContextWrapper(scope: Scope): ContextWrapper = ContextWrapper(scope.get())
 }
 
-class PlatformHelperAndroid(scope: Scope) : PlatformHelper {
-    val context: Context = scope.get()
-    override fun getName(): String = "I'm Android - ${context.packageName}"
+@Single
+actual class PlatformHelper actual constructor(
+    @Provided val contextWrapper: ContextWrapper
+) {
+    actual fun getName(): String = "I'm Android - : ${contextWrapper.context.packageName}"
 }

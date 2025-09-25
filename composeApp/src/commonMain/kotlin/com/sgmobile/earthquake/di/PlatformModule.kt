@@ -3,15 +3,21 @@
 package com.sgmobile.earthquake.di
 
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Provided
 import org.koin.core.annotation.Single
 import org.koin.core.scope.Scope
 
+expect class ContextWrapper
+
 @Module
-expect class PlatformModule() {
+expect class ContextModule() {
     @Single
-    fun providePlatformHelper(scope: Scope): PlatformHelper
+    fun provideContextWrapper(scope: Scope): ContextWrapper
 }
 
-interface PlatformHelper {
+@Single
+expect class PlatformHelper(
+    @Provided contextWrapper: ContextWrapper
+) {
     fun getName(): String
 }
