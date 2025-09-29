@@ -3,7 +3,6 @@
 package com.sgmobile.earthquake.di
 
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Provided
 import org.koin.core.annotation.Single
 import org.koin.core.scope.Scope
 
@@ -17,7 +16,7 @@ actual class ContextModule {
 
 @Single
 actual class PlatformHelper actual constructor(
-    @Provided contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper
 ) {
     actual fun getName(): String = "I'm iOS"
 }

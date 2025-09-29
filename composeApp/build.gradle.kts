@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktorfit)
@@ -37,13 +36,13 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.ktor.client.android)
         }
         iosMain.dependencies {
-            implementation(libs.ktor.client.ios)
         }
         commonMain.dependencies {
-            implementation(projects.shared)
+            implementation(projects.core.resource)
+            implementation(projects.core.ui)
+            implementation(projects.core.network)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -63,20 +62,10 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             api(libs.koin.annotations)
 
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.json)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.client.serialization)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-
             implementation(libs.napier)
             implementation(libs.ktorfit)
             implementation(libs.kotlinx.datetime)
         }
-    }
-    sourceSets.named("commonMain").configure {
-        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
     }
 }
 
@@ -128,4 +117,9 @@ dependencies {
         add("kspIosArm64", this)
         add("kspIosSimulatorArm64", this)
     }
+}
+
+compose.resources {
+    publicResClass = false
+    generateResClass = never
 }

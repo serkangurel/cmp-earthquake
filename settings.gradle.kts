@@ -23,5 +23,7 @@ plugins {
 }
 
 include(":composeApp")
-include(":shared")
 include(":server")
+include(":core:network")
+include(":core:ui")
+include(":core:resource")

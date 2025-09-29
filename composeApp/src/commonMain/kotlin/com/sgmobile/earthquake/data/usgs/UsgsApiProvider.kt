@@ -1,11 +1,14 @@
 package com.sgmobile.earthquake.data.usgs
 
-import com.sgmobile.earthquake.data.constants.NetworkConstants
-import com.sgmobile.earthquake.di.KtorfitUsgs
+import com.sgmobile.earthquake.core.network.NetworkConstants
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.ktorfit
 import io.ktor.client.HttpClient
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Single
+
+@Named
+annotation class KtorfitUsgs
 
 @Single
 @KtorfitUsgs

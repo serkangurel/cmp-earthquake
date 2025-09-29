@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cmp_earthquake.composeapp.generated.resources.Res
-import cmp_earthquake.composeapp.generated.resources.ic_calendar
+import com.sgmobile.earthquake.core.resource.Res
+import com.sgmobile.earthquake.core.resource.ic_calendar
 import com.sgmobile.earthquake.ui.screens.earthquake.model.EarthquakeRowItemModel
 import org.jetbrains.compose.resources.painterResource
 
