@@ -43,6 +43,7 @@ kotlin {
             implementation(projects.core.resource)
             implementation(projects.core.ui)
             implementation(projects.core.network)
+            implementation(projects.core.navigation)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
