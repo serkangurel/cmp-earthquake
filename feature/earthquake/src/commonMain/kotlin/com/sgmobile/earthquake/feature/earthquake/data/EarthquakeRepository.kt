@@ -1,7 +1,7 @@
-package com.sgmobile.earthquake.data
+package com.sgmobile.earthquake.feature.earthquake.data
 
-import com.sgmobile.earthquake.data.usgs.UsgsApi
-import com.sgmobile.earthquake.data.usgs.UsgsResponse
+import com.sgmobile.earthquake.feature.earthquake.data.usgs.UsgsApi
+import com.sgmobile.earthquake.feature.earthquake.data.usgs.UsgsResponse
 import org.koin.core.annotation.Single
 
 @Single

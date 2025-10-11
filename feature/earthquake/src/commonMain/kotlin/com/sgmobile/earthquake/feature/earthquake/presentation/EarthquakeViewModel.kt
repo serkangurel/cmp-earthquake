@@ -1,13 +1,13 @@
-package com.sgmobile.earthquake.ui.screens.earthquake
+package com.sgmobile.earthquake.feature.earthquake.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sgmobile.earthquake.data.EarthquakeRepository
-import com.sgmobile.earthquake.data.usgs.CoordinateListItem
-import com.sgmobile.earthquake.ui.screens.earthquake.model.EarthquakeRowItemModel
+import com.sgmobile.earthquake.feature.earthquake.data.EarthquakeRepository
+import com.sgmobile.earthquake.feature.earthquake.data.usgs.CoordinateListItem
+import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeRowItemModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
@@ -29,6 +29,7 @@ class EarthquakeViewModel(
         private set
 
     init {
+        println("")
         viewModelScope.launch {
             uiState = uiState.copy(
                 isLoading = true

@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.ui.component
+package com.sgmobile.earthquake.feature.earthquake.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.ic_calendar
-import com.sgmobile.earthquake.ui.screens.earthquake.model.EarthquakeRowItemModel
+import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeRowItemModel
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

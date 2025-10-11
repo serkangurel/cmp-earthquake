@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.ui.screens.earthquake.model
+package com.sgmobile.earthquake.feature.earthquake.presentation.models
 
 data class EarthquakeRowItemModel(
     val place: String,

@@ -32,7 +32,7 @@ import com.sgmobile.earthquake.core.ui.components.SGAppBar
 import com.sgmobile.earthquake.core.ui.theme.AppTheme
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
 import com.sgmobile.earthquake.di.getKoinConfiguration
-import com.sgmobile.earthquake.ui.screens.earthquake.EarthquakeScreen
+import com.sgmobile.earthquake.feature.earthquake.presentation.EarthquakeScreen
 import com.sgmobile.earthquake.ui.screens.map.MapScreen
 import com.sgmobile.earthquake.ui.screens.settings.SettingsScreen
 import io.github.aakira.napier.DebugAntilog

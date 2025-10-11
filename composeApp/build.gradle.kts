@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -44,6 +45,7 @@ kotlin {
             implementation(projects.core.ui)
             implementation(projects.core.network)
             implementation(projects.core.navigation)
+            implementation(projects.feature.earthquake)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -67,6 +69,9 @@ kotlin {
             implementation(libs.ktorfit)
             implementation(libs.kotlinx.datetime)
         }
+    }
+    sourceSets.named("commonMain").configure {
+        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
     }
 }
 
@@ -123,4 +128,10 @@ dependencies {
 compose.resources {
     publicResClass = false
     generateResClass = never
+}
+
+project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }
