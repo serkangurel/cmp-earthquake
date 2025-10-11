@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.util
+package com.sgmobile.earthquake.core.ui.util
 
 import androidx.compose.runtime.Composable
 

@@ -1,20 +1,18 @@
-package com.sgmobile.earthquake.util
+package com.sgmobile.earthquake.core.ui.util
 
-import android.content.Context
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
-import com.sgmobile.earthquake.extensions.getActivity
 
 @Composable
 actual fun SetSystemBarsLightAppearance(
     isAppearanceLightStatusBars: Boolean,
     isAppearanceLightNavigationBars: Boolean
 ) {
-    val context: Context = LocalContext.current
+    val activity = LocalActivity.current
     LaunchedEffect(key1 = isAppearanceLightStatusBars, key2 = isAppearanceLightNavigationBars) {
-        context.getActivity()?.let { activity ->
+        activity?.let { activity ->
             WindowCompat.getInsetsController(
                 activity.window,
                 activity.window.decorView
