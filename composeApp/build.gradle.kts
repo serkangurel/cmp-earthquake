@@ -46,6 +46,8 @@ kotlin {
             implementation(projects.core.network)
             implementation(projects.core.navigation)
             implementation(projects.feature.earthquake)
+            implementation(projects.feature.map)
+            implementation(projects.feature.settings)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

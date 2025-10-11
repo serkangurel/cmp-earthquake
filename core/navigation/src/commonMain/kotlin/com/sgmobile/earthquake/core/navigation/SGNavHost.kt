@@ -35,10 +35,10 @@ fun SGNavHost(
     modifier: Modifier = Modifier,
     startDestination: Any? = null,
     navController: NavHostController = rememberNavController(),
-    navigationModules: List<NavigationModule> = rememberNavigationModules(),
+    navigationComponents: List<NavigationComponent> = rememberNavigationComponents(),
 ) {
     val navState = rememberNavState(
-        navigationModules = navigationModules,
+        navigationComponents = navigationComponents,
         navController = navController,
     )
     val destinationResolver = rememberDestinationResolver(
@@ -48,7 +48,7 @@ fun SGNavHost(
 
     NavScaffold(
         navState = navState,
-        navigationModules = navigationModules,
+        navigationComponents = navigationComponents,
         navController = navController,
     ) { paddingValues ->
         CompositionLocalProvider(
@@ -60,8 +60,8 @@ fun SGNavHost(
                 navController = navController,
                 startDestination = destinationResolver.resolvedStartDestination,
             ) {
-                navigationModules.forEach { module ->
-                    module.navigationGraphBuilder(this)
+                navigationComponents.forEach { component ->
+                    component.navigationGraphBuilder(this)
                 }
             }
         }
@@ -70,11 +70,11 @@ fun SGNavHost(
 
 @Composable
 private fun rememberNavState(
-    navigationModules: List<NavigationModule>,
+    navigationComponents: List<NavigationComponent>,
     navController: NavHostController,
 ): NavigationState {
-    val topLevelDestinations = remember(navigationModules) {
-        navigationModules
+    val topLevelDestinations = remember(navigationComponents) {
+        navigationComponents
             .mapNotNull { it.topLevelDestination }
             .sortedBy { it.order }
     }
@@ -106,13 +106,15 @@ private fun rememberDestinationResolver(
 @Composable
 private fun NavScaffold(
     navState: NavigationState,
-    navigationModules: List<NavigationModule>,
+    navigationComponents: List<NavigationComponent>,
     navController: NavHostController,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val shouldShowBottomBar = remember(navState.currentDestination, navigationModules) {
-        navigationModules.all { module ->
-            module.showBottomBarEvaluator(navState.currentBackStackEntry ?: return@remember false)
+    val shouldShowBottomBar = remember(navState.currentDestination, navigationComponents) {
+        navigationComponents.all { component ->
+            component.showBottomBarEvaluator(
+                navState.currentBackStackEntry ?: return@remember false
+            )
         }
     }
     Scaffold(
@@ -212,13 +214,13 @@ private data class DestinationResolver(
 ) {
     val resolvedStartDestination: Any = customStartDestination
         ?: firstTopLevelDestination
-        ?: error("No start destination found in navigation modules.")
+        ?: error("No start destination found in navigation components.")
 }
 
 @Composable
-private fun rememberNavigationModules(
+private fun rememberNavigationComponents(
     providers: List<NavigationProvider> = getKoin().getAll<NavigationProvider>(),
-): List<NavigationModule> =
+): List<NavigationComponent> =
     remember(providers) {
         providers.map { it() }
     }

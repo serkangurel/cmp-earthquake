@@ -6,7 +6,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import kotlin.reflect.KClass
 
-data class NavigationModule(
+data class NavigationComponent(
     val navigationGraphBuilder: NavGraphBuilder.() -> Unit,
     val showBottomBarEvaluator: (NavBackStackEntry) -> Boolean = { true },
     val topLevelDestination: TopLevelDestination? = null,

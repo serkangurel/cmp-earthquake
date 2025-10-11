@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.ui.screens.settings
+package com.sgmobile.earthquake.feature.map.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,14 +9,14 @@ import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SettingsScreen(
+fun MapScreen(
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>()
+    viewModel: MapViewModel = koinViewModel<MapViewModel>()
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("Settings Screen")
+        Text("Map Screen")
     }
 }
