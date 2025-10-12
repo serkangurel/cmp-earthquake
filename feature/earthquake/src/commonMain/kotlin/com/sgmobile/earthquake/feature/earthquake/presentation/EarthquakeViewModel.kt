@@ -21,7 +21,7 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 @KoinViewModel
-class EarthquakeViewModel(
+internal class EarthquakeViewModel(
     private val earthquakeRepository: EarthquakeRepository
 ) : ViewModel() {
 
@@ -81,11 +81,11 @@ class EarthquakeViewModel(
     }
 }
 
-data class EarthquakeUiState(
+internal data class EarthquakeUiState(
     val isLoading: Boolean = false,
     val uiModel: EarthquakeUiModel? = null
 )
 
-data class EarthquakeUiModel(
+internal data class EarthquakeUiModel(
     val earhtquakeRowItemList: List<EarthquakeRowItemModel>
 )

@@ -57,6 +57,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(projects.core.navigation)
                 implementation(projects.core.resource)
                 implementation(projects.core.ui)
                 implementation(projects.core.network)

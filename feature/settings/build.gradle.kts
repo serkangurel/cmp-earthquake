@@ -57,8 +57,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
+                implementation(projects.core.navigation)
                 implementation(projects.core.resource)
                 implementation(projects.core.ui)
 
@@ -77,6 +76,7 @@ kotlin {
                 api(libs.koin.annotations)
 
                 implementation(libs.ktorfit)
+                implementation(libs.kotlin.stdlib)
             }
         }
 

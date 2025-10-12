@@ -9,5 +9,5 @@ val LocalNavController = compositionLocalOf<NavHostController> {
 }
 
 val LocalNavScaffoldPadding = compositionLocalOf<PaddingValues> {
-    error("No NavScaffoldPadding provided. Are you using the OLBANavHost?")
+    error("No NavScaffoldPadding provided.")
 }

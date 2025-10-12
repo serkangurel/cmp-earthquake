@@ -1,6 +1,8 @@
 package com.sgmobile.earthquake.core.navigation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -26,7 +28,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sgmobile.earthquake.core.navigation.extension.isRouteInHierarchy
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.getKoin
 
@@ -59,6 +60,12 @@ fun SGNavHost(
                 modifier = modifier.fillMaxSize(),
                 navController = navController,
                 startDestination = destinationResolver.resolvedStartDestination,
+                enterTransition = {
+                    EnterTransition.None
+                },
+                exitTransition = {
+                    ExitTransition.None
+                },
             ) {
                 navigationComponents.forEach { component ->
                     component.navigationGraphBuilder(this)
@@ -146,6 +153,9 @@ private fun BottomNavigationBar(
                     isSelected = currentDestination.isRouteInHierarchy(destination.baseRoute),
                     onClick = {
                         navController.navigate(destination.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -190,9 +200,7 @@ private fun RowScope.BottomNavigationItem(
         onClick = onClick,
         icon = {
             Icon(
-                painter = painterResource(
-                    if (isSelected) destination.selectedIcon else destination.unselectedIcon,
-                ),
+                imageVector = if (isSelected) destination.selectedIcon else destination.unselectedIcon,
                 contentDescription = null,
             )
         },

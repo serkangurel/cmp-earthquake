@@ -1,8 +1,8 @@
 package com.sgmobile.earthquake.core.navigation
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import kotlin.reflect.KClass
 
@@ -13,8 +13,8 @@ data class NavigationComponent(
 )
 
 data class TopLevelDestination(
-    val selectedIcon: DrawableResource,
-    val unselectedIcon: DrawableResource,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
     val labelStringResource: StringResource,
     val route: Any,
     val baseRoute: KClass<*> = route::class,
