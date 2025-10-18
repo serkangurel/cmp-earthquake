@@ -3,4 +3,8 @@
     <string name="screen_home">Home</string>
     <string name="screen_detail">Detail</string>
     <string name="back_button">Back</string>
+
+    <string name="earthquakes">Earthquakes</string>
+    <string name="map">Map</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.sgmobile.earthquake.core.navigation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -26,7 +28,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sgmobile.earthquake.core.navigation.extension.isRouteInHierarchy
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.getKoin
 
@@ -35,10 +36,10 @@ fun SGNavHost(
     modifier: Modifier = Modifier,
     startDestination: Any? = null,
     navController: NavHostController = rememberNavController(),
-    navigationModules: List<NavigationModule> = rememberNavigationModules(),
+    navigationComponents: List<NavigationComponent> = rememberNavigationComponents(),
 ) {
     val navState = rememberNavState(
-        navigationModules = navigationModules,
+        navigationComponents = navigationComponents,
         navController = navController,
     )
     val destinationResolver = rememberDestinationResolver(
@@ -48,7 +49,7 @@ fun SGNavHost(
 
     NavScaffold(
         navState = navState,
-        navigationModules = navigationModules,
+        navigationComponents = navigationComponents,
         navController = navController,
     ) { paddingValues ->
         CompositionLocalProvider(
@@ -59,9 +60,15 @@ fun SGNavHost(
                 modifier = modifier.fillMaxSize(),
                 navController = navController,
                 startDestination = destinationResolver.resolvedStartDestination,
+                enterTransition = {
+                    EnterTransition.None
+                },
+                exitTransition = {
+                    ExitTransition.None
+                },
             ) {
-                navigationModules.forEach { module ->
-                    module.navigationGraphBuilder(this)
+                navigationComponents.forEach { component ->
+                    component.navigationGraphBuilder(this)
                 }
             }
         }
@@ -70,11 +77,11 @@ fun SGNavHost(
 
 @Composable
 private fun rememberNavState(
-    navigationModules: List<NavigationModule>,
+    navigationComponents: List<NavigationComponent>,
     navController: NavHostController,
 ): NavigationState {
-    val topLevelDestinations = remember(navigationModules) {
-        navigationModules
+    val topLevelDestinations = remember(navigationComponents) {
+        navigationComponents
             .mapNotNull { it.topLevelDestination }
             .sortedBy { it.order }
     }
@@ -106,13 +113,15 @@ private fun rememberDestinationResolver(
 @Composable
 private fun NavScaffold(
     navState: NavigationState,
-    navigationModules: List<NavigationModule>,
+    navigationComponents: List<NavigationComponent>,
     navController: NavHostController,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val shouldShowBottomBar = remember(navState.currentDestination, navigationModules) {
-        navigationModules.all { module ->
-            module.showBottomBarEvaluator(navState.currentBackStackEntry ?: return@remember false)
+    val shouldShowBottomBar = remember(navState.currentDestination, navigationComponents) {
+        navigationComponents.all { component ->
+            component.showBottomBarEvaluator(
+                navState.currentBackStackEntry ?: return@remember false
+            )
         }
     }
     Scaffold(
@@ -144,6 +153,9 @@ private fun BottomNavigationBar(
                     isSelected = currentDestination.isRouteInHierarchy(destination.baseRoute),
                     onClick = {
                         navController.navigate(destination.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -188,9 +200,7 @@ private fun RowScope.BottomNavigationItem(
         onClick = onClick,
         icon = {
             Icon(
-                painter = painterResource(
-                    if (isSelected) destination.selectedIcon else destination.unselectedIcon,
-                ),
+                imageVector = if (isSelected) destination.selectedIcon else destination.unselectedIcon,
                 contentDescription = null,
             )
         },
@@ -212,13 +222,13 @@ private data class DestinationResolver(
 ) {
     val resolvedStartDestination: Any = customStartDestination
         ?: firstTopLevelDestination
-        ?: error("No start destination found in navigation modules.")
+        ?: error("No start destination found in navigation components.")
 }
 
 @Composable
-private fun rememberNavigationModules(
+private fun rememberNavigationComponents(
     providers: List<NavigationProvider> = getKoin().getAll<NavigationProvider>(),
-): List<NavigationModule> =
+): List<NavigationComponent> =
     remember(providers) {
         providers.map { it() }
     }
