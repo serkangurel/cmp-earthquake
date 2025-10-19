@@ -20,7 +20,7 @@ internal class MapNavigationProvider : NavigationProvider {
                 unselectedIcon = Icons.Filled.Map,
                 labelStringResource = Res.string.map,
                 route = MapRoutes.Overview,
-                order = 1
+                order = 2
             ),
         )
 }

@@ -69,6 +69,7 @@ kotlin {
 
                 implementation(libs.napier)
                 implementation(libs.ktorfit)
+                implementation(libs.ktorfit.response.converter)
             }
         }
 

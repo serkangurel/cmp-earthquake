@@ -229,6 +229,6 @@ private data class DestinationResolver(
 private fun rememberNavigationComponents(
     providers: List<NavigationProvider> = getKoin().getAll<NavigationProvider>(),
 ): List<NavigationComponent> =
-    remember(providers) {
+    remember {
         providers.map { it() }
     }
