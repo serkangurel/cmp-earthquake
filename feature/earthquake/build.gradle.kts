@@ -93,6 +93,11 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
+                implementation(compose.uiTooling)
+                implementation(compose.preview)
+                implementation(libs.androidx.activity.compose)
+                implementation("androidx.emoji2:emoji2:1.6.0")
+                implementation("androidx.customview:customview-poolingcontainer:1.1.0")
             }
         }
 

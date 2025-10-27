@@ -23,8 +23,6 @@ internal fun MapScreen(
         topBar = {
             SGAppBar(
                 screenTitle = stringResource(Res.string.map),
-                canNavigateBack = false,
-                navigateUp = {}
             )
         },
     ) { paddingValues ->

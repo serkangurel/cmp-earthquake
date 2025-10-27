@@ -23,8 +23,6 @@ internal fun SettingsScreen(
         topBar = {
             SGAppBar(
                 screenTitle = stringResource(Res.string.settings),
-                canNavigateBack = false,
-                navigateUp = {}
             )
         },
     ) { paddingValues ->
