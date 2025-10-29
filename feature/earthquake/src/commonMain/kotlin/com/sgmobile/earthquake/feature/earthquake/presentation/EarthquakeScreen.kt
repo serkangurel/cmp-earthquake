@@ -1,6 +1,5 @@
 package com.sgmobile.earthquake.feature.earthquake.presentation
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,13 +20,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquakes
 import com.sgmobile.earthquake.core.ui.components.SGAppBar
 import com.sgmobile.earthquake.core.ui.components.SGLoading
 import com.sgmobile.earthquake.feature.earthquake.presentation.components.EarthquakeRowItem
-import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeRowItemModel
+import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -36,6 +36,8 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun EarthquakeScreen(
     viewModel: EarthquakeViewModel = koinViewModel<EarthquakeViewModel>()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             SGAppBar(
@@ -54,10 +56,8 @@ internal fun EarthquakeScreen(
                     bottom = LocalNavScaffoldPadding.current.calculateBottomPadding()
                 ),
         ) {
-            viewModel.uiState.uiModel?.let { uiModel ->
-                EarthquakeContent(uiModel)
-            }
-            if (viewModel.uiState.isLoading) {
+            EarthquakeContent(uiState)
+            if (uiState.isLoading) {
                 SGLoading()
             }
         }
@@ -65,20 +65,18 @@ internal fun EarthquakeScreen(
 }
 
 @Composable
-private fun EarthquakeContent(
-    uiModel: EarthquakeUiModel
-) {
+private fun EarthquakeContent(uiState: EarthquakeUIState) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(0.dp)
+        contentPadding = PaddingValues(12.dp),
     ) {
-        itemsIndexed(uiModel.earhtquakeRowItemList) { index, item ->
+        itemsIndexed(uiState.earhtquakeList) { index, item ->
             EarthquakeRowItem(item)
 
-            if (index < uiModel.earhtquakeRowItemList.size - 1) {
+            if (index < uiState.earhtquakeList.size - 1) {
                 HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    thickness = 0.5.dp,
+                    modifier = Modifier.padding(vertical = 6.dp)
                 )
             }
         }
@@ -115,32 +113,29 @@ private fun EarthquakeTopBarActions() {
 
 @Preview(showBackground = true)
 @Composable
-private fun EarthquakeContent() {
+private fun EarthquakeContentPreview() {
     EarthquakeContent(
-        uiModel = EarthquakeUiModel(
-            listOf(
-                EarthquakeRowItemModel(
+        uiState = EarthquakeUIState(
+            isLoading = false,
+            earhtquakeList = listOf(
+                EarthquakeVo(
                     place = "San Francisco",
                     magnitude = "5.2",
-                    depth = "10km",
                     date = "19.10.2025 14:30"
                 ),
-                EarthquakeRowItemModel(
+                EarthquakeVo(
                     place = "San Francisco",
                     magnitude = "5.2",
-                    depth = "10km",
                     date = "19.10.2025 14:30"
                 ),
-                EarthquakeRowItemModel(
+                EarthquakeVo(
                     place = "San Francisco",
                     magnitude = "5.2",
-                    depth = "10km",
                     date = "19.10.2025 14:30"
                 ),
-                EarthquakeRowItemModel(
+                EarthquakeVo(
                     place = "San Francisco",
                     magnitude = "5.2",
-                    depth = "10km",
                     date = "19.10.2025 14:30"
                 )
             )

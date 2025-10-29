@@ -11,12 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeRowItemModel
+import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun EarthquakeRowItem(
-    model: EarthquakeRowItemModel
+    model: EarthquakeVo
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -48,10 +48,9 @@ internal fun EarthquakeRowItem(
 @Composable
 private fun EarthquakeRowItemPreview() {
     EarthquakeRowItem(
-        model = EarthquakeRowItemModel(
+        model = EarthquakeVo(
             place = "San Francisco",
             magnitude = "5.2",
-            depth = "10km",
             date = "19.10.2025 14:30"
         )
     )

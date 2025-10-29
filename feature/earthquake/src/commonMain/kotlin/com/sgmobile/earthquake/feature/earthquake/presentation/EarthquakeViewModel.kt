@@ -1,90 +1,58 @@
 package com.sgmobile.earthquake.feature.earthquake.presentation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sgmobile.earthquake.feature.earthquake.data.usgs.CoordinateListItem
-import com.sgmobile.earthquake.feature.earthquake.domain.EarthquakeRepository
-import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeRowItemModel
-import kotlinx.coroutines.delay
+import com.sgmobile.earthquake.feature.earthquake.domain.FetchUsgsEarthquakeDataUseCase
+import com.sgmobile.earthquake.feature.earthquake.domain.GetEarthquakeDataUseCase
+import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.presentation.extensions.mapToUi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.format.char
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import org.koin.android.annotation.KoinViewModel
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, FormatStringsInDatetimeFormats::class)
 @KoinViewModel
 internal class EarthquakeViewModel(
-    private val earthquakeRepository: EarthquakeRepository
+    private val fetchUsgsEarthquakeDataUseCase: FetchUsgsEarthquakeDataUseCase,
+    private val getEarthquakeDataUseCase: GetEarthquakeDataUseCase
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(EarthquakeUiState())
-        private set
+    private val earthquakeFlow = getEarthquakeDataUseCase()
+    private val isLoading = MutableStateFlow(false)
+
+    val uiState = combine(
+        earthquakeFlow.map(List<Earthquake>::mapToUi),
+        isLoading
+    ) { earthquakes, isLoading ->
+        earthquakes.copy(isLoading = isLoading)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), EarthquakeUIState.INITIAL)
+
+    private var refreshJob: Job? = null
 
     init {
-        viewModelScope.launch {
-            uiState = uiState.copy(
-                isLoading = true
-            )
-            delay(500L)
-            earthquakeRepository.getUsgsEarthquakes(
-                timeInterval = "all_day"
-            ).onSuccess { response ->
-                val list = response.features?.take(15)?.map {
+        fetchUsgsEarthquakes()
+    }
 
-                    val dateInMillis = it.properties?.time ?: 0L
-                    val dateInstant = Instant.fromEpochMilliseconds(dateInMillis)
-                    val dateLocal = dateInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+    private fun fetchUsgsEarthquakes() {
+        if (refreshJob != null) return
 
-                    //dd.MM.yyyy HH:mm
-                    val dateFormat = LocalDateTime.Format {
-                        day()
-                        char('.')
-                        monthNumber()
-                        char('.')
-                        year()
-                        char(' ')
-                        hour()
-                        char(':')
-                        minute()
-                    }
-                    val formattedDate = dateLocal.format(dateFormat)
-
-                    EarthquakeRowItemModel(
-                        place = it.properties?.place.orEmpty(),
-                        magnitude = it.properties?.mag.toString(),
-                        depth = it.geometry?.coordinates?.get(CoordinateListItem.Depth.index)
-                            .toString(),
-                        date = formattedDate
-                    )
-                } ?: listOf()
-                uiState = uiState.copy(
-                    isLoading = false,
-                    uiModel = EarthquakeUiModel(
-                        earhtquakeRowItemList = list
-                    )
-                )
-            }.onFailure {
-                uiState = uiState.copy(
-                    isLoading = true
-                )
-            }
+        isLoading.update { true }
+        refreshJob = viewModelScope.launch {
+            val result = fetchUsgsEarthquakeDataUseCase()
+            isLoading.update { false }
+        }
+        refreshJob?.invokeOnCompletion {
+            refreshJob = null
         }
     }
 }
-
-internal data class EarthquakeUiState(
-    val isLoading: Boolean = false,
-    val uiModel: EarthquakeUiModel? = null
-)
-
-internal data class EarthquakeUiModel(
-    val earhtquakeRowItemList: List<EarthquakeRowItemModel>
-)

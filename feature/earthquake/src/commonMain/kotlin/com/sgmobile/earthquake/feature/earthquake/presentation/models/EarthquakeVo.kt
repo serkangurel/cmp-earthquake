@@ -1,8 +1,7 @@
 package com.sgmobile.earthquake.feature.earthquake.presentation.models
 
-internal data class EarthquakeRowItemModel(
+internal data class EarthquakeVo(
     val place: String,
     val magnitude: String,
-    val depth: String,
     val date: String
 )
