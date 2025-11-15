@@ -15,12 +15,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import org.koin.android.annotation.KoinViewModel
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class, FormatStringsInDatetimeFormats::class)
 @KoinViewModel
 internal class EarthquakeViewModel(
     private val fetchUsgsEarthquakeDataUseCase: FetchUsgsEarthquakeDataUseCase,

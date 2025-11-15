@@ -10,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun EarthquakeRowItem(

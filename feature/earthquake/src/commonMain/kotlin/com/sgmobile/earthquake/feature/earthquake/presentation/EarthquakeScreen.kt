@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
@@ -29,7 +30,6 @@ import com.sgmobile.earthquake.core.ui.components.SGLoading
 import com.sgmobile.earthquake.feature.earthquake.presentation.components.EarthquakeRowItem
 import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
