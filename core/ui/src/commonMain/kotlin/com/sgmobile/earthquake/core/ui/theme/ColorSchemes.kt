@@ -12,10 +12,16 @@ fun extendedColor(light: Color, dark: Color): Color {
     return if (isSystemInDarkTheme()) dark else light
 }
 
-val ColorScheme.extraColor: Color
+val ColorScheme.magYellow: Color
     @Composable get() = extendedColor(
-        light = Color(0xFF000000),
-        dark = Color(0xFFFFFFFF)
+        light = Color(0xFFFFB300),
+        dark = Color(0xFFFFB300)
+    )
+
+val ColorScheme.magRed: Color
+    @Composable get() = extendedColor(
+        light = Color(0xFFD32F2F),
+        dark = Color(0xFFE53935)
     )
 
 val LightColorsScheme = lightColorScheme(

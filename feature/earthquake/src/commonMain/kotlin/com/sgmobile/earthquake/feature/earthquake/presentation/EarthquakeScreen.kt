@@ -14,12 +14,11 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,8 +27,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquakes
-import com.sgmobile.earthquake.core.ui.components.SGAppBar
-import com.sgmobile.earthquake.core.ui.components.SGLoading
+import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
+import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
+import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.presentation.components.EarthquakeRowItem
 import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -47,7 +47,10 @@ internal fun EarthquakeScreen(
             SGAppBar(
                 screenTitle = stringResource(Res.string.earthquakes),
                 actions = {
-                    EarthquakeTopBarActions()
+                    EarthquakeTopBarActions(
+                        selectedMagnitude = uiState.selectedMagnitude,
+                        onIntent = viewModel::handleIntent
+                    )
                 }
             )
         },
@@ -88,28 +91,38 @@ private fun EarthquakeContent(
                 }
             }
     }
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = lazyListState,
-        contentPadding = PaddingValues(12.dp),
-    ) {
-        itemsIndexed(uiState.earhtquakeList) { index, item ->
-            EarthquakeRowItem(item)
 
-            if (index < uiState.earhtquakeList.size - 1) {
-                HorizontalDivider(
-                    thickness = 0.5.dp,
-                    modifier = Modifier.padding(vertical = 6.dp)
-                )
+    PullToRefreshBox(
+        isRefreshing = uiState.isPullToRefresh,
+        onRefresh = { onIntent(EarthquakeScreenIntent.Refresh(isPullToRefresh = true)) },
+        modifier = Modifier.fillMaxSize(),
+        state = rememberPullToRefreshState()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = lazyListState,
+            contentPadding = PaddingValues(16.dp),
+        ) {
+            itemsIndexed(uiState.earhtquakeList) { index, item ->
+                EarthquakeRowItem(item)
+
+                if (index < uiState.earhtquakeList.size - 1) {
+                    HorizontalDivider(
+                        thickness = 0.5.dp,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun EarthquakeTopBarActions() {
-    var selectedIndex by remember { mutableIntStateOf(0) }
-    val options = listOf("0+", "4+", "5+")
+private fun EarthquakeTopBarActions(
+    onIntent: (EarthquakeScreenIntent) -> Unit,
+    selectedMagnitude: MagnitudeThreshold
+) {
+    val options = MagnitudeThreshold.labels
 
     SingleChoiceSegmentedButtonRow {
         options.forEachIndexed { index, label ->
@@ -120,8 +133,12 @@ private fun EarthquakeTopBarActions() {
                 ),
                 contentPadding = PaddingValues(all = 0.dp),
                 icon = {},
-                onClick = { selectedIndex = index },
-                selected = index == selectedIndex,
+                onClick = {
+                    onIntent(
+                        EarthquakeScreenIntent.SelectMagnitude(MagnitudeThreshold.fromLabel(label))
+                    )
+                },
+                selected = label == selectedMagnitude.label,
                 label = {
                     Text(
                         text = label,
@@ -140,26 +157,32 @@ private fun EarthquakeContentPreview() {
     EarthquakeContent(
         uiState = EarthquakeUIState(
             isLoading = false,
+            isPullToRefresh = false,
             isEndReached = false,
+            selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
             earhtquakeList = listOf(
                 EarthquakeVo(
                     place = "San Francisco",
-                    magnitude = "5.2",
+                    magnitude = "2.5",
+                    magnitudeThreshold = MagnitudeThreshold.TWO_PLUS,
                     date = "19.10.2025 14:30"
                 ),
                 EarthquakeVo(
                     place = "San Francisco",
                     magnitude = "5.2",
+                    magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
                     date = "19.10.2025 14:30"
                 ),
                 EarthquakeVo(
                     place = "San Francisco",
-                    magnitude = "5.2",
+                    magnitude = "4.7",
+                    magnitudeThreshold = MagnitudeThreshold.FOUR_PLUS,
                     date = "19.10.2025 14:30"
                 ),
                 EarthquakeVo(
                     place = "San Francisco",
-                    magnitude = "5.2",
+                    magnitude = "8.2",
+                    magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
                     date = "19.10.2025 14:30"
                 )
             )

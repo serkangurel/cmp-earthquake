@@ -22,7 +22,7 @@ internal class GetUsgsEarthquakeStartTimeUseCase {
 
     operator fun invoke(): String {
         val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
-        val yesterdayDate = now.date.minus(DatePeriod(days = 1))
+        val yesterdayDate = now.date.minus(DatePeriod(days = 7))
         val yesterdayAtCurrentTime = yesterdayDate.atTime(now.time)
 
         val formatter = LocalDateTime.Format {

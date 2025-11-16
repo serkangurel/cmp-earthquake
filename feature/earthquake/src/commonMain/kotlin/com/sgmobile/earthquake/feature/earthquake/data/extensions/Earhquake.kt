@@ -3,6 +3,7 @@ package com.sgmobile.earthquake.feature.earthquake.data.extensions
 import com.sgmobile.earthquake.feature.earthquake.data.usgs.CoordinateListItem
 import com.sgmobile.earthquake.feature.earthquake.data.usgs.UsgsResponse
 import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -31,11 +32,13 @@ internal fun UsgsResponse?.toDomainList(): List<Earthquake> {
 
     return features.map { feature ->
         val place = feature.properties?.place.orEmpty()
-        val magnitude = feature.properties?.mag?.let { mag ->
-            // Format with up to one decimal without trailing ".0" if not needed
-            val rounded = kotlin.math.round(mag * 10.0) / 10.0
-            if (rounded % 1.0 == 0.0) rounded.toInt().toString() else rounded.toString()
-        } ?: ""
+        val magnitude = feature.properties?.mag ?: 0.0
+
+        val magnitudeThreshold = when (magnitude) {
+            in 0.0..<4.0 -> MagnitudeThreshold.TWO_PLUS
+            in 4.0..<5.0 -> MagnitudeThreshold.FOUR_PLUS
+            else -> MagnitudeThreshold.FIVE_PLUS
+        }
 
         val depthKm = feature.geometry?.coordinates
             ?.getOrNull(CoordinateListItem.Depth.index)
@@ -55,7 +58,8 @@ internal fun UsgsResponse?.toDomainList(): List<Earthquake> {
 
         Earthquake(
             place = place,
-            magnitude = magnitude,
+            magnitude = magnitude.formattedToTwoDecimals(),
+            magnitudeThreshold = magnitudeThreshold,
             depth = depthKm,
             date = dateStr
         )

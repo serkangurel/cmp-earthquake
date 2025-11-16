@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.map
-import com.sgmobile.earthquake.core.ui.components.SGAppBar
+import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

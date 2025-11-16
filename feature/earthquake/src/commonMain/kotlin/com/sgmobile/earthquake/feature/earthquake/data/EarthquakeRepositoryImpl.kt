@@ -6,6 +6,7 @@ import com.sgmobile.earthquake.feature.earthquake.data.usgs.UsgsApi
 import com.sgmobile.earthquake.feature.earthquake.domain.EarthquakeRepository
 import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
 import com.sgmobile.earthquake.feature.earthquake.domain.models.EarthquakeState
+import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,14 +27,18 @@ internal class EarthquakeRepositoryImpl(
     private var startTime: String = ""
     private var offset: Int = 1
     private var pageSize: Int = EarthquakeConstants.PAGE_SIZE
+    private var selectedMagnitude: MagnitudeThreshold = MagnitudeThreshold.TWO_PLUS
 
     override suspend fun refresh(
         startTime: String,
-        pageSize: Int
+        pageSize: Int,
+        selectedMagnitude: MagnitudeThreshold
     ): EarthquakeState {
         this.startTime = startTime
         this.pageSize = pageSize
         this.offset = 1
+        this.selectedMagnitude = selectedMagnitude
+
         _isEndReached.value = false
         _earthquakeFlow.value = emptyList()
 
@@ -47,11 +52,11 @@ internal class EarthquakeRepositoryImpl(
 
     private suspend fun fetchPage(reset: Boolean): EarthquakeState {
         _isRequestInFlight.value = true
-        //delay(500L)
         return usgsApi.getEarthquakes(
             starttime = startTime,
             offset = offset,
-            limit = pageSize
+            limit = pageSize,
+            minmagnitude = selectedMagnitude.value,
         ).fold(
             onSuccess = { response ->
                 val page = response.toDomainList()
@@ -65,11 +70,9 @@ internal class EarthquakeRepositoryImpl(
 
                 _earthquakeFlow.value = merged
 
-                // Update paging cursors
                 if (page.size < pageSize) {
                     _isEndReached.value = true
                 } else {
-                    // advance offset by the page size returned by API semantics
                     offset += pageSize
                 }
                 _isRequestInFlight.value = false

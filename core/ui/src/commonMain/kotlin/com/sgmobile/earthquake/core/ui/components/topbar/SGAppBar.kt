@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.core.ui.components
+package com.sgmobile.earthquake.core.ui.components.topbar
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
