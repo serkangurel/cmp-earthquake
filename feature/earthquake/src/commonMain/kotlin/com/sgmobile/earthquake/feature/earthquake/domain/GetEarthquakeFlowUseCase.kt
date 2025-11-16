@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class GetEarthquakeDataUseCase(
+internal class GetEarthquakeFlowUseCase(
     private val earthquakeRepository: EarthquakeRepository
 ) {
     operator fun invoke(): StateFlow<List<Earthquake>> {

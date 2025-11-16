@@ -15,6 +15,7 @@ internal fun List<Earthquake>.mapToUi(): EarthquakeUIState {
 
     return EarthquakeUIState(
         isLoading = false,
+        isEndReached = false,
         earhtquakeList = earhtquakeList
     )
 }

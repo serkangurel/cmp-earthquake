@@ -4,11 +4,13 @@ import com.sgmobile.earthquake.feature.earthquake.presentation.models.Earthquake
 
 internal data class EarthquakeUIState(
     val isLoading: Boolean,
+    val isEndReached: Boolean,
     val earhtquakeList: List<EarthquakeVo>
 ) {
     companion object Companion {
         val INITIAL = EarthquakeUIState(
             isLoading = false,
+            isEndReached = false,
             earhtquakeList = listOf()
         )
     }

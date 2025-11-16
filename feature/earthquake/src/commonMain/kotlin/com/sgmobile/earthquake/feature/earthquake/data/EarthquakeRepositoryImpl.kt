@@ -1,11 +1,11 @@
 package com.sgmobile.earthquake.feature.earthquake.data
 
+import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
 import com.sgmobile.earthquake.feature.earthquake.data.extensions.toDomainList
 import com.sgmobile.earthquake.feature.earthquake.data.usgs.UsgsApi
 import com.sgmobile.earthquake.feature.earthquake.domain.EarthquakeRepository
 import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
 import com.sgmobile.earthquake.feature.earthquake.domain.models.EarthquakeState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,16 +18,65 @@ internal class EarthquakeRepositoryImpl(
     private val _earthquakeFlow = MutableStateFlow<List<Earthquake>>(emptyList())
     override val earthquakeFlow: StateFlow<List<Earthquake>> = _earthquakeFlow.asStateFlow()
 
-    override suspend fun fetchUsgsEarthquakes(startTime: String): EarthquakeState {
-        delay(500L)
-        return usgsApi.getEarthquakes(startTime).fold(
+    private val _isEndReached = MutableStateFlow(false)
+    override val isEndReached: StateFlow<Boolean> = _isEndReached.asStateFlow()
+
+    private val _isRequestInFlight = MutableStateFlow(false)
+
+    private var startTime: String = ""
+    private var offset: Int = 1
+    private var pageSize: Int = EarthquakeConstants.PAGE_SIZE
+
+    override suspend fun refresh(
+        startTime: String,
+        pageSize: Int
+    ): EarthquakeState {
+        this.startTime = startTime
+        this.pageSize = pageSize
+        this.offset = 1
+        _isEndReached.value = false
+        _earthquakeFlow.value = emptyList()
+
+        return fetchPage(reset = true)
+    }
+
+    override suspend fun loadNextPage(): EarthquakeState {
+        if (_isEndReached.value || _isRequestInFlight.value) return EarthquakeState.Success
+        return fetchPage(reset = false)
+    }
+
+    private suspend fun fetchPage(reset: Boolean): EarthquakeState {
+        _isRequestInFlight.value = true
+        //delay(500L)
+        return usgsApi.getEarthquakes(
+            starttime = startTime,
+            offset = offset,
+            limit = pageSize
+        ).fold(
             onSuccess = { response ->
-                _earthquakeFlow.value = _earthquakeFlow.value.toMutableList().apply {
-                    addAll(response.toDomainList())
+                val page = response.toDomainList()
+
+                val existing = _earthquakeFlow.value
+                val merged = if (existing.isEmpty() || reset) {
+                    page
+                } else {
+                    existing + page
                 }
+
+                _earthquakeFlow.value = merged
+
+                // Update paging cursors
+                if (page.size < pageSize) {
+                    _isEndReached.value = true
+                } else {
+                    // advance offset by the page size returned by API semantics
+                    offset += pageSize
+                }
+                _isRequestInFlight.value = false
                 EarthquakeState.Success
             },
             onFailure = {
+                _isRequestInFlight.value = false
                 EarthquakeState.Error
             }
         )

@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.data.usgs
 
+import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Query
 
@@ -8,7 +9,7 @@ interface UsgsApi {
     suspend fun getEarthquakes(
         @Query("starttime") starttime: String,
         @Query("offset") offset: Int = 1,
-        @Query("limit") limit: Int = 30,
+        @Query("limit") limit: Int = EarthquakeConstants.PAGE_SIZE,
         @Query("format") format: String = "geojson",
         @Query("orderby") orderby: String = "time"
     ): Result<UsgsResponse>

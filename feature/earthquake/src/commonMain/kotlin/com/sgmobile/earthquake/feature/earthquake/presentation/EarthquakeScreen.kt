@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -14,10 +15,12 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,6 +32,7 @@ import com.sgmobile.earthquake.core.ui.components.SGAppBar
 import com.sgmobile.earthquake.core.ui.components.SGLoading
 import com.sgmobile.earthquake.feature.earthquake.presentation.components.EarthquakeRowItem
 import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -56,7 +60,10 @@ internal fun EarthquakeScreen(
                     bottom = LocalNavScaffoldPadding.current.calculateBottomPadding()
                 ),
         ) {
-            EarthquakeContent(uiState)
+            EarthquakeContent(
+                uiState = uiState,
+                onIntent = viewModel::handleIntent
+            )
             if (uiState.isLoading) {
                 SGLoading()
             }
@@ -65,9 +72,25 @@ internal fun EarthquakeScreen(
 }
 
 @Composable
-private fun EarthquakeContent(uiState: EarthquakeUIState) {
+private fun EarthquakeContent(
+    uiState: EarthquakeUIState,
+    onIntent: (EarthquakeScreenIntent) -> Unit,
+) {
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(uiState.earhtquakeList) {
+        snapshotFlow {
+            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+        }.distinctUntilChanged()
+            .collect { lastVisibleIndex ->
+                if (lastVisibleIndex == uiState.earhtquakeList.lastIndex) {
+                    onIntent(EarthquakeScreenIntent.LoadMore)
+                }
+            }
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
+        state = lazyListState,
         contentPadding = PaddingValues(12.dp),
     ) {
         itemsIndexed(uiState.earhtquakeList) { index, item ->
@@ -117,6 +140,7 @@ private fun EarthquakeContentPreview() {
     EarthquakeContent(
         uiState = EarthquakeUIState(
             isLoading = false,
+            isEndReached = false,
             earhtquakeList = listOf(
                 EarthquakeVo(
                     place = "San Francisco",
@@ -139,6 +163,7 @@ private fun EarthquakeContentPreview() {
                     date = "19.10.2025 14:30"
                 )
             )
-        )
+        ),
+        onIntent = {}
     )
 }
