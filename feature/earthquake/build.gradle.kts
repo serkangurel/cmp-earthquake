@@ -20,6 +20,15 @@ kotlin {
         namespace = "com.sgmobile.earthquake.feature.earthquake"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+
+        withHostTestBuilder {
+        }
+
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
     }
 
     // For iOS targets, this is also where you should
@@ -98,6 +107,14 @@ kotlin {
                 implementation(libs.compose.components.uiToolingPreview)
                 implementation("androidx.emoji2:emoji2:1.6.0")
                 implementation("androidx.customview:customview-poolingcontainer:1.1.0")
+            }
+        }
+
+        getByName("androidDeviceTest") {
+            dependencies {
+                implementation(libs.androidx.runner)
+                implementation(libs.androidx.core)
+                implementation(libs.androidx.test.junit)
             }
         }
 
