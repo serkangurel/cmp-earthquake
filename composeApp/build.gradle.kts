@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
@@ -16,7 +17,7 @@ kotlin {
         compilations.all {
             compileTaskProvider.configure {
                 compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_11)
+                    jvmTarget.set(JvmTarget.JVM_17)
                 }
             }
         }
@@ -82,6 +83,8 @@ ksp {
 }
 
 android {
+    val localProperties = gradleLocalProperties(rootDir, providers)
+
     namespace = "com.sgmobile.earthquake"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
@@ -97,14 +100,40 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file(localProperties.getProperty("RELEASE_STORE_FILE"))
+            storePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD")
+            keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS")
+            keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD")
         }
     }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+        }
+
+        create("prod") {
+            dimension = "environment"
+        }
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
