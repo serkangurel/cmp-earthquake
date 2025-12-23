@@ -23,18 +23,33 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
-      - name: Decode Keystore
-        id: decode_keystore
-        uses: timheuer/base64-to-file@v1
-        with:
-          fileName: "keystore"
-          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
+#      - name: Decode Keystore
+#        id: decode_keystore
+#        uses: timheuer/base64-to-file@v1
+#        with:
+#          fileName: "keystore"
+#          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
+
+      - name: Prepare Android signing
+        run: |
+          # Recreate keystore in the workspace
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > keystore.jks
+          
+          # Write the properties file Gradle expects
+          {
+          echo "RELEASE_STORE_FILE=$GITHUB_WORKSPACE/keystore.jks"
+          echo "RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }}"
+          echo "RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEYSTORE_ALIAS }}"
+          echo "RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
+          } >> local.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
 
       - name: Build APK
-        run: ./gradlew composeApp:assembleDevRelease -Pandroid.injected.signing.store.file=${{ steps.decode_keystore.outputs.filePath }} -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEYSTORE_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: ./gradlew composeApp:assembleDevRelease
 
       - name: Build AAB
-        run: ./gradlew composeApp:bundleDevRelease -Pandroid.injected.signing.store.file=${{ steps.decode_keystore.outputs.filePath }} -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEYSTORE_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: ./gradlew composeApp:bundleDevRelease
 
       - name: Rename APK
         run: |
