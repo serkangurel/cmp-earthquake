@@ -1,0 +1,65 @@
+name: Android PR Build (APK + AAB)
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-android:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Decode Keystore
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1
+        with:
+          fileName: "keystore"
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
+
+      - name: Build APK
+        run: ./gradlew composeApp:assembleDevRelease -Pandroid.injected.signing.store.file=${{ steps.decode_keystore.outputs.filePath }} -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEYSTORE_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - name: Build AAB
+        run: ./gradlew composeApp:bundleDevRelease -Pandroid.injected.signing.store.file=${{ steps.decode_keystore.outputs.filePath }} -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEYSTORE_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - name: Rename APK
+        run: |
+          PR_ID=${{ github.event.pull_request.number }}
+          APK_PATH="composeApp/build/outputs/apk/dev/release/composeApp-dev-release.apk"
+          NEW_APK_NAME="composeApp/build/outputs/apk/dev/release/PR${PR_ID}-dev-release.apk"
+          mv "$APK_PATH" "$NEW_APK_NAME"
+          echo "NEW_APK_PATH=$NEW_APK_NAME" >> $GITHUB_ENV
+
+      - name: Rename Bundle
+        run: |
+          PR_ID=${{ github.event.pull_request.number }}
+          AAB_PATH="composeApp/build/outputs/bundle/devRelease/composeApp-dev-release.aab"
+          NEW_AAB_NAME="composeApp/build/outputs/bundle/devRelease/PR${PR_ID}-dev-release.aab"
+          mv "$AAB_PATH" "$NEW_AAB_NAME"
+          echo "NEW_AAB_PATH=$NEW_AAB_NAME" >> $GITHUB_ENV
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PR-${{ github.event.pull_request.number }}
+          path: ${{ env.NEW_APK_PATH }}
+
+      - name: Upload Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: PR-${{ github.event.pull_request.number }}
+          path: ${{ env.NEW_AAB_PATH }}
