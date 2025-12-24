@@ -1,0 +1,54 @@
+name: Dev PR Pipeline
+
+on:
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  build-android:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: 'gradle'
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Prepare Android signing
+        run: |
+          # Recreate keystore in the workspace
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > keystore.jks
+          
+          # Write the properties file Gradle expects
+          {
+          echo "RELEASE_STORE_FILE=$GITHUB_WORKSPACE/keystore.jks"
+          echo "RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }}"
+          echo "RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEYSTORE_ALIAS }}"
+          echo "RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
+          } >> local.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
+
+      - name: Build APK
+        run: ./gradlew composeApp:assembleDevRelease -PciVersionCode=${{ github.run_number }}
+
+      - name: Build AAB
+        run: ./gradlew composeApp:bundleDevRelease -PciVersionCode=${{ github.run_number }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+
+      - name: Upload Bundle
+        uses: actions/upload-artifact@v4
