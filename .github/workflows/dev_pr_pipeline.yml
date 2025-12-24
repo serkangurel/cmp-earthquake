@@ -7,9 +7,122 @@ on:
   workflow_dispatch: # Allows manual triggering
 
 jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    permissions: read-all
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: 'gradle'
+
+      - name: Grant Gradle wrapper execute permission
+        run: chmod +x ./gradlew
+
+      - name: Prepare Android signing
+        run: |
+          # Recreate keystore in the workspace
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > keystore.jks
+          
+          # Write the properties file Gradle expects
+          {
+          echo "RELEASE_STORE_FILE=$GITHUB_WORKSPACE/keystore.jks"
+          echo "RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }}"
+          echo "RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEYSTORE_ALIAS }}"
+          echo "RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
+          } >> local.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
+
+      # Run all unit tests across modules
+      - name: Run unit tests
+        run: ./gradlew allTests
+
+      - name: Upload unit test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: |
+            **/build/reports/tests/**
+            **/build/test-results/**
+
+  ui-tests:
+    name: UI Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    permissions: read-all
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: 'gradle'
+
+      - name: Grant Gradle wrapper execute permission
+        run: chmod +x ./gradlew
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Prepare Android signing
+        run: |
+          # Recreate keystore in the workspace
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > keystore.jks
+          
+          # Write the properties file Gradle expects
+          {
+          echo "RELEASE_STORE_FILE=$GITHUB_WORKSPACE/keystore.jks"
+          echo "RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }}"
+          echo "RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEYSTORE_ALIAS }}"
+          echo "RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
+          } >> local.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
+
+      # Start emulator and run all instrumented tests across all modules
+      - name: Run connectedAndroidTest on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7_pro
+          script: ./gradlew connectedAndroidTest
+
+      # Always upload test reports for troubleshooting
+      - name: Upload Android test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: connected-android-test-reports
+          path: |
+            **/build/reports/androidTests/**
+            **/build/outputs/androidTest-results/**
+
   build-android:
     permissions: write-all
     runs-on: ubuntu-latest
+    needs: ui-tests
     steps:
       - uses: actions/checkout@v4
         with:
@@ -64,7 +177,7 @@ jobs:
           path: ${{ steps.apk.outputs.path }}
 
       # Resolve AAB path and name
-      - name: Resolve APK filename
+      - name: Resolve AAB filename
         id: aab
         shell: bash
         run: |
