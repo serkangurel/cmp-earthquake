@@ -115,6 +115,8 @@ kotlin {
                 implementation(libs.androidx.runner)
                 implementation(libs.androidx.core)
                 implementation(libs.androidx.test.junit)
+                implementation(libs.compose.ui.test)
+                implementation(libs.compose.ui.test.junit4)
             }
         }
 
