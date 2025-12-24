@@ -47,12 +47,34 @@ jobs:
       - name: Build AAB
         run: ./gradlew composeApp:bundleDevRelease -PciVersionCode=${{ github.run_number }}
 
+      # Resolve APK path and name
+      - name: Resolve APK filename
+        id: apk
+        shell: bash
+        run: |
+          set -eo pipefail
+          APK_PATH=$(ls composeApp/build/outputs/apk/dev/release/*.apk | head -n1)
+          echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "$APK_PATH")" >> "$GITHUB_OUTPUT"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          path: composeApp/build/outputs/apk/dev/release/*.apk
+          name: ${{ steps.apk.outputs.name }}
+          path: ${{ steps.apk.outputs.path }}
+
+      # Resolve AAB path and name
+      - name: Resolve APK filename
+        id: aab
+        shell: bash
+        run: |
+          set -eo pipefail
+          AAB_PATH=$(ls composeApp/build/outputs/bundle/devRelease/*.aab | head -n1)
+          echo "path=$AAB_PATH" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "$AAB_PATH")" >> "$GITHUB_OUTPUT"
 
       - name: Upload Bundle
         uses: actions/upload-artifact@v4
         with:
-          path: composeApp/build/outputs/bundle/devRelease/*.aab
+          name: ${{ steps.aab.outputs.name }}
+          path: ${{ steps.aab.outputs.path }}
