@@ -13,22 +13,24 @@ jobs:
     permissions: read-all
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
+      # Common setup
+      - &checkout
+        uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - &setup-java
+        name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'zulu'
           cache: 'gradle'
 
-      - name: Grant Gradle wrapper execute permission
+      - &chmod-gradle
+        name: Grant Gradle wrapper execute permission
         run: chmod +x ./gradlew
 
-      - name: Prepare Android signing
+      - &prepare-android-signing
+        name: Prepare Android signing
         run: |
           # Recreate keystore in the workspace
           echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > keystore.jks
@@ -63,41 +65,16 @@ jobs:
     permissions: read-all
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'zulu'
-          cache: 'gradle'
-
-      - name: Grant Gradle wrapper execute permission
-        run: chmod +x ./gradlew
+      - *checkout
+      - *setup-java
+      - *chmod-gradle
+      - *prepare-android-signing
 
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-
-      - name: Prepare Android signing
-        run: |
-          # Recreate keystore in the workspace
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > keystore.jks
-          
-          # Write the properties file Gradle expects
-          {
-          echo "RELEASE_STORE_FILE=$GITHUB_WORKSPACE/keystore.jks"
-          echo "RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }}"
-          echo "RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEYSTORE_ALIAS }}"
-          echo "RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
-          } >> local.properties
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
 
       # Start emulator and run all instrumented tests across all modules
       - name: Run connectedAndroidTest on emulator
@@ -124,35 +101,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: ui-tests
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'zulu'
-          cache: 'gradle'
-
-      - name: Change wrapper permissions
-        run: chmod +x ./gradlew
-
-      - name: Prepare Android signing
-        run: |
-          # Recreate keystore in the workspace
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > keystore.jks
-          
-          # Write the properties file Gradle expects
-          {
-          echo "RELEASE_STORE_FILE=$GITHUB_WORKSPACE/keystore.jks"
-          echo "RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }}"
-          echo "RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEYSTORE_ALIAS }}"
-          echo "RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
-          } >> local.properties
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
+      - *checkout
+      - *setup-java
+      - *chmod-gradle
+      - *prepare-android-signing
 
       - name: Build APK
         run: ./gradlew composeApp:assembleDevRelease -PciVersionCode=${{ github.run_number }}
