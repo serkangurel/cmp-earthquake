@@ -41,6 +41,7 @@ kotlin {
         iosMain.dependencies {
         }
         commonMain.dependencies {
+
             implementation(projects.core.resource)
             implementation(projects.core.ui)
             implementation(projects.core.network)
