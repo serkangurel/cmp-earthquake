@@ -5,7 +5,6 @@
 name: Dev PR Pipeline
 
 on:
-  workflow_dispatch: # Also allow manual runs from the Actions tab
   pull_request:
     branches:
       - develop # Trigger when a PR targets the develop branch
