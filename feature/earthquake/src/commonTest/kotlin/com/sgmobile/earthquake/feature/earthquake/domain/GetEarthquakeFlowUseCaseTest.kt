@@ -18,7 +18,7 @@ internal class GetEarthquakeFlowUseCaseTest {
     }
 
     @Test
-    fun `invoke should return earthquake flow from repository`() {
+    fun invokeShouldReturnEarthquakeFlowFromRepository() {
         // Given
         val expectedEarthquakes = listOf(
             Earthquake(
