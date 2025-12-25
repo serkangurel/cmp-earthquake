@@ -1,0 +1,122 @@
+## Manually triggered workflow to build Android artifacts (APK & AAB)
+## for selected branch and environment, then upload to GitHub artifacts and Firebase App Distribution.
+name: Manual Build Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Git branch to build'
+        required: true
+        type: choice
+        options:
+          - develop
+          - main
+        default: develop
+      environment:
+        description: 'Build variant to assemble'
+        required: true
+        type: choice
+        options:
+          - devRelease
+          - prodRelease
+        default: devRelease
+      release_notes:
+        description: 'Release Notes'
+        required: true
+        type: string
+
+jobs:
+  build-android:
+    name: Build Android (manual)
+    runs-on: ubuntu-latest
+    permissions: write-all
+    # Map the chosen variant to GitHub environment for secrets/policies
+    environment: ${{ inputs.environment == 'devRelease' && 'Development' || 'Production' }}
+    env:
+      # Helper environment values derived from the selected inputs
+      VARIANT: ${{ inputs.environment == 'devRelease' && 'DevRelease' || 'ProdRelease' }}
+      FLAVOR: ${{ inputs.environment == 'devRelease' && 'dev' || 'prod' }}
+      BUNDLE_DIR: ${{ inputs.environment }} # devRelease or prodRelease
+
+    steps:
+      - &checkout
+        name: Checkout selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - &setup-java
+        name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: 'gradle'
+
+      - &chmod-gradle
+        name: Grant Gradle wrapper execute permission
+        run: chmod +x ./gradlew
+
+      - &prepare-android-signing
+        name: Prepare Android signing
+        run: |
+          # Recreate keystore in the workspace
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > keystore.jks
+
+          # Write the properties file Gradle expects
+          {
+          echo "RELEASE_STORE_FILE=$GITHUB_WORKSPACE/keystore.jks"
+          echo "RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_STORE_PASSWORD }}"
+          echo "RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEYSTORE_ALIAS }}"
+          echo "RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
+          } >> local.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
+
+      - name: Build APK
+        run: ./gradlew composeApp:assemble${{ env.VARIANT }} -PciVersionCode=${{ github.run_number }}
+
+      - name: Build AAB
+        run: ./gradlew composeApp:bundle${{ env.VARIANT }} -PciVersionCode=${{ github.run_number }}
+
+      # Resolve APK path and name depending on selected variant
+      - name: Resolve APK filename
+        id: apk
+        shell: bash
+        run: |
+          set -eo pipefail
+          APK_PATH=$(ls composeApp/build/outputs/apk/${{ env.FLAVOR }}/release/*.apk | head -n1)
+          echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "$APK_PATH")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.apk.outputs.name }}
+          path: ${{ steps.apk.outputs.path }}
+
+      # Resolve AAB path and name depending on selected variant
+      - name: Resolve AAB filename
+        id: aab
+        shell: bash
+        run: |
+          set -eo pipefail
+          AAB_PATH=$(ls composeApp/build/outputs/bundle/${{ env.BUNDLE_DIR }}/*.aab | head -n1)
+          echo "path=$AAB_PATH" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "$AAB_PATH")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.aab.outputs.name }}
+          path: ${{ steps.aab.outputs.path }}
+
+      - name: Upload APK to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
+          file: ${{ steps.apk.outputs.path }}
+          releaseNotes: ${{ inputs.release_notes }}
