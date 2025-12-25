@@ -1,10 +1,14 @@
+## CI workflow for pull requests targeting the `develop` branch.
+## This pipeline runs unit tests, then UI tests on an Android emulator,
+## and finally builds signed Dev release artifacts (APK and AAB) that are
+## uploaded as workflow artifacts.
 name: Dev PR Pipeline
 
 on:
   pull_request:
     branches:
-      - develop
-  workflow_dispatch: # Allows manual triggering
+      - develop # Trigger when a PR targets the develop branch
+  workflow_dispatch: # Also allow manual runs from the Actions tab
 
 jobs:
   unit-tests:
@@ -16,10 +20,14 @@ jobs:
     steps:
       # Common setup
       - &checkout
+        # actions/checkout: checks out the repository code into the runner so
+        # subsequent steps (Gradle, scripts) can access the source files.
         uses: actions/checkout@v4
 
       - &setup-java
         name: Set up JDK
+        # actions/setup-java: installs and configures a JDK and adds it to PATH.
+        # "cache: gradle" enables built‑in Gradle dependency caching between runs.
         uses: actions/setup-java@v4
         with:
           java-version: '17'
@@ -28,6 +36,7 @@ jobs:
 
       - &chmod-gradle
         name: Grant Gradle wrapper execute permission
+        # Ensure the Gradle wrapper script is executable on Linux runners when running ./gradlew.
         run: chmod +x ./gradlew
 
       - &prepare-android-signing
@@ -44,14 +53,20 @@ jobs:
           echo "RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
           } >> local.properties
         env:
+          # Encrypted keystore (base64) stored in repo/organization secrets.
+          # The decoded file is used for signing during build steps.
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
 
       # Run all unit tests across modules
       - name: Run unit tests
+        # Executes all unit tests across modules. Uses Gradle's default test tasks
+        # aggregated via the `allTests` task defined in the project.
         run: ./gradlew allTests
 
       - name: Upload unit test reports
         if: always()
+        # actions/upload-artifact: uploads files from the runner so they can be
+        # downloaded from the workflow run page for troubleshooting.
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-reports
@@ -73,6 +88,8 @@ jobs:
       - *prepare-android-signing
 
       - name: Enable KVM
+        # Enable hardware acceleration for the Android emulator (KVM) to speed up
+        # boot and test execution times on the Linux runner.
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
@@ -80,6 +97,9 @@ jobs:
 
       # Start emulator and run all instrumented tests across all modules
       - name: Run connectedAndroidTest on emulator
+        # reactivecircus/android-emulator-runner: spins up an Android emulator
+        # with the specified API/target and runs a script within that context.
+        # Here it executes Gradle's connectedAndroidTest to run instrumentation tests.
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -91,6 +111,8 @@ jobs:
       # Always upload test reports for troubleshooting
       - name: Upload Android test reports
         if: always()
+        # Upload instrumentation test reports regardless of success/failure so
+        # they are available for inspection in the workflow run artifacts.
         uses: actions/upload-artifact@v4
         with:
           name: connected-android-test-reports
@@ -110,9 +132,12 @@ jobs:
       - *prepare-android-signing
 
       - name: Build APK
+        # Build the Dev release APK for Android using a CI-specific versionCode
+        # derived from the GitHub run number to ensure uniqueness.
         run: ./gradlew composeApp:assembleDevRelease -PciVersionCode=${{ github.run_number }}
 
       - name: Build AAB
+        # Build the Dev release Android App Bundle for distribution/testing.
         run: ./gradlew composeApp:bundleDevRelease -PciVersionCode=${{ github.run_number }}
 
       # Resolve APK path and name
@@ -121,11 +146,13 @@ jobs:
         shell: bash
         run: |
           set -eo pipefail
+          # Find the first generated APK and expose its path and filename via step outputs.
           APK_PATH=$(ls composeApp/build/outputs/apk/dev/release/*.apk | head -n1)
           echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
           echo "name=$(basename "$APK_PATH")" >> "$GITHUB_OUTPUT"
 
       - name: Upload APK
+        # Upload the built APK as a workflow artifact for later download.
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.apk.outputs.name }}
@@ -142,6 +169,7 @@ jobs:
           echo "name=$(basename "$AAB_PATH")" >> "$GITHUB_OUTPUT"
 
       - name: Upload Bundle
+        # Upload the built AAB as a workflow artifact for testing or distribution.
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.aab.outputs.name }}
