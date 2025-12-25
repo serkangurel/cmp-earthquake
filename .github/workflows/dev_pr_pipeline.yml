@@ -68,7 +68,7 @@ jobs:
       - *checkout
       - *setup-java
       - *chmod-gradle
-#      - *prepare-android-signing
+      - *prepare-android-signing
 
       - name: Enable KVM
         run: |
