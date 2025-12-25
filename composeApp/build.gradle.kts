@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktorfit)
+    alias(libs.plugins.google.services)
 }
 
 kotlin {
@@ -84,6 +85,9 @@ ksp {
 
 android {
     val localProperties = gradleLocalProperties(rootDir, providers)
+    val ciVersionCode = (project.findProperty("ciVersionCode") as? String)?.toIntOrNull()
+    val versCode = ciVersionCode ?: 1
+    val versName = if (ciVersionCode != null) "1.0.$ciVersionCode" else "1.0.0"
 
     namespace = "com.sgmobile.earthquake"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -92,8 +96,8 @@ android {
         applicationId = "com.sgmobile.earthquake"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = versCode
+        versionName = versName
     }
     packaging {
         resources {
@@ -108,6 +112,10 @@ android {
             keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS")
             keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD")
         }
+        setProperty(
+            "archivesBaseName",
+            "CmpEarthquake-v$versName-($versCode)"
+        )
     }
     buildTypes {
         getByName("release") {
