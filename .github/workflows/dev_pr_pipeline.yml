@@ -5,10 +5,10 @@
 name: Dev PR Pipeline
 
 on:
+  workflow_dispatch: # Also allow manual runs from the Actions tab
   pull_request:
     branches:
       - develop # Trigger when a PR targets the develop branch
-  workflow_dispatch: # Also allow manual runs from the Actions tab
 
 jobs:
   unit-tests:
@@ -174,3 +174,11 @@ jobs:
         with:
           name: ${{ steps.aab.outputs.name }}
           path: ${{ steps.aab.outputs.path }}
+
+      - name: Upload APK to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
+          file: ${{ steps.apk.outputs.path }}

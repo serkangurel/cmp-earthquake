@@ -12,4 +12,5 @@ plugins {
     alias(libs.plugins.ktorfit) apply false
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.androidLint) apply false
+    alias(libs.plugins.google.services) apply false
 }

@@ -26,6 +26,8 @@ mongodbDriverBom = "5.6.1"
 kotlinStdlib = "2.2.21"
 runner = "1.7.0"
 core = "1.7.0"
+google-services = "4.4.4"
+firebaseBom = "34.7.0"
 
 #compose
 compose-multiplatform = "1.10.0-beta01"
@@ -96,6 +98,10 @@ compose-ui-test-junit4 = { module = "org.jetbrains.compose.ui:ui-test-junit4", v
 compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
 compose-materialIconsExtended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-materialIconsExtended" }
 
+#firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-appdistribution = { module = "com.google.firebase:firebase-appdistribution" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -109,3 +115,4 @@ ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
