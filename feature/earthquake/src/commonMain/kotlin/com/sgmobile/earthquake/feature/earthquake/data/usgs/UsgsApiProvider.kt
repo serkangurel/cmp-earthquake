@@ -1,22 +1,25 @@
 package com.sgmobile.earthquake.feature.earthquake.data.usgs
 
 import com.sgmobile.earthquake.core.network.NetworkConstants
-import de.jensklingenberg.ktorfit.Ktorfit
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.defaultRequest
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Single
 
 @Named
-annotation class KtorfitUsgs
+annotation class UsgsHttpClient
 
 @Single
-@KtorfitUsgs
-fun provideKtorfitForUsgs(
-    baseKtorfitBuilder: Ktorfit.Builder
-): Ktorfit = baseKtorfitBuilder.apply {
-    baseUrl(NetworkConstants.BASE_URL_USGS)
-}.build()
+@UsgsHttpClient
+fun provideUsgsHttpClient(
+    httpClient: HttpClient
+): HttpClient = httpClient.config {
+    defaultRequest {
+        url(NetworkConstants.BASE_URL_USGS)
+    }
+}
 
 @Single
 fun provideUsgsApi(
-    @KtorfitUsgs ktorfit: Ktorfit
-): UsgsApi = ktorfit.createUsgsApi()
+    @UsgsHttpClient httpClient: HttpClient
+): UsgsApi = UsgsApi(httpClient)

@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.ktorfit)
     alias(libs.plugins.google.services)
 }
 
@@ -69,7 +68,6 @@ kotlin {
             api(libs.koin.annotations)
 
             implementation(libs.napier)
-            implementation(libs.ktorfit)
             implementation(libs.kotlinx.datetime)
         }
     }
@@ -147,13 +145,6 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
-    with(libs.ktorfit.ksp) {
-        add("kspCommonMainMetadata", this)
-        add("kspAndroid", this)
-        add("kspIosX64", this)
-        add("kspIosArm64", this)
-        add("kspIosSimulatorArm64", this)
-    }
     with(libs.koin.ksp.compiler) {
         add("kspCommonMainMetadata", this)
         add("kspAndroid", this)
