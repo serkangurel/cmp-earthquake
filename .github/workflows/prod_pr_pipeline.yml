@@ -115,11 +115,11 @@ jobs:
       - name: Build APK
         # Build the Prod release APK for Android using a CI-specific versionCode
         # derived from the GitHub run number to ensure uniqueness.
-        run: ./gradlew composeApp:assembleProdRelease -PciVersionCode=${{ github.run_number }}
+        run: ./gradlew shared:assembleProdRelease -PciVersionCode=${{ github.run_number }}
 
       - name: Build AAB
         # Build the Prod release Android App Bundle for distribution/testing.
-        run: ./gradlew composeApp:bundleProdRelease -PciVersionCode=${{ github.run_number }}
+        run: ./gradlew shared:bundleProdRelease -PciVersionCode=${{ github.run_number }}
 
       # Resolve APK path and name
       - name: Resolve APK filename
@@ -128,7 +128,7 @@ jobs:
         run: |
           set -eo pipefail
           # Find the first generated APK and expose its path and filename via step outputs.
-          APK_PATH=$(ls composeApp/build/outputs/apk/prod/release/*.apk | head -n1)
+          APK_PATH=$(ls shared/build/outputs/apk/prod/release/*.apk | head -n1)
           echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
           echo "name=$(basename "$APK_PATH")" >> "$GITHUB_OUTPUT"
 
@@ -144,7 +144,7 @@ jobs:
         shell: bash
         run: |
           set -eo pipefail
-          AAB_PATH=$(ls composeApp/build/outputs/bundle/prodRelease/*.aab | head -n1)
+          AAB_PATH=$(ls shared/build/outputs/bundle/prodRelease/*.aab | head -n1)
           echo "path=$AAB_PATH" >> "$GITHUB_OUTPUT"
           echo "name=$(basename "$AAB_PATH")" >> "$GITHUB_OUTPUT"
 

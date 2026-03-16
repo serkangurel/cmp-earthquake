@@ -10,7 +10,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.sgmobile.earthquake.composeapp"
+        namespace = "com.sgmobile.earthquake.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
     }
 
@@ -19,7 +19,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "Shared"
             isStatic = true
         }
     }

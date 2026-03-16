@@ -23,7 +23,7 @@ plugins {
 }
 
 include(":androidApp")
-include(":composeApp")
+include(":shared")
 include(":server")
 include(":core:network")
 include(":core:ui")
