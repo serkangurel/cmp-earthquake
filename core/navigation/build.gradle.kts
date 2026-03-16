@@ -16,7 +16,6 @@ kotlin {
     android {
         namespace = "com.sgmobile.earthquake.core.navigation"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
     // For iOS targets, this is also where you should
