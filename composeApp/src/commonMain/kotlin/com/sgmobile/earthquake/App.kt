@@ -9,10 +9,8 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.aakira.napier.log
 import org.koin.compose.KoinApplication
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.logger.Level
 
-@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App(
     darkTheme: Boolean,
