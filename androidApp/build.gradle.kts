@@ -36,10 +36,6 @@ android {
             keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS")
             keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD")
         }
-//        setProperty(
-//            "archivesBaseName",
-//            "CmpEarthquake-v$versName-($versCode)"
-//        )
     }
     buildTypes {
         getByName("release") {
@@ -67,6 +63,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+base {
+    archivesName.set("CmpEarthquake-v$versName-($versCode)")
 }
 
 kotlin {
