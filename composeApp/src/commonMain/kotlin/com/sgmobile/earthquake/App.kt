@@ -8,8 +8,9 @@ import com.sgmobile.earthquake.di.getKoinConfiguration
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.aakira.napier.log
-import org.koin.compose.KoinMultiplatformApplication
+import org.koin.compose.KoinApplication
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.logger.Level
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
@@ -17,20 +18,21 @@ fun App(
     darkTheme: Boolean,
     dynamicColor: Boolean
 ) {
-    KoinMultiplatformApplication(
-        config = getKoinConfiguration()
-    ) {
-        AppTheme(
-            darkTheme = darkTheme,
-            dynamicColor = dynamicColor
-        ) {
-            SetSystemBarsLightAppearance(
-                isAppearanceLightStatusBars = darkTheme,
-                isAppearanceLightNavigationBars = !darkTheme
-            )
-            SGNavHost()
-        }
-    }
+    KoinApplication(
+        configuration = getKoinConfiguration(),
+        logLevel = Level.INFO,
+        content = {
+            AppTheme(
+                darkTheme = darkTheme,
+                dynamicColor = dynamicColor
+            ) {
+                SetSystemBarsLightAppearance(
+                    isAppearanceLightStatusBars = darkTheme,
+                    isAppearanceLightNavigationBars = !darkTheme
+                )
+                SGNavHost()
+            }
+        })
 }
 
 fun appInit() {

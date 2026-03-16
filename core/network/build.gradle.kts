@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -56,14 +56,7 @@ kotlin {
                 // Add KMP dependencies here
                 implementation(libs.koin.core)
                 api(libs.koin.annotations)
-
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.json)
-                implementation(libs.ktor.client.logging)
-                implementation(libs.ktor.client.serialization)
-                implementation(libs.ktor.client.content.negotiation)
-                implementation(libs.ktor.serialization.kotlinx.json)
-
+                implementation(libs.bundles.ktor.client)
                 implementation(libs.napier)
             }
         }
@@ -94,27 +87,4 @@ kotlin {
             }
         }
     }
-//    sourceSets.named("commonMain").configure {
-//        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-//    }
 }
-
-ksp {
-    arg("KOIN_CONFIG_CHECK", "true")
-}
-
-dependencies {
-    with(libs.koin.ksp.compiler) {
-        add("kspCommonMainMetadata", this)
-        add("kspAndroid", this)
-        add("kspIosX64", this)
-        add("kspIosArm64", this)
-        add("kspIosSimulatorArm64", this)
-    }
-}
-
-//project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-//    if (name != "kspCommonMainKotlinMetadata") {
-//        dependsOn("kspCommonMainKotlinMetadata")
-//    }
-//}

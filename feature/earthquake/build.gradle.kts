@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.androidLint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -82,6 +82,7 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel.navigation)
                 api(libs.koin.annotations)
 
+                implementation(libs.bundles.ktor.client)
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.datetime)
             }
@@ -126,33 +127,9 @@ kotlin {
             }
         }
     }
-//    sourceSets.named("commonMain").configure {
-//        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-//    }
-}
-
-ksp {
-    arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
-    arg("KOIN_CONFIG_CHECK", "true")
-}
-
-dependencies {
-    with(libs.koin.ksp.compiler) {
-        add("kspCommonMainMetadata", this)
-        add("kspAndroid", this)
-        add("kspIosX64", this)
-        add("kspIosArm64", this)
-        add("kspIosSimulatorArm64", this)
-    }
 }
 
 compose.resources {
     publicResClass = false
     generateResClass = never
 }
-
-//project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-//    if (name != "kspCommonMainKotlinMetadata") {
-//        dependsOn("kspCommonMainKotlinMetadata")
-//    }
-//}
