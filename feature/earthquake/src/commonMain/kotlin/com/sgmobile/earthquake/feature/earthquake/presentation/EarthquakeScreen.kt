@@ -21,13 +21,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquakes
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
+import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
+import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
 import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.presentation.components.EarthquakeRowItem
@@ -151,42 +152,44 @@ private fun EarthquakeTopBarActions(
 }
 
 
-@Preview(showBackground = true)
+@PreviewThemes
 @Composable
 private fun EarthquakeContentPreview() {
-    EarthquakeContent(
-        uiState = EarthquakeUIState(
-            isLoading = false,
-            isPullToRefresh = false,
-            isEndReached = false,
-            selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
-            earhtquakeList = listOf(
-                EarthquakeVo(
-                    place = "San Francisco",
-                    magnitude = "2.5",
-                    magnitudeThreshold = MagnitudeThreshold.TWO_PLUS,
-                    date = "19.10.2025 14:30"
-                ),
-                EarthquakeVo(
-                    place = "San Francisco",
-                    magnitude = "5.2",
-                    magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
-                    date = "19.10.2025 14:30"
-                ),
-                EarthquakeVo(
-                    place = "San Francisco",
-                    magnitude = "4.7",
-                    magnitudeThreshold = MagnitudeThreshold.FOUR_PLUS,
-                    date = "19.10.2025 14:30"
-                ),
-                EarthquakeVo(
-                    place = "San Francisco",
-                    magnitude = "8.2",
-                    magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
-                    date = "19.10.2025 14:30"
+    SGPreview {
+        EarthquakeContent(
+            uiState = EarthquakeUIState(
+                isLoading = false,
+                isPullToRefresh = false,
+                isEndReached = false,
+                selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
+                earhtquakeList = listOf(
+                    EarthquakeVo(
+                        place = "San Francisco",
+                        magnitude = "2.5",
+                        magnitudeThreshold = MagnitudeThreshold.TWO_PLUS,
+                        date = "19.10.2025 14:30"
+                    ),
+                    EarthquakeVo(
+                        place = "San Francisco",
+                        magnitude = "5.2",
+                        magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
+                        date = "19.10.2025 14:30"
+                    ),
+                    EarthquakeVo(
+                        place = "San Francisco",
+                        magnitude = "4.7",
+                        magnitudeThreshold = MagnitudeThreshold.FOUR_PLUS,
+                        date = "19.10.2025 14:30"
+                    ),
+                    EarthquakeVo(
+                        place = "San Francisco",
+                        magnitude = "8.2",
+                        magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
+                        date = "19.10.2025 14:30"
+                    )
                 )
-            )
-        ),
-        onIntent = {}
-    )
+            ),
+            onIntent = {}
+        )
+    }
 }

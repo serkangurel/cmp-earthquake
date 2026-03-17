@@ -68,6 +68,7 @@ kotlin {
                 implementation(libs.compose.components.uiToolingPreview)
                 implementation(libs.compose.material3)
                 implementation(libs.compose.materialIconsExtended)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
@@ -92,11 +93,6 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.compose.uiTooling)
-                implementation(libs.compose.components.uiToolingPreview)
-                implementation("androidx.emoji2:emoji2:1.6.0")
-                implementation("androidx.customview:customview-poolingcontainer:1.1.0")
             }
         }
 
@@ -120,6 +116,10 @@ kotlin {
             }
         }
     }
+}
+
+dependencies {
+    androidRuntimeClasspath(libs.compose.uiTooling)
 }
 
 compose.resources {
