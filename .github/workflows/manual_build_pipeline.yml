@@ -65,10 +65,10 @@ jobs:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE_64 }}
 
       - name: Build APK
-        run: ./gradlew composeApp:assemble${{ env.VARIANT }} -PciVersionCode=${{ github.run_number }}
+        run: ./gradlew shared:assemble${{ env.VARIANT }} -PciVersionCode=${{ github.run_number }}
 
       - name: Build AAB
-        run: ./gradlew composeApp:bundle${{ env.VARIANT }} -PciVersionCode=${{ github.run_number }}
+        run: ./gradlew shared:bundle${{ env.VARIANT }} -PciVersionCode=${{ github.run_number }}
 
       # Resolve APK path and name depending on selected variant
       - name: Resolve APK filename
@@ -76,7 +76,7 @@ jobs:
         shell: bash
         run: |
           set -eo pipefail
-          APK_PATH=$(ls composeApp/build/outputs/apk/${{ env.FLAVOR }}/release/*.apk | head -n1)
+          APK_PATH=$(ls shared/build/outputs/apk/${{ env.FLAVOR }}/release/*.apk | head -n1)
           echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
           echo "name=$(basename "$APK_PATH")" >> "$GITHUB_OUTPUT"
 
@@ -92,7 +92,7 @@ jobs:
         shell: bash
         run: |
           set -eo pipefail
-          AAB_PATH=$(ls composeApp/build/outputs/bundle/${{ env.BUNDLE_DIR }}/*.aab | head -n1)
+          AAB_PATH=$(ls shared/build/outputs/bundle/${{ env.BUNDLE_DIR }}/*.aab | head -n1)
           echo "path=$AAB_PATH" >> "$GITHUB_OUTPUT"
           echo "name=$(basename "$AAB_PATH")" >> "$GITHUB_OUTPUT"
 

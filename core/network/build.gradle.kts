@@ -1,12 +1,9 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.ktorfit)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -14,10 +11,9 @@ kotlin {
     // Target declarations - add or remove as needed below. These define
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
-    androidLibrary {
+    android {
         namespace = "com.sgmobile.earthquake.core.network"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
     // For iOS targets, this is also where you should
@@ -28,12 +24,6 @@ kotlin {
     // project can be found here:
     // https://developer.android.com/kotlin/multiplatform/migrate
     val xcfName = "core:networkKit"
-
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
 
     iosArm64 {
         binaries.framework {
@@ -59,17 +49,8 @@ kotlin {
                 // Add KMP dependencies here
                 implementation(libs.koin.core)
                 api(libs.koin.annotations)
-
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.json)
-                implementation(libs.ktor.client.logging)
-                implementation(libs.ktor.client.serialization)
-                implementation(libs.ktor.client.content.negotiation)
-                implementation(libs.ktor.serialization.kotlinx.json)
-
+                implementation(libs.bundles.ktor.client)
                 implementation(libs.napier)
-                implementation(libs.ktorfit)
-                implementation(libs.ktorfit.response.converter)
             }
         }
 
@@ -98,35 +79,5 @@ kotlin {
                 implementation(libs.ktor.client.ios)
             }
         }
-    }
-    sourceSets.named("commonMain").configure {
-        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-    }
-}
-
-ksp {
-    arg("KOIN_CONFIG_CHECK", "true")
-}
-
-dependencies {
-    with(libs.ktorfit.ksp) {
-        add("kspCommonMainMetadata", this)
-        add("kspAndroid", this)
-        add("kspIosX64", this)
-        add("kspIosArm64", this)
-        add("kspIosSimulatorArm64", this)
-    }
-    with(libs.koin.ksp.compiler) {
-        add("kspCommonMainMetadata", this)
-        add("kspAndroid", this)
-        add("kspIosX64", this)
-        add("kspIosArm64", this)
-        add("kspIosSimulatorArm64", this)
-    }
-}
-
-project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
     }
 }

@@ -19,9 +19,9 @@ fun SGAppBar(
     TopAppBar(
         modifier = modifier,
         title = { Text(screenTitle) },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         actions = actions
     )

@@ -12,8 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
+import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.theme.magRed
 import com.sgmobile.earthquake.core.ui.theme.magYellow
 import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
@@ -21,7 +22,8 @@ import com.sgmobile.earthquake.feature.earthquake.presentation.models.Earthquake
 
 @Composable
 internal fun EarthquakeRowItem(
-    model: EarthquakeVo
+    model: EarthquakeVo,
+    modifier: Modifier = Modifier,
 ) {
     val magColor = when (model.magnitudeThreshold) {
         MagnitudeThreshold.TWO_PLUS -> Color.Unspecified
@@ -29,7 +31,7 @@ internal fun EarthquakeRowItem(
         MagnitudeThreshold.FIVE_PLUS -> MaterialTheme.colorScheme.magRed
     }
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
@@ -59,15 +61,17 @@ internal fun EarthquakeRowItem(
     }
 }
 
-@Preview(showBackground = true)
+@PreviewThemes
 @Composable
 private fun EarthquakeRowItemPreview() {
-    EarthquakeRowItem(
-        model = EarthquakeVo(
-            place = "San Francisco",
-            magnitude = "5.2",
-            magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
-            date = "19.10.2025 14:30"
+    SGPreview {
+        EarthquakeRowItem(
+            model = EarthquakeVo(
+                place = "San Francisco",
+                magnitude = "5.2",
+                magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
+                date = "19.10.2025 14:30"
+            )
         )
-    )
+    }
 }

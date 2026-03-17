@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
@@ -7,8 +5,7 @@ plugins {
     alias(libs.plugins.androidLint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.ktorfit)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -16,10 +13,9 @@ kotlin {
     // Target declarations - add or remove as needed below. These define
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
-    androidLibrary {
+    android {
         namespace = "com.sgmobile.earthquake.feature.earthquake"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
 
         withHostTestBuilder {
         }
@@ -39,12 +35,6 @@ kotlin {
     // project can be found here:
     // https://developer.android.com/kotlin/multiplatform/migrate
     val xcfName = "feature:earthquakeKit"
-
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
 
     iosArm64 {
         binaries.framework {
@@ -78,6 +68,7 @@ kotlin {
                 implementation(libs.compose.components.uiToolingPreview)
                 implementation(libs.compose.material3)
                 implementation(libs.compose.materialIconsExtended)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
@@ -85,9 +76,9 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel.navigation)
                 api(libs.koin.annotations)
 
+                implementation(libs.bundles.ktor.client)
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.datetime)
-                implementation(libs.ktorfit)
             }
         }
 
@@ -102,11 +93,6 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.compose.uiTooling)
-                implementation(libs.compose.components.uiToolingPreview)
-                implementation("androidx.emoji2:emoji2:1.6.0")
-                implementation("androidx.customview:customview-poolingcontainer:1.1.0")
             }
         }
 
@@ -130,40 +116,13 @@ kotlin {
             }
         }
     }
-    sourceSets.named("commonMain").configure {
-        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-    }
-}
-
-ksp {
-    arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
-    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 dependencies {
-    with(libs.ktorfit.ksp) {
-        add("kspCommonMainMetadata", this)
-        add("kspAndroid", this)
-        add("kspIosX64", this)
-        add("kspIosArm64", this)
-        add("kspIosSimulatorArm64", this)
-    }
-    with(libs.koin.ksp.compiler) {
-        add("kspCommonMainMetadata", this)
-        add("kspAndroid", this)
-        add("kspIosX64", this)
-        add("kspIosArm64", this)
-        add("kspIosSimulatorArm64", this)
-    }
+    androidRuntimeClasspath(libs.compose.uiTooling)
 }
 
 compose.resources {
     publicResClass = false
     generateResClass = never
-}
-
-project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
 }
