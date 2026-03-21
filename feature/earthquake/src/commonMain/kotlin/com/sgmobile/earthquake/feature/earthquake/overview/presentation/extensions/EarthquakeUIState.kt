@@ -1,9 +1,9 @@
-package com.sgmobile.earthquake.feature.earthquake.presentation.extensions
+package com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions
 
-import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.presentation.EarthquakeUIState
-import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.EarthquakeUIState
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
 
 internal fun List<Earthquake>.mapToUi(): EarthquakeUIState {
     val earhtquakeList = this.map { item ->

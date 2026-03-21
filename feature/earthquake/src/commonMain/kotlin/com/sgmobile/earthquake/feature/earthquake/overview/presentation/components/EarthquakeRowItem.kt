@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.feature.earthquake.presentation.components
+package com.sgmobile.earthquake.feature.earthquake.overview.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,8 +17,8 @@ import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.theme.magRed
 import com.sgmobile.earthquake.core.ui.theme.magYellow
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
 
 @Composable
 internal fun EarthquakeRowItem(

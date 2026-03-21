@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.feature.earthquake.domain.models
+package com.sgmobile.earthquake.feature.earthquake.overview.domain.models
 
 internal enum class MagnitudeThreshold(
     val value: Double,

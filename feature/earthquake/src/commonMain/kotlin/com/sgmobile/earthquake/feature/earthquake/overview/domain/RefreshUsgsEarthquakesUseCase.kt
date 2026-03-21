@@ -1,6 +1,6 @@
-package com.sgmobile.earthquake.feature.earthquake.domain
+package com.sgmobile.earthquake.feature.earthquake.overview.domain
 
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import org.koin.core.annotation.Factory
 
 @Factory

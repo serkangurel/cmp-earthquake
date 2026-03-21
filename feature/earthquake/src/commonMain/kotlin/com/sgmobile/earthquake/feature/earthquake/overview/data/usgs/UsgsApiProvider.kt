@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.feature.earthquake.data.usgs
+package com.sgmobile.earthquake.feature.earthquake.overview.data.usgs
 
 import com.sgmobile.earthquake.core.network.NetworkConstants
 import io.ktor.client.HttpClient

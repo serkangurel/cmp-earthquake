@@ -1,7 +1,7 @@
-package com.sgmobile.earthquake.feature.earthquake.data.usgs
+package com.sgmobile.earthquake.feature.earthquake.overview.data.usgs
 
 import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

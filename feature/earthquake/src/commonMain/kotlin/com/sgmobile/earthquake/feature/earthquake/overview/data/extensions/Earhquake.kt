@@ -1,14 +1,15 @@
-package com.sgmobile.earthquake.feature.earthquake.data.extensions
+package com.sgmobile.earthquake.feature.earthquake.overview.data.extensions
 
-import com.sgmobile.earthquake.feature.earthquake.data.usgs.CoordinateListItem
-import com.sgmobile.earthquake.feature.earthquake.data.usgs.UsgsResponse
-import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.data.usgs.CoordinateListItem
+import com.sgmobile.earthquake.feature.earthquake.overview.data.usgs.UsgsResponse
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.round
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -44,7 +45,7 @@ internal fun UsgsResponse?.toDomainList(): List<Earthquake> {
             ?.getOrNull(CoordinateListItem.Depth.index)
             ?.let { depth ->
                 // Depth is already in km per USGS GeoJSON (z in kilometers)
-                val rounded = kotlin.math.round(depth * 10.0) / 10.0
+                val rounded = round(depth * 10.0) / 10.0
                 if (rounded % 1.0 == 0.0) rounded.toInt().toString() else rounded.toString()
             } ?: ""
 

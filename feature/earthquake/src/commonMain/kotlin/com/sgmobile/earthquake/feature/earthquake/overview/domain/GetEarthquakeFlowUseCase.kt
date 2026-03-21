@@ -1,6 +1,6 @@
-package com.sgmobile.earthquake.feature.earthquake.domain
+package com.sgmobile.earthquake.feature.earthquake.overview.domain
 
-import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.annotation.Factory
 

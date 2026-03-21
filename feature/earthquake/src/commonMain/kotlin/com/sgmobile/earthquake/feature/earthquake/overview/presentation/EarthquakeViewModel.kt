@@ -1,15 +1,15 @@
-package com.sgmobile.earthquake.feature.earthquake.presentation
+package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
-import com.sgmobile.earthquake.feature.earthquake.domain.GetEarthquakeFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.domain.GetIsEndReachedFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.domain.LoadNextUsgsEarthquakesUseCase
-import com.sgmobile.earthquake.feature.earthquake.domain.RefreshUsgsEarthquakesUseCase
-import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.presentation.extensions.mapToUi
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReachedFlowUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.mapToUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed

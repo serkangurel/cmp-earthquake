@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.feature.earthquake.domain.models
+package com.sgmobile.earthquake.feature.earthquake.overview.domain.models
 
 internal data class Earthquake(
     val place: String,

@@ -8,8 +8,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sgmobile.earthquake.core.ui.theme.AppTheme
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeRowItem
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
 import org.junit.Test
 import org.junit.runner.RunWith
 

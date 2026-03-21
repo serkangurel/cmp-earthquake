@@ -1,12 +1,12 @@
-package com.sgmobile.earthquake.feature.earthquake.data
+package com.sgmobile.earthquake.feature.earthquake.overview.data
 
 import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
-import com.sgmobile.earthquake.feature.earthquake.data.extensions.toDomainList
-import com.sgmobile.earthquake.feature.earthquake.data.usgs.UsgsApi
-import com.sgmobile.earthquake.feature.earthquake.domain.EarthquakeRepository
-import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
-import com.sgmobile.earthquake.feature.earthquake.domain.models.EarthquakeState
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.data.extensions.toDomainList
+import com.sgmobile.earthquake.feature.earthquake.overview.data.usgs.UsgsApi
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.EarthquakeRepository
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeState
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

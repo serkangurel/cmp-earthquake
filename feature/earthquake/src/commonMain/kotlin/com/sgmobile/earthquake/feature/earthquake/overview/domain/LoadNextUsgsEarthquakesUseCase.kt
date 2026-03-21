@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.feature.earthquake.domain
+package com.sgmobile.earthquake.feature.earthquake.overview.domain
 
 import org.koin.core.annotation.Factory
 

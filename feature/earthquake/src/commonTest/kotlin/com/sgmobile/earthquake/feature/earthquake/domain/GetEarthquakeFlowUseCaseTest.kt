@@ -1,7 +1,8 @@
 package com.sgmobile.earthquake.feature.earthquake.domain
 
-import com.sgmobile.earthquake.feature.earthquake.domain.models.Earthquake
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

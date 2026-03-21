@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.feature.earthquake.data.extensions
+package com.sgmobile.earthquake.feature.earthquake.overview.data.extensions
 
 import kotlin.math.round
 

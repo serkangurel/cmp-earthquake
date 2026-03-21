@@ -1,6 +1,6 @@
-package com.sgmobile.earthquake.feature.earthquake.presentation
+package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 
 internal sealed interface EarthquakeScreenIntent {
     data class Refresh(val isPullToRefresh: Boolean) : EarthquakeScreenIntent

@@ -1,7 +1,7 @@
-package com.sgmobile.earthquake.feature.earthquake.presentation
+package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
 
 internal data class EarthquakeUIState(
     val isLoading: Boolean,

@@ -1,4 +1,4 @@
-package com.sgmobile.earthquake.feature.earthquake.presentation
+package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,9 +30,9 @@ import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
-import com.sgmobile.earthquake.feature.earthquake.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.presentation.components.EarthquakeRowItem
-import com.sgmobile.earthquake.feature.earthquake.presentation.models.EarthquakeVo
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeRowItem
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
