@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.E
 internal fun EarthquakeRowItem(
     model: EarthquakeVo,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     val magColor = when (model.magnitudeThreshold) {
         MagnitudeThreshold.TWO_PLUS -> Color.Unspecified
@@ -31,7 +33,9 @@ internal fun EarthquakeRowItem(
         MagnitudeThreshold.FIVE_PLUS -> MaterialTheme.colorScheme.magRed
     }
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(

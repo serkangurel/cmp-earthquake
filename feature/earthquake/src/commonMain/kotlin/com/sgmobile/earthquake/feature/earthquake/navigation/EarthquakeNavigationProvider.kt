@@ -2,6 +2,7 @@ package com.sgmobile.earthquake.feature.earthquake.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
 import com.sgmobile.earthquake.core.navigation.NavigationComponent
 import com.sgmobile.earthquake.core.navigation.NavigationProvider
@@ -22,5 +23,8 @@ internal class EarthquakeNavigationProvider : NavigationProvider {
                 route = EarthquakeRoutes.Overview,
                 order = 1
             ),
+            showBottomBarEvaluator = { navBackStackEntry ->
+                !navBackStackEntry.destination.hasRoute<EarthquakeRoutes.Detail>()
+            },
         )
 }

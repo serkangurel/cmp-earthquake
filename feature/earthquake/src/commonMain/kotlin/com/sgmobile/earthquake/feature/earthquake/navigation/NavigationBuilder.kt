@@ -2,10 +2,14 @@ package com.sgmobile.earthquake.feature.earthquake.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.EarthquakeDetailScreen
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.EarthquakeScreen
 
 internal fun NavGraphBuilder.earthquakeNavigationGraph() {
     composable<EarthquakeRoutes.Overview> {
         EarthquakeScreen()
+    }
+    composable<EarthquakeRoutes.Detail> {
+        EarthquakeDetailScreen()
     }
 }

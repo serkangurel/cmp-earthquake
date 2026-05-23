@@ -6,4 +6,7 @@ internal object EarthquakeRoutes {
 
     @Serializable
     data object Overview
+
+    @Serializable
+    data object Detail
 }

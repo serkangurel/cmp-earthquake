@@ -1,19 +1,22 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -23,6 +26,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sgmobile.earthquake.core.navigation.LocalNavController
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquakes
@@ -30,6 +34,7 @@ import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
+import com.sgmobile.earthquake.feature.earthquake.navigation.EarthquakeRoutes
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeRowItem
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
@@ -42,6 +47,7 @@ internal fun EarthquakeScreen(
     viewModel: EarthquakeViewModel = koinViewModel<EarthquakeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val navController = LocalNavController.current
 
     Scaffold(
         topBar = {
@@ -66,7 +72,10 @@ internal fun EarthquakeScreen(
         ) {
             EarthquakeContent(
                 uiState = uiState,
-                onIntent = viewModel::handleIntent
+                onIntent = viewModel::handleIntent,
+                onEarthquakeClick = {
+                    navController.navigate(EarthquakeRoutes.Detail)
+                }
             )
             if (uiState.isLoading) {
                 SGLoading()
@@ -79,6 +88,7 @@ internal fun EarthquakeScreen(
 private fun EarthquakeContent(
     uiState: EarthquakeUIState,
     onIntent: (EarthquakeScreenIntent) -> Unit,
+    onEarthquakeClick: (EarthquakeVo) -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -105,7 +115,10 @@ private fun EarthquakeContent(
             contentPadding = PaddingValues(16.dp),
         ) {
             itemsIndexed(uiState.earhtquakeList) { index, item ->
-                EarthquakeRowItem(item)
+                EarthquakeRowItem(
+                    model = item,
+                    onClick = { onEarthquakeClick(item) }
+                )
 
                 if (index < uiState.earhtquakeList.size - 1) {
                     HorizontalDivider(
@@ -118,6 +131,7 @@ private fun EarthquakeContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun EarthquakeTopBarActions(
     onIntent: (EarthquakeScreenIntent) -> Unit,
@@ -125,28 +139,33 @@ private fun EarthquakeTopBarActions(
 ) {
     val options = MagnitudeThreshold.labels
 
-    SingleChoiceSegmentedButtonRow {
+    Row(
+        Modifier.padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+    ) {
         options.forEachIndexed { index, label ->
-            SegmentedButton(
-                shape = SegmentedButtonDefaults.itemShape(
-                    index = index,
-                    count = options.size
+            ToggleButton(
+                checked = label == selectedMagnitude.label,
+                colors = ToggleButtonDefaults.toggleButtonColors().copy(
+                    containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    checkedContainerColor = MaterialTheme.colorScheme.onSecondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    checkedContentColor = MaterialTheme.colorScheme.secondary,
                 ),
-                contentPadding = PaddingValues(all = 0.dp),
-                icon = {},
-                onClick = {
+                onCheckedChange = {
                     onIntent(
                         EarthquakeScreenIntent.SelectMagnitude(MagnitudeThreshold.fromLabel(label))
                     )
                 },
-                selected = label == selectedMagnitude.label,
-                label = {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
-            )
+                shapes =
+                    when (index) {
+                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                        options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                    },
+            ) {
+                Text(label)
+            }
         }
     }
 }
@@ -189,7 +208,8 @@ private fun EarthquakeContentPreview() {
                     )
                 )
             ),
-            onIntent = {}
+            onIntent = {},
+            onEarthquakeClick = {}
         )
     }
 }

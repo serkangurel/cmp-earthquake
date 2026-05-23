@@ -1,0 +1,3 @@
+package com.sgmobile.earthquake.feature.earthquake.detail.presentation
+
+internal sealed interface EarthquakeDetailScreenIntent
