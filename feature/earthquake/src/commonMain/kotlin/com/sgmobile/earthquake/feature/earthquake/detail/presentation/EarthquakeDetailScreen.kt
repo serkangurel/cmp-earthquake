@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.sgmobile.earthquake.core.navigation.LocalNavController
+import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -16,13 +16,13 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun EarthquakeDetailScreen(
     viewModel: EarthquakeDetailViewModel = koinViewModel<EarthquakeDetailViewModel>()
 ) {
-    val navController = LocalNavController.current
+    val navigator = LocalNavigator.current
 
     Scaffold(
         topBar = {
             SGAppBar(
                 screenTitle = "Earthquake Detail",
-                onNavigationClick = navController::navigateUp,
+                onNavigationClick = navigator::goBack,
             )
         },
     ) { paddingValues ->

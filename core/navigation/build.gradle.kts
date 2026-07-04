@@ -57,7 +57,10 @@ kotlin {
                 implementation(libs.compose.material3)
                 implementation(libs.compose.materialIconsExtended)
 
-                implementation(libs.androidx.navigation.compose)
+                api(libs.androidx.navigation3.ui)
+                api(libs.koin.compose.navigation3)
+                api(libs.kotlinx.serialization.core)
+                implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)

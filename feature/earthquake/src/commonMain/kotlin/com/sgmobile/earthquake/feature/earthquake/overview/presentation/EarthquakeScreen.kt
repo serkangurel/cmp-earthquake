@@ -26,8 +26,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sgmobile.earthquake.core.navigation.LocalNavController
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
+import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquakes
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
@@ -47,7 +47,7 @@ internal fun EarthquakeScreen(
     viewModel: EarthquakeViewModel = koinViewModel<EarthquakeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val navController = LocalNavController.current
+    val navigator = LocalNavigator.current
 
     Scaffold(
         topBar = {
@@ -74,7 +74,7 @@ internal fun EarthquakeScreen(
                 uiState = uiState,
                 onIntent = viewModel::handleIntent,
                 onEarthquakeClick = {
-                    navController.navigate(EarthquakeRoutes.Detail)
+                    navigator.navigate(EarthquakeRoutes.Detail)
                 }
             )
             if (uiState.isLoading) {

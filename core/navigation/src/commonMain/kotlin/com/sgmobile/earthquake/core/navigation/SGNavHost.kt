@@ -7,7 +7,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
@@ -17,149 +17,100 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.sgmobile.earthquake.core.navigation.extension.isRouteInHierarchy
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
+import kotlinx.serialization.modules.plus
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.getKoin
+import org.koin.compose.navigation3.koinEntryProvider
+import org.koin.core.annotation.KoinExperimentalAPI
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun SGNavHost(
     modifier: Modifier = Modifier,
-    startDestination: Any? = null,
-    navController: NavHostController = rememberNavController(),
+    startDestination: NavKey? = null,
     navigationComponents: List<NavigationComponent> = rememberNavigationComponents(),
 ) {
-    val navState = rememberNavState(
-        navigationComponents = navigationComponents,
-        navController = navController,
-    )
-    val destinationResolver = rememberDestinationResolver(
-        startDestination = startDestination,
-        topLevelDestinations = navState.topLevelDestinations,
-    )
-
-    NavScaffold(
-        navState = navState,
-        navigationComponents = navigationComponents,
-        navController = navController,
-    ) { paddingValues ->
-        CompositionLocalProvider(
-            LocalNavController provides navController,
-            LocalNavScaffoldPadding provides paddingValues,
-        ) {
-            NavHost(
-                modifier = modifier.fillMaxSize(),
-                navController = navController,
-                startDestination = destinationResolver.resolvedStartDestination,
-                enterTransition = {
-                    EnterTransition.None
-                },
-                exitTransition = {
-                    ExitTransition.None
-                },
-            ) {
-                navigationComponents.forEach { component ->
-                    component.navigationGraphBuilder(this)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun rememberNavState(
-    navigationComponents: List<NavigationComponent>,
-    navController: NavHostController,
-): NavigationState {
     val topLevelDestinations = remember(navigationComponents) {
         navigationComponents
             .mapNotNull { it.topLevelDestination }
             .sortedBy { it.order }
     }
+    val startRoute = startDestination
+        ?: topLevelDestinations.firstOrNull()?.route
+        ?: error("No start destination found in navigation components.")
 
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
-    return remember(topLevelDestinations, currentBackStackEntry) {
-        NavigationState(
-            topLevelDestinations = topLevelDestinations,
-            currentDestination = currentBackStackEntry?.destination,
-            currentBackStackEntry = currentBackStackEntry,
-        )
-    }
-}
-
-@Composable
-private fun rememberDestinationResolver(
-    startDestination: Any?,
-    topLevelDestinations: List<TopLevelDestination>,
-): DestinationResolver {
-    return remember(startDestination, topLevelDestinations) {
-        DestinationResolver(
-            customStartDestination = startDestination,
-            firstTopLevelDestination = topLevelDestinations.firstOrNull()?.route,
-        )
-    }
-}
-
-@Composable
-private fun NavScaffold(
-    navState: NavigationState,
-    navigationComponents: List<NavigationComponent>,
-    navController: NavHostController,
-    content: @Composable (PaddingValues) -> Unit,
-) {
-    val shouldShowBottomBar = remember(navState.currentDestination, navigationComponents) {
-        navigationComponents.all { component ->
-            component.showBottomBarEvaluator(
-                navState.currentBackStackEntry ?: return@remember false
-            )
+    val savedStateConfiguration = remember(navigationComponents) {
+        SavedStateConfiguration {
+            serializersModule = navigationComponents
+                .map(NavigationComponent::serializersModule)
+                .reduce { acc, module -> acc + module }
         }
     }
+    val navigationState = rememberNavigationState(
+        startRoute = startRoute,
+        topLevelRoutes = topLevelDestinations.map { it.route },
+        configuration = savedStateConfiguration,
+    )
+    val navigator = remember(navigationState) { Navigator(navigationState) }
+    val entries = navigationState.toEntries(koinEntryProvider())
+
+    val shouldShowBottomBar = navigationComponents.all { component ->
+        component.showBottomBarEvaluator(navigationState.currentKey)
+    }
+
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
             BottomNavigationBar(
                 isVisible = shouldShowBottomBar,
-                destinations = navState.topLevelDestinations,
-                currentDestination = navState.currentDestination,
-                navController = navController,
+                destinations = topLevelDestinations,
+                selectedRoute = navigationState.topLevelRoute,
+                onDestinationClick = { navigator.navigate(it.route) },
             )
         },
-        content = content,
-    )
+    ) { paddingValues ->
+        CompositionLocalProvider(
+            LocalNavigator provides navigator,
+            LocalNavScaffoldPadding provides paddingValues,
+        ) {
+            NavDisplay(
+                entries = entries,
+                modifier = modifier.fillMaxSize(),
+                onBack = { navigator.goBack() },
+                transitionSpec = {
+                    EnterTransition.None togetherWith ExitTransition.None
+                },
+                popTransitionSpec = {
+                    EnterTransition.None togetherWith ExitTransition.None
+                },
+                predictivePopTransitionSpec = {
+                    EnterTransition.None togetherWith ExitTransition.None
+                },
+            )
+        }
+    }
 }
 
 @Composable
 private fun BottomNavigationBar(
     isVisible: Boolean,
     destinations: List<TopLevelDestination>,
-    currentDestination: NavDestination?,
-    navController: NavHostController,
+    selectedRoute: NavKey,
+    onDestinationClick: (TopLevelDestination) -> Unit,
 ) {
     AnimatedBottomBar(isVisible = isVisible) {
         NavigationBar {
             destinations.forEach { destination ->
                 BottomNavigationItem(
                     destination = destination,
-                    isSelected = currentDestination.isRouteInHierarchy(destination.baseRoute),
-                    onClick = {
-                        navController.navigate(destination.route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
+                    isSelected = destination.route == selectedRoute,
+                    onClick = { onDestinationClick(destination) },
                 )
             }
         }
@@ -208,21 +159,6 @@ private fun RowScope.BottomNavigationItem(
             Text(text = stringResource(destination.labelStringResource))
         },
     )
-}
-
-private data class NavigationState(
-    val topLevelDestinations: List<TopLevelDestination>,
-    val currentDestination: NavDestination?,
-    val currentBackStackEntry: NavBackStackEntry?,
-)
-
-private data class DestinationResolver(
-    val customStartDestination: Any?,
-    val firstTopLevelDestination: Any?,
-) {
-    val resolvedStartDestination: Any = customStartDestination
-        ?: firstTopLevelDestination
-        ?: error("No start destination found in navigation components.")
 }
 
 @Composable
