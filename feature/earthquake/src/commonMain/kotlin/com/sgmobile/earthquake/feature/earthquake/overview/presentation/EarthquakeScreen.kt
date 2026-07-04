@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ButtonGroupDefaults
@@ -72,6 +73,7 @@ internal fun EarthquakeScreen(
         ) {
             EarthquakeContent(
                 uiState = uiState,
+                lazyListState = viewModel.listState,
                 onIntent = viewModel::handleIntent,
                 onEarthquakeClick = {
                     navigator.navigate(EarthquakeRoutes.Detail)
@@ -89,9 +91,8 @@ private fun EarthquakeContent(
     uiState: EarthquakeUIState,
     onIntent: (EarthquakeScreenIntent) -> Unit,
     onEarthquakeClick: (EarthquakeVo) -> Unit,
+    lazyListState: LazyListState = rememberLazyListState(),
 ) {
-    val lazyListState = rememberLazyListState()
-
     LaunchedEffect(uiState.earhtquakeList) {
         snapshotFlow {
             lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index

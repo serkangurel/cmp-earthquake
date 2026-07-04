@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
@@ -27,6 +28,8 @@ internal class EarthquakeViewModel(
     private val getEarthquakeFlowUseCase: GetEarthquakeFlowUseCase,
     private val getIsEndReachedFlowUseCase: GetIsEndReachedFlowUseCase,
 ) : ViewModel() {
+
+    val listState = LazyListState()
 
     private val earthquakeFlow = getEarthquakeFlowUseCase()
     private val isLoadingFlow = MutableStateFlow(false)
