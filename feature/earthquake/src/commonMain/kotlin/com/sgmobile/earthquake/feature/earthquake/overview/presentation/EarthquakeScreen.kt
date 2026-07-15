@@ -73,7 +73,6 @@ internal fun EarthquakeScreen(
         ) {
             EarthquakeContent(
                 uiState = uiState,
-                lazyListState = viewModel.listState,
                 onIntent = viewModel::handleIntent,
                 onEarthquakeClick = {
                     navigator.navigate(EarthquakeRoutes.Detail)
@@ -91,8 +90,8 @@ private fun EarthquakeContent(
     uiState: EarthquakeUIState,
     onIntent: (EarthquakeScreenIntent) -> Unit,
     onEarthquakeClick: (EarthquakeVo) -> Unit,
-    lazyListState: LazyListState = rememberLazyListState(),
 ) {
+    val lazyListState: LazyListState = rememberLazyListState()
     LaunchedEffect(uiState.earhtquakeList) {
         snapshotFlow {
             lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
