@@ -71,6 +71,7 @@ private fun EarthquakeRowItemPreview() {
     SGPreview {
         EarthquakeRowItem(
             model = EarthquakeVo(
+                id = "1",
                 place = "San Francisco",
                 magnitude = "5.2",
                 magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,

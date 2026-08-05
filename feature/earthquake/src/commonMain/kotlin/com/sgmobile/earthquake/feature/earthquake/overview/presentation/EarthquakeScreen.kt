@@ -75,7 +75,7 @@ internal fun EarthquakeScreen(
                 uiState = uiState,
                 onIntent = viewModel::handleIntent,
                 onEarthquakeClick = {
-                    navigator.navigate(EarthquakeRoutes.Detail)
+                    navigator.navigate(EarthquakeRoutes.Detail(it.id))
                 }
             )
             if (uiState.isLoading) {
@@ -183,24 +183,28 @@ private fun EarthquakeContentPreview() {
                 selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
                 earhtquakeList = listOf(
                     EarthquakeVo(
+                        id = "1",
                         place = "San Francisco",
                         magnitude = "2.5",
                         magnitudeThreshold = MagnitudeThreshold.TWO_PLUS,
                         date = "19.10.2025 14:30"
                     ),
                     EarthquakeVo(
+                        id = "2",
                         place = "San Francisco",
                         magnitude = "5.2",
                         magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
                         date = "19.10.2025 14:30"
                     ),
                     EarthquakeVo(
+                        id = "3",
                         place = "San Francisco",
                         magnitude = "4.7",
                         magnitudeThreshold = MagnitudeThreshold.FOUR_PLUS,
                         date = "19.10.2025 14:30"
                     ),
                     EarthquakeVo(
+                        id = "4",
                         place = "San Francisco",
                         magnitude = "8.2",
                         magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,

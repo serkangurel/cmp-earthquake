@@ -49,6 +49,12 @@ internal fun UsgsResponse?.toDomainList(): List<Earthquake> {
                 if (rounded % 1.0 == 0.0) rounded.toInt().toString() else rounded.toString()
             } ?: ""
 
+        val latitude = feature.geometry?.coordinates
+            ?.getOrNull(CoordinateListItem.Latitude.index) ?: 0.0
+
+        val longitude = feature.geometry?.coordinates
+            ?.getOrNull(CoordinateListItem.Longitude.index) ?: 0.0
+
         val dateStr = feature.properties?.time
             ?.takeIf { it > 0L }
             ?.let { millis ->
@@ -57,12 +63,17 @@ internal fun UsgsResponse?.toDomainList(): List<Earthquake> {
                 local.format(dateFormat)
             } ?: ""
 
+        val id = feature.id ?: "$latitude,$longitude,$dateStr"
+
         Earthquake(
+            id = id,
             place = place,
             magnitude = magnitude.formattedToTwoDecimals(),
             magnitudeThreshold = magnitudeThreshold,
             depth = depthKm,
-            date = dateStr
+            date = dateStr,
+            latitude = latitude,
+            longitude = longitude
         )
     }
 }

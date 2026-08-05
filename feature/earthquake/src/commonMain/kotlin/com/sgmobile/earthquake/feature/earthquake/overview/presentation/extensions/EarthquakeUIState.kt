@@ -8,6 +8,7 @@ import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.E
 internal fun List<Earthquake>.mapToUi(): EarthquakeUIState {
     val earhtquakeList = this.map { item ->
         EarthquakeVo(
+            id = item.id,
             place = item.place,
             magnitude = item.magnitude,
             magnitudeThreshold = item.magnitudeThreshold,

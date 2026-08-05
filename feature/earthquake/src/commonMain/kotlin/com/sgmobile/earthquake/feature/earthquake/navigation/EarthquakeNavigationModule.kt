@@ -15,8 +15,8 @@ val earthquakeNavigationModule: Module = module {
         EarthquakeScreen()
     }
     navigationWithContentKey<EarthquakeRoutes.Detail>(
-        contentKey = { "earthquake/detail" },
-    ) {
-        EarthquakeDetailScreen()
+        contentKey = { route -> "earthquake/detail/${route.id}" },
+    ) { route ->
+        EarthquakeDetailScreen(earthquakeId = route.id)
     }
 }

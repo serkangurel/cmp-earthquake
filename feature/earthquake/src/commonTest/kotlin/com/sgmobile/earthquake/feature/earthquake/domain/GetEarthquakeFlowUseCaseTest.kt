@@ -23,11 +23,14 @@ internal class GetEarthquakeFlowUseCaseTest {
         // Given
         val expectedEarthquakes = listOf(
             Earthquake(
+                id = "us7000abcd",
                 place = "California",
                 magnitude = "4.5",
                 magnitudeThreshold = MagnitudeThreshold.FOUR_PLUS,
                 depth = "10km",
-                date = "2023-10-27"
+                date = "2023-10-27",
+                latitude = 37.7,
+                longitude = -122.4
             )
         )
         fakeEarthquakeRepository.emitEarthquakes(expectedEarthquakes)

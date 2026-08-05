@@ -9,5 +9,5 @@ internal object EarthquakeRoutes {
     data object Overview : NavKey
 
     @Serializable
-    data object Detail : NavKey
+    data class Detail(val id: String) : NavKey
 }

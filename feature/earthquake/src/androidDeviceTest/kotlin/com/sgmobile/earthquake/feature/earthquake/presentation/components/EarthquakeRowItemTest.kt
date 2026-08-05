@@ -20,6 +20,7 @@ class EarthquakeRowItemTest {
     fun shows_place_date_and_magnitude_for_two_plus() = runComposeUiTest {
         // Given
         val model = EarthquakeVo(
+            id = "eq-1",
             place = "Istanbul, Turkey",
             magnitude = "3.4",
             magnitudeThreshold = MagnitudeThreshold.TWO_PLUS,
@@ -42,6 +43,7 @@ class EarthquakeRowItemTest {
     fun shows_place_date_and_magnitude_for_five_plus() = runComposeUiTest {
         // Given
         val model = EarthquakeVo(
+            id = "eq-2",
             place = "San Francisco",
             magnitude = "5.2",
             magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
