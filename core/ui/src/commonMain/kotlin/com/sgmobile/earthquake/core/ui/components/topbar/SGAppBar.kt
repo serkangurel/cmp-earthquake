@@ -17,13 +17,13 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SGAppBar(
     modifier: Modifier = Modifier,
-    screenTitle: String,
+    screenTitle: String? = null,
     onNavigationClick: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(
         modifier = modifier,
-        title = { Text(screenTitle) },
+        title = { screenTitle?.let { Text(it) } },
         navigationIcon = {
             onNavigationClick?.let { onClick ->
                 IconButton(onClick = onClick) {

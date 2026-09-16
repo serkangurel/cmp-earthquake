@@ -7,8 +7,9 @@ internal fun Earthquake.toDetailUi(): EarthquakeDetailVo =
     EarthquakeDetailVo(
         place = place,
         magnitude = magnitude,
+        magnitudeThreshold = magnitudeThreshold,
         depth = depth,
         date = date,
-        latitude = latitude.toString(),
-        longitude = longitude.toString(),
+        latitude = latitude,
+        longitude = longitude,
     )

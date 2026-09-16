@@ -69,6 +69,7 @@ kotlin {
                 implementation(libs.compose.material3)
                 implementation(libs.compose.materialIconsExtended)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
+                implementation(libs.kmp.maps.compose)
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
