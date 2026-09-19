@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.mohamedrejeb.calf.ui.button.AdaptiveIconButton
+import com.mohamedrejeb.calf.ui.button.LiquidGlassButtonColors
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_earthquake
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
@@ -81,8 +85,8 @@ internal fun EarthquakeMap(
             compassEnabled = false,
             indoorLevelPickerEnabled = false,
             mapToolbarEnabled = false,
-            myLocationButtonEnabled = true,
-            zoomControlsEnabled = true,
+            myLocationButtonEnabled = false,
+            zoomControlsEnabled = false,
         )
     }
 
@@ -105,7 +109,7 @@ internal fun EarthquakeMap(
             )
         }
 
-        SmallFloatingActionButton(
+        AdaptiveIconButton(
             onClick = {
                 coroutineScope.launch {
                     cameraPositionState.animate(
@@ -114,9 +118,22 @@ internal fun EarthquakeMap(
                 }
             },
             modifier = Modifier
-                .align(Alignment.BottomStart)
+                .align(Alignment.TopEnd)
                 .padding(contentPadding)
-                .padding(MAP_CONTROL_PADDING),
+                .padding(MAP_CONTROL_PADDING)
+                .size(48.dp),
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = Color.Unspecified,
+                disabledContentColor = Color.Unspecified,
+            ),
+            liquidGlassColors = LiquidGlassButtonColors(
+                tintColor = MaterialTheme.colorScheme.primary,
+                surfaceColor = Color.Unspecified,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContentColor = Color.Unspecified,
+            ),
         ) {
             Icon(
                 imageVector = Icons.Filled.CenterFocusStrong,

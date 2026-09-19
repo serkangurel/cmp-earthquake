@@ -56,6 +56,7 @@ kotlin {
                 implementation(libs.compose.components.uiToolingPreview)
                 implementation(libs.compose.material3)
                 implementation(libs.compose.materialIconsExtended)
+                implementation(libs.calf.ui)
 
                 api(libs.androidx.navigation3.ui)
                 api(libs.koin.compose.navigation3)

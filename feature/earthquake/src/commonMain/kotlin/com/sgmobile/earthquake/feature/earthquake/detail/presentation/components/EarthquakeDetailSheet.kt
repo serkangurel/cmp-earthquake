@@ -1,7 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,7 +45,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 private const val SOURCE_USGS = "USGS"
-private const val HANDLE_ALPHA = 0.4f
 
 @Composable
 internal fun EarthquakeDetailSheet(
@@ -57,6 +55,7 @@ internal fun EarthquakeDetailSheet(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 8.dp,
     ) {
         Column(
             modifier = Modifier
@@ -64,15 +63,6 @@ internal fun EarthquakeDetailSheet(
                 .padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .size(width = 32.dp, height = 4.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = HANDLE_ALPHA),
-                        shape = RoundedCornerShape(2.dp),
-                    ),
-            )
             Text(
                 text = stringResource(Res.string.magnitude).uppercase(),
                 modifier = Modifier.padding(top = 12.dp),
@@ -86,10 +76,7 @@ internal fun EarthquakeDetailSheet(
             Text(
                 text = earthquake.magnitude,
                 style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 72.sp,
-                    lineHeight = 74.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = (-2.5).sp,
                 ),
                 color = earthquake.magnitudeThreshold.toTierColor(),
             )

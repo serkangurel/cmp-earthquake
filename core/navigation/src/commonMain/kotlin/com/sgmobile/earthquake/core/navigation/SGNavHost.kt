@@ -1,19 +1,12 @@
 package com.sgmobile.earthquake.core.navigation
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -23,13 +16,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi
+import com.mohamedrejeb.calf.ui.navigation.AdaptiveNavigationBar
+import com.mohamedrejeb.calf.ui.navigation.AdaptiveScaffold
+import com.mohamedrejeb.calf.ui.navigation.UIKitUITabBarItem
+import com.mohamedrejeb.calf.ui.uikit.UIKitImage
 import kotlinx.serialization.modules.plus
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.getKoin
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
 
-@OptIn(KoinExperimentalAPI::class)
+@OptIn(KoinExperimentalAPI::class, ExperimentalCalfUiApi::class)
 @Composable
 fun SGNavHost(
     modifier: Modifier = Modifier,
@@ -64,7 +62,7 @@ fun SGNavHost(
         component.showBottomBarEvaluator(navigationState.currentKey)
     }
 
-    Scaffold(
+    AdaptiveScaffold(
         containerColor = Color.Transparent,
         bottomBar = {
             BottomNavigationBar(
@@ -97,6 +95,7 @@ fun SGNavHost(
     }
 }
 
+@OptIn(ExperimentalCalfUiApi::class)
 @Composable
 private fun BottomNavigationBar(
     isVisible: Boolean,
@@ -105,7 +104,24 @@ private fun BottomNavigationBar(
     onDestinationClick: (TopLevelDestination) -> Unit,
 ) {
     AnimatedBottomBar(isVisible = isVisible) {
-        NavigationBar {
+        val selectedIndex = destinations
+            .indexOfFirst { it.route == selectedRoute }
+            .coerceAtLeast(0)
+        val iosItems = destinations.map { destination ->
+            UIKitUITabBarItem(
+                title = stringResource(destination.labelStringResource),
+                image = UIKitImage.Vector(destination.unselectedIcon),
+                selectedImage = UIKitImage.Vector(destination.selectedIcon),
+            )
+        }
+
+        AdaptiveNavigationBar(
+            iosItems = iosItems,
+            iosSelectedIndex = selectedIndex,
+            iosOnItemSelected = { index ->
+                destinations.getOrNull(index)?.let(onDestinationClick)
+            },
+        ) {
             destinations.forEach { destination ->
                 BottomNavigationItem(
                     destination = destination,
@@ -114,29 +130,6 @@ private fun BottomNavigationBar(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun AnimatedBottomBar(
-    isVisible: Boolean,
-    modifier: Modifier = Modifier,
-    animationDuration: Int = 300,
-    content: @Composable () -> Unit,
-) {
-    AnimatedVisibility(
-        visible = isVisible,
-        enter = slideInVertically(
-            initialOffsetY = { it },
-            animationSpec = tween(animationDuration, easing = FastOutSlowInEasing),
-        ),
-        exit = slideOutVertically(
-            targetOffsetY = { it },
-            animationSpec = tween(animationDuration, easing = FastOutSlowInEasing),
-        ),
-        modifier = modifier,
-    ) {
-        content()
     }
 }
 

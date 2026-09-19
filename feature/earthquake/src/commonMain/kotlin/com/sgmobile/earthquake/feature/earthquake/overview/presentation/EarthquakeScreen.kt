@@ -14,7 +14,6 @@ import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
@@ -23,10 +22,15 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi
+import com.mohamedrejeb.calf.ui.dropdown.AdaptiveDropDownItem
+import com.mohamedrejeb.calf.ui.navigation.AdaptiveScaffold
+import com.mohamedrejeb.calf.ui.navigation.UIKitUIBarButtonItem
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.resource.Res
@@ -43,17 +47,40 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalCalfUiApi::class)
 @Composable
 internal fun EarthquakeScreen(
     viewModel: EarthquakeViewModel = koinViewModel<EarthquakeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val navigator = LocalNavigator.current
+    // Reuse Calf's native UIMenu; SGAppBar updates only the visible button title on iOS.
+    val iosTrailingItems = remember(viewModel) {
+        listOf(
+            UIKitUIBarButtonItem.withMenu(
+                title = uiState.selectedMagnitude.label,
+                menuItems = MagnitudeThreshold.labels.map { label ->
+                    AdaptiveDropDownItem(
+                        title = label,
+                        onClick = {
+                            viewModel.handleIntent(
+                                EarthquakeScreenIntent.SelectMagnitude(
+                                    MagnitudeThreshold.fromLabel(label)
+                                )
+                            )
+                        },
+                    )
+                },
+            ),
+        )
+    }
 
-    Scaffold(
+    AdaptiveScaffold(
         topBar = {
             SGAppBar(
                 screenTitle = stringResource(Res.string.earthquakes),
+                iosTrailingItems = iosTrailingItems,
+                iosTrailingItemTitles = listOf(uiState.selectedMagnitude.label),
                 actions = {
                     EarthquakeTopBarActions(
                         selectedMagnitude = uiState.selectedMagnitude,

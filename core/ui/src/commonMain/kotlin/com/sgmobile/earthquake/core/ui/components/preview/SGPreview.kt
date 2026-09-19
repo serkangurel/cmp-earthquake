@@ -2,10 +2,12 @@ package com.sgmobile.earthquake.core.ui.components.preview
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi
+import com.mohamedrejeb.calf.ui.navigation.AdaptiveScaffold
 import com.sgmobile.earthquake.core.ui.theme.AppTheme
 
+@OptIn(ExperimentalCalfUiApi::class)
 @Composable
 fun SGPreview(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -16,6 +18,6 @@ fun SGPreview(
         darkTheme = darkTheme,
         dynamicColor = dynamicColor
     ) {
-        Scaffold(content = content)
+        AdaptiveScaffold(content = content)
     }
 }

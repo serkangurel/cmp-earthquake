@@ -166,3 +166,7 @@ Before handing off a change:
    which platform was not verified.
 4. Summarize changed behavior, list verification performed, and call out any remaining risk or
    prerequisite.
+5. End every task with a `Code changes` section. For tasks that edit files, show a concise diff
+   grouped by affected file and include only changes made for that task, excluding unrelated
+   working-tree changes. For tasks without file edits, explicitly state that there were no code
+   changes.
