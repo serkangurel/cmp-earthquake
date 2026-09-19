@@ -22,6 +22,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = versCode
         versionName = versName
+        manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
     }
     packaging {
         resources {

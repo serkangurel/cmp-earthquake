@@ -1,0 +1,53 @@
+appId: com.sgmobile.earthquake
+name: SGAppBar menu stays visible without opening keyboard
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- extendedWaitUntil:
+    visible: "Earthquakes"
+    timeout: 30000
+- tapOn:
+    text: "2+"
+    waitToSettleTimeoutMs: 0
+- extendedWaitUntil:
+    visible: "5+"
+    timeout: 1000
+- assertNotVisible:
+    id: "Dictate"
+- assertNotVisible: "q"
+- tapOn: "4+"
+- extendedWaitUntil:
+    notVisible: "5+"
+    timeout: 5000
+- tapOn:
+    text: "4+"
+    waitToSettleTimeoutMs: 0
+- extendedWaitUntil:
+    visible: "5+"
+    timeout: 1000
+- assertNotVisible:
+    id: "Dictate"
+- assertNotVisible: "q"
+- tapOn: "5+"
+- extendedWaitUntil:
+    notVisible: "2+"
+    timeout: 5000
+- tapOn:
+    text: "5+"
+    waitToSettleTimeoutMs: 0
+- extendedWaitUntil:
+    visible: "2+"
+    timeout: 1000
+- assertNotVisible:
+    id: "Dictate"
+- assertNotVisible: "q"
+- tapOn: "2+"
+- extendedWaitUntil:
+    notVisible: "5+"
+    timeout: 5000
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "Map"
+    timeout: 5000
+- assertVisible: "Settings"

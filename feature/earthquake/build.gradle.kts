@@ -69,11 +69,11 @@ kotlin {
                 implementation(libs.compose.material3)
                 implementation(libs.compose.materialIconsExtended)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
+                implementation(libs.kmp.maps.compose)
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
-                implementation(libs.koin.compose.viewmodel.navigation)
                 api(libs.koin.annotations)
 
                 implementation(libs.bundles.ktor.client)

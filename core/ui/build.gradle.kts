@@ -28,12 +28,14 @@ kotlin {
     iosArm64 {
         binaries.framework {
             baseName = xcfName
+            export(libs.calf.ui)
         }
     }
 
     iosSimulatorArm64 {
         binaries.framework {
             baseName = xcfName
+            export(libs.calf.ui)
         }
     }
 
@@ -55,6 +57,7 @@ kotlin {
                 implementation(libs.compose.components.uiToolingPreview)
                 implementation(libs.compose.material3)
                 implementation(libs.compose.materialIconsExtended)
+                api(libs.calf.ui)
             }
         }
         androidMain {
