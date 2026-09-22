@@ -70,6 +70,7 @@ kotlin {
                 implementation(libs.compose.materialIconsExtended)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 implementation(libs.kmp.maps.compose)
+                implementation(libs.kotlinx.serialization.json)
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)

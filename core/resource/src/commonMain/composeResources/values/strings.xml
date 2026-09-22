@@ -14,5 +14,6 @@
     <string name="depth_value">%1$s km</string>
     <string name="source">Source</string>
     <string name="share">Share</string>
+    <string name="filter">Filter</string>
     <string name="center_map_on_earthquake">Center map on earthquake</string>
 </resources>

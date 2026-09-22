@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
 
@@ -8,7 +9,8 @@ internal data class EarthquakeUIState(
     val isPullToRefresh: Boolean,
     val isEndReached: Boolean,
     val earhtquakeList: List<EarthquakeVo>,
-    val selectedMagnitude: MagnitudeThreshold
+    val selectedMagnitude: MagnitudeThreshold,
+    val selectedCountry: Country?
 ) {
     companion object Companion {
         val INITIAL = EarthquakeUIState(
@@ -16,7 +18,8 @@ internal data class EarthquakeUIState(
             isPullToRefresh = false,
             isEndReached = false,
             earhtquakeList = listOf(),
-            selectedMagnitude = MagnitudeThreshold.TWO_PLUS
+            selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
+            selectedCountry = null
         )
     }
 }

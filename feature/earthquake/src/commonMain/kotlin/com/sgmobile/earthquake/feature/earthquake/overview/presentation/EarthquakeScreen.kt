@@ -2,17 +2,29 @@ package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -22,39 +34,61 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mohamedrejeb.calf.sf.symbols.SFSymbol
 import com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi
 import com.mohamedrejeb.calf.ui.dropdown.AdaptiveDropDownItem
+import com.mohamedrejeb.calf.ui.gesture.adaptiveClickable
 import com.mohamedrejeb.calf.ui.navigation.AdaptiveScaffold
 import com.mohamedrejeb.calf.ui.navigation.UIKitUIBarButtonItem
+import com.mohamedrejeb.calf.ui.sheet.AdaptiveBottomSheet
+import com.mohamedrejeb.calf.ui.sheet.rememberAdaptiveSheetState
+import com.mohamedrejeb.calf.ui.uikit.UIKitImage
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquakes
+import com.sgmobile.earthquake.core.resource.filter
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
 import com.sgmobile.earthquake.feature.earthquake.navigation.EarthquakeRoutes
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeRowItem
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.toCountryFlagEmoji
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalCalfUiApi::class)
+@OptIn(ExperimentalCalfUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun EarthquakeScreen(
     viewModel: EarthquakeViewModel = koinViewModel<EarthquakeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val countries by viewModel.countries.collectAsStateWithLifecycle()
     val navigator = LocalNavigator.current
-    // Reuse Calf's native UIMenu; SGAppBar updates only the visible button title on iOS.
+    val filterSheetState = rememberAdaptiveSheetState()
+    var isFilterSheetVisible by rememberSaveable { mutableStateOf(false) }
+    val onFilterClick = { isFilterSheetVisible = true }
+    val selectedCountryFlag = uiState.selectedCountry?.code?.toCountryFlagEmoji()
+
     val iosTrailingItems = remember(viewModel) {
         listOf(
             UIKitUIBarButtonItem.withMenu(
@@ -77,8 +111,40 @@ internal fun EarthquakeScreen(
 
     AdaptiveScaffold(
         topBar = {
+            val title = stringResource(Res.string.earthquakes)
+            val filterContentDescription = stringResource(Res.string.filter)
             SGAppBar(
-                screenTitle = stringResource(Res.string.earthquakes),
+                iosTitle = title,
+                navigationIcon = {
+                    IconButton(onClick = onFilterClick) {
+                        if (selectedCountryFlag != null) {
+                            Text(
+                                text = selectedCountryFlag,
+                                modifier = Modifier.clearAndSetSemantics {
+                                    contentDescription = filterContentDescription
+                                },
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.FilterList,
+                                contentDescription = filterContentDescription,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
+                    }
+                },
+                iosLeadingItems = listOf(
+                    selectedCountryFlag?.let { flag ->
+                        UIKitUIBarButtonItem.title(
+                            title = flag,
+                            onClick = onFilterClick,
+                        )
+                    } ?: UIKitUIBarButtonItem.image(
+                        image = UIKitImage.SystemName(SFSymbol.line3HorizontalDecrease),
+                        onClick = onFilterClick,
+                    ),
+                ),
                 iosTrailingItems = iosTrailingItems,
                 iosTrailingItemTitles = listOf(uiState.selectedMagnitude.label),
                 actions = {
@@ -109,6 +175,118 @@ internal fun EarthquakeScreen(
                 SGLoading()
             }
         }
+    }
+
+    if (isFilterSheetVisible) {
+        AdaptiveBottomSheet(
+            onDismissRequest = { isFilterSheetVisible = false },
+            adaptiveSheetState = filterSheetState,
+        ) {
+            CountryList(
+                countries = countries,
+                selectedCountry = uiState.selectedCountry,
+                onCountryClick = { country ->
+                    viewModel.handleIntent(EarthquakeScreenIntent.SelectCountry(country))
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun CountryList(
+    countries: List<Country>,
+    selectedCountry: Country?,
+    onCountryClick: (Country) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(vertical = 8.dp),
+    ) {
+        countries.forEachIndexed { index, country ->
+            val isSelected = country == selectedCountry
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { selected = isSelected }
+                    .adaptiveClickable { onCountryClick(country) }
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = country.code.toCountryFlagEmoji().orEmpty(),
+                    modifier = Modifier
+                        .width(24.dp)
+                        .clearAndSetSemantics {},
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = country.name,
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                if (isSelected) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+
+            if (index < countries.lastIndex) {
+                HorizontalDivider()
+            }
+        }
+    }
+}
+
+@PreviewThemes
+@Composable
+private fun CountryListPreview() {
+    SGPreview {
+        CountryList(
+            countries = listOf(
+                Country(
+                    code = "TR",
+                    name = "Turkey",
+                    flagUrl = "",
+                    bounds = CountryBounds(
+                        minLongitude = 26.04,
+                        minLatitude = 35.82,
+                        maxLongitude = 44.79,
+                        maxLatitude = 42.14,
+                    ),
+                ),
+                Country(
+                    code = "US",
+                    name = "United States",
+                    flagUrl = "",
+                    bounds = CountryBounds(
+                        minLongitude = -125.0,
+                        minLatitude = 24.0,
+                        maxLongitude = -66.0,
+                        maxLatitude = 49.0,
+                    ),
+                ),
+            ),
+            selectedCountry = Country(
+                code = "TR",
+                name = "Turkey",
+                flagUrl = "",
+                bounds = CountryBounds(
+                    minLongitude = 26.04,
+                    minLatitude = 35.82,
+                    maxLongitude = 44.79,
+                    maxLatitude = 42.14,
+                ),
+            ),
+            onCountryClick = {},
+        )
     }
 }
 
@@ -208,6 +386,7 @@ private fun EarthquakeContentPreview() {
                 isPullToRefresh = false,
                 isEndReached = false,
                 selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
+                selectedCountry = null,
                 earhtquakeList = listOf(
                     EarthquakeVo(
                         id = "1",

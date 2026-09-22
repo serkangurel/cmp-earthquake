@@ -21,6 +21,7 @@ internal fun List<Earthquake>.mapToUi(): EarthquakeUIState {
         isPullToRefresh = false,
         isEndReached = false,
         earhtquakeList = earhtquakeList,
-        selectedMagnitude = MagnitudeThreshold.TWO_PLUS
+        selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
+        selectedCountry = null
     )
 }
