@@ -15,5 +15,7 @@
     <string name="source">Source</string>
     <string name="share">Share</string>
     <string name="filter">Filter</string>
+    <string name="no_earthquakes_found">No earthquakes found</string>
+    <string name="no_earthquakes_found_description">Try changing the country or magnitude filters, or pull to refresh.</string>
     <string name="center_map_on_earthquake">Center map on earthquake</string>
 </resources>
