@@ -1,5 +1,7 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -25,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -78,6 +82,9 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
+private const val FILTER_BUTTON_CONTAINER_ALPHA = 0.20f
+private const val FILTER_BUTTON_BORDER_ALPHA = 0.30f
+
 @OptIn(ExperimentalCalfUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun EarthquakeScreen(
@@ -92,7 +99,7 @@ internal fun EarthquakeScreen(
     val onFilterClick = { isFilterSheetVisible = true }
     val selectedCountryFlag = uiState.selectedCountry?.code?.toCountryFlagEmoji()
 
-    val iosTrailingItems = remember(viewModel) {
+    val iosTrailingItems = remember(viewModel, uiState.selectedMagnitude) {
         listOf(
             UIKitUIBarButtonItem.withMenu(
                 title = uiState.selectedMagnitude.label,
@@ -119,23 +126,12 @@ internal fun EarthquakeScreen(
             SGAppBar(
                 iosTitle = title,
                 navigationIcon = {
-                    IconButton(onClick = onFilterClick) {
-                        if (selectedCountryFlag != null) {
-                            Text(
-                                text = selectedCountryFlag,
-                                modifier = Modifier.clearAndSetSemantics {
-                                    contentDescription = filterContentDescription
-                                },
-                                style = MaterialTheme.typography.titleLarge,
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Filled.FilterList,
-                                contentDescription = filterContentDescription,
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        }
-                    }
+                    CountryFilterButton(
+                        selectedCountryFlag = selectedCountryFlag,
+                        contentDescription = filterContentDescription,
+                        modifier = Modifier.padding(start = 8.dp),
+                        onClick = onFilterClick,
+                    )
                 },
                 iosLeadingItems = listOf(
                     selectedCountryFlag?.let { flag ->
@@ -200,6 +196,68 @@ internal fun EarthquakeScreen(
                         viewModel.handleIntent(EarthquakeScreenIntent.SelectCountry(country))
                     }
                 },
+            )
+        }
+    }
+}
+
+@Composable
+private fun CountryFilterButton(
+    selectedCountryFlag: String?,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val buttonColor = MaterialTheme.colorScheme.onPrimary
+    IconButton(
+        onClick = onClick,
+        modifier = modifier.border(
+            width = 1.dp,
+            color = buttonColor.copy(alpha = FILTER_BUTTON_BORDER_ALPHA),
+            shape = CircleShape,
+        ),
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = buttonColor.copy(alpha = FILTER_BUTTON_CONTAINER_ALPHA),
+            contentColor = buttonColor,
+        ),
+    ) {
+        if (selectedCountryFlag != null) {
+            Text(
+                text = selectedCountryFlag,
+                modifier = Modifier.clearAndSetSemantics {
+                    this.contentDescription = contentDescription
+                },
+                style = MaterialTheme.typography.titleLarge,
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Filled.FilterList,
+                contentDescription = contentDescription,
+            )
+        }
+    }
+}
+
+@PreviewThemes
+@Composable
+private fun CountryFilterButtonPreview() {
+    SGPreview {
+        val contentDescription = stringResource(Res.string.filter)
+        Row(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            CountryFilterButton(
+                selectedCountryFlag = null,
+                contentDescription = contentDescription,
+                onClick = {},
+            )
+            CountryFilterButton(
+                selectedCountryFlag = "🇹🇷",
+                contentDescription = contentDescription,
+                onClick = {},
             )
         }
     }

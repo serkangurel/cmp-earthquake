@@ -15,6 +15,10 @@ class UsgsApi(
         offset: Int = 1,
         limit: Int = EarthquakeConstants.PAGE_SIZE,
         minmagnitude: Double = MagnitudeThreshold.TWO_PLUS.value,
+        minlatitude: Double,
+        minlongitude: Double,
+        maxlatitude: Double,
+        maxlongitude: Double,
         format: String = "geojson",
         orderby: String = "time"
     ): Result<UsgsResponse> = runCatching {
@@ -23,6 +27,10 @@ class UsgsApi(
             parameter("offset", offset)
             parameter("limit", limit)
             parameter("minmagnitude", minmagnitude)
+            parameter("minlatitude", minlatitude)
+            parameter("minlongitude", minlongitude)
+            parameter("maxlatitude", maxlatitude)
+            parameter("maxlongitude", maxlongitude)
             parameter("format", format)
             parameter("orderby", orderby)
         }.body()

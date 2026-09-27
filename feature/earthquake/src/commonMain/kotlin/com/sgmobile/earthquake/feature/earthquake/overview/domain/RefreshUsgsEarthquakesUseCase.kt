@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.domain
 
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import org.koin.core.annotation.Factory
 
@@ -10,10 +11,12 @@ internal class RefreshUsgsEarthquakesUseCase(
 ) {
     suspend operator fun invoke(
         pageSize: Int,
-        selectedMagnitude: MagnitudeThreshold
+        selectedMagnitude: MagnitudeThreshold,
+        selectedCountryBounds: CountryBounds,
     ) = earthquakeRepository.refresh(
         startTime = getUsgsEarthquakeStartTimeUseCase(),
         pageSize = pageSize,
-        selectedMagnitude = selectedMagnitude
+        selectedMagnitude = selectedMagnitude,
+        selectedCountryBounds = selectedCountryBounds,
     )
 }

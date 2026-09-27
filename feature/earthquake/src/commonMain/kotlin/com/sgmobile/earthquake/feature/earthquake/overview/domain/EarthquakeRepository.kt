@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.domain
 
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeState
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
@@ -14,7 +15,8 @@ internal interface EarthquakeRepository {
     suspend fun refresh(
         startTime: String,
         pageSize: Int,
-        selectedMagnitude: MagnitudeThreshold
+        selectedMagnitude: MagnitudeThreshold,
+        selectedCountryBounds: CountryBounds,
     ): EarthquakeState
 
     // Loads the next page if available

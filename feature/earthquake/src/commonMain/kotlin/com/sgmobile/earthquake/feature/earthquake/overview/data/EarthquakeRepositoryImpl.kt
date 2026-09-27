@@ -4,6 +4,7 @@ import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
 import com.sgmobile.earthquake.feature.earthquake.overview.data.extensions.toDomainList
 import com.sgmobile.earthquake.feature.earthquake.overview.data.usgs.UsgsApi
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.EarthquakeRepository
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeState
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
@@ -28,16 +29,19 @@ internal class EarthquakeRepositoryImpl(
     private var offset: Int = 1
     private var pageSize: Int = EarthquakeConstants.PAGE_SIZE
     private var selectedMagnitude: MagnitudeThreshold = MagnitudeThreshold.TWO_PLUS
+    private lateinit var selectedCountryBounds: CountryBounds
 
     override suspend fun refresh(
         startTime: String,
         pageSize: Int,
-        selectedMagnitude: MagnitudeThreshold
+        selectedMagnitude: MagnitudeThreshold,
+        selectedCountryBounds: CountryBounds,
     ): EarthquakeState {
         this.startTime = startTime
         this.pageSize = pageSize
         this.offset = 1
         this.selectedMagnitude = selectedMagnitude
+        this.selectedCountryBounds = selectedCountryBounds
 
         _isEndReached.value = false
         _earthquakeFlow.value = emptyList()
@@ -57,6 +61,10 @@ internal class EarthquakeRepositoryImpl(
             offset = offset,
             limit = pageSize,
             minmagnitude = selectedMagnitude.value,
+            minlatitude = selectedCountryBounds.minLatitude,
+            minlongitude = selectedCountryBounds.minLongitude,
+            maxlatitude = selectedCountryBounds.maxLatitude,
+            maxlongitude = selectedCountryBounds.maxLongitude,
         ).fold(
             onSuccess = { response ->
                 val page = response.toDomainList()

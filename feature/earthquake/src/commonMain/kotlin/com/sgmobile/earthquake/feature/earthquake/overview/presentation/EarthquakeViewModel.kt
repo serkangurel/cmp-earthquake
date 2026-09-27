@@ -67,7 +67,6 @@ internal class EarthquakeViewModel(
 
     init {
         loadCountries()
-        refresh(isPullToRefresh = false)
     }
 
     fun handleIntent(intent: EarthquakeScreenIntent) {
@@ -86,7 +85,9 @@ internal class EarthquakeViewModel(
     }
 
     private fun selectCountry(country: Country) {
+        if (country == selectedCountryFlow.value) return
         selectedCountryFlow.value = country
+        refresh(isPullToRefresh = false)
     }
 
     private fun loadCountries() {
@@ -96,6 +97,7 @@ internal class EarthquakeViewModel(
                 it.code == GLOBAL_COUNTRY_CODE
             }
             countries.value = loadedCountries
+            refresh(isPullToRefresh = false)
         }
     }
 
@@ -104,8 +106,13 @@ internal class EarthquakeViewModel(
         pageSize: Int = EarthquakeConstants.PAGE_SIZE,
         selectedMagnitude: MagnitudeThreshold = this.selectedMagnitudeFlow.value
     ) {
+        val selectedCountryBounds = selectedCountryFlow.value?.bounds ?: return
         executeWithLoading(isPullToRefresh = isPullToRefresh) {
-            refreshUsgsEarthquakesUseCase(pageSize, selectedMagnitude)
+            refreshUsgsEarthquakesUseCase(
+                pageSize = pageSize,
+                selectedMagnitude = selectedMagnitude,
+                selectedCountryBounds = selectedCountryBounds,
+            )
         }
     }
 
