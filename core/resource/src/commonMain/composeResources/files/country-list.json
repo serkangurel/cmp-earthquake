@@ -1,6 +1,17 @@
 {
   "countries": [
     {
+      "code": "GLOBAL",
+      "name": "Global",
+      "flagUrl": "",
+      "bounds": {
+        "minLongitude": -180.0,
+        "minLatitude": -90.0,
+        "maxLongitude": 180.0,
+        "maxLatitude": 90.0
+      }
+    },
+    {
       "code": "AE",
       "name": "United Arab Emirates",
       "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1ea.svg",

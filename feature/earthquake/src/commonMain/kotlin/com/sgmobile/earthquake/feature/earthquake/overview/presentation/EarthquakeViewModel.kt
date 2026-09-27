@@ -23,6 +23,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration.Companion.seconds
 
+private const val GLOBAL_COUNTRY_CODE = "GLOBAL"
+
 @KoinViewModel
 internal class EarthquakeViewModel(
     private val refreshUsgsEarthquakesUseCase: RefreshUsgsEarthquakesUseCase,
@@ -89,7 +91,11 @@ internal class EarthquakeViewModel(
 
     private fun loadCountries() {
         viewModelScope.launch {
-            countries.value = getCountriesUseCase()
+            val loadedCountries = getCountriesUseCase()
+            selectedCountryFlow.value = loadedCountries.firstOrNull {
+                it.code == GLOBAL_COUNTRY_CODE
+            }
+            countries.value = loadedCountries
         }
     }
 

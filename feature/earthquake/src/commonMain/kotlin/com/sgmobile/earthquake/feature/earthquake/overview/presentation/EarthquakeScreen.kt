@@ -36,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -73,6 +74,7 @@ import com.sgmobile.earthquake.feature.earthquake.overview.presentation.componen
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.toCountryFlagEmoji
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeVo
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -85,6 +87,7 @@ internal fun EarthquakeScreen(
     val countries by viewModel.countries.collectAsStateWithLifecycle()
     val navigator = LocalNavigator.current
     val filterSheetState = rememberAdaptiveSheetState()
+    val coroutineScope = rememberCoroutineScope()
     var isFilterSheetVisible by rememberSaveable { mutableStateOf(false) }
     val onFilterClick = { isFilterSheetVisible = true }
     val selectedCountryFlag = uiState.selectedCountry?.code?.toCountryFlagEmoji()
@@ -186,7 +189,16 @@ internal fun EarthquakeScreen(
                 countries = countries,
                 selectedCountry = uiState.selectedCountry,
                 onCountryClick = { country ->
-                    viewModel.handleIntent(EarthquakeScreenIntent.SelectCountry(country))
+                    if (country == uiState.selectedCountry) {
+                        coroutineScope.launch {
+                            filterSheetState.hide()
+                            if (!filterSheetState.isVisible) {
+                                isFilterSheetVisible = false
+                            }
+                        }
+                    } else {
+                        viewModel.handleIntent(EarthquakeScreenIntent.SelectCountry(country))
+                    }
                 },
             )
         }

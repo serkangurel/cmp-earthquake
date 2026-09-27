@@ -2,6 +2,7 @@ package com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensi
 
 internal fun String.toCountryFlagEmoji(): String? {
     val countryCode = uppercase()
+    if (countryCode == GLOBAL_COUNTRY_CODE) return WORLD_EMOJI
     if (countryCode.length != 2 || countryCode.any { it !in 'A'..'Z' }) return null
 
     return buildString {
@@ -14,5 +15,7 @@ internal fun String.toCountryFlagEmoji(): String? {
     }
 }
 
+private const val GLOBAL_COUNTRY_CODE = "GLOBAL"
+private const val WORLD_EMOJI = "🌍"
 private const val REGIONAL_INDICATOR_HIGH_SURROGATE = '\uD83C'
 private const val REGIONAL_INDICATOR_A_LOW_SURROGATE = '\uDDE6'
