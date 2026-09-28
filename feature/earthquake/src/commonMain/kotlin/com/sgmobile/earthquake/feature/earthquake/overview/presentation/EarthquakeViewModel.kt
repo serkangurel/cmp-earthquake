@@ -3,15 +3,18 @@ package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetCountriesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReachedFlowUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextUsgsEarthquakesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.mapToUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -20,12 +23,15 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration.Companion.seconds
 
+private const val GLOBAL_COUNTRY_CODE = "GLOBAL"
+
 @KoinViewModel
 internal class EarthquakeViewModel(
     private val refreshUsgsEarthquakesUseCase: RefreshUsgsEarthquakesUseCase,
     private val loadNextUsgsEarthquakesUseCase: LoadNextUsgsEarthquakesUseCase,
     private val getEarthquakeFlowUseCase: GetEarthquakeFlowUseCase,
     private val getIsEndReachedFlowUseCase: GetIsEndReachedFlowUseCase,
+    private val getCountriesUseCase: GetCountriesUseCase,
 ) : ViewModel() {
 
     private val earthquakeFlow = getEarthquakeFlowUseCase()
@@ -33,19 +39,25 @@ internal class EarthquakeViewModel(
     private val isPullToRefreshFlow = MutableStateFlow(false)
     private val isEndReachedFlow = getIsEndReachedFlowUseCase()
     private val selectedMagnitudeFlow = MutableStateFlow(MagnitudeThreshold.TWO_PLUS)
+    private val selectedCountryFlow = MutableStateFlow<Country?>(null)
+    val countries: StateFlow<List<Country>>
+        field = MutableStateFlow(emptyList())
 
     val uiState = combine(
         earthquakeFlow.map(List<Earthquake>::mapToUi),
         isLoadingFlow,
         isPullToRefreshFlow,
         isEndReachedFlow,
-        selectedMagnitudeFlow
-    ) { earthquakes, isLoading, isPullToRefresh, isEndReached, selectedMagnitude ->
+        selectedMagnitudeFlow,
+        selectedCountryFlow
+    ) { values ->
+        val earthquakes = values[0] as EarthquakeUIState
         earthquakes.copy(
-            isLoading = isLoading,
-            isPullToRefresh = isPullToRefresh,
-            isEndReached = isEndReached,
-            selectedMagnitude = selectedMagnitude
+            isLoading = values[1] as Boolean,
+            isPullToRefresh = values[2] as Boolean,
+            isEndReached = values[3] as Boolean,
+            selectedMagnitude = values[4] as MagnitudeThreshold,
+            selectedCountry = values[5] as Country?,
         )
     }.stateIn(
         viewModelScope,
@@ -54,7 +66,7 @@ internal class EarthquakeViewModel(
     )
 
     init {
-        refresh(isPullToRefresh = false)
+        loadCountries()
     }
 
     fun handleIntent(intent: EarthquakeScreenIntent) {
@@ -62,6 +74,7 @@ internal class EarthquakeViewModel(
             is EarthquakeScreenIntent.Refresh -> refresh(isPullToRefresh = intent.isPullToRefresh)
             is EarthquakeScreenIntent.LoadMore -> loadMore()
             is EarthquakeScreenIntent.SelectMagnitude -> selectMagnitude(intent.selectedMagnitude)
+            is EarthquakeScreenIntent.SelectCountry -> selectCountry(intent.country)
         }
     }
 
@@ -71,13 +84,35 @@ internal class EarthquakeViewModel(
         refresh(isPullToRefresh = false)
     }
 
+    private fun selectCountry(country: Country) {
+        if (country == selectedCountryFlow.value) return
+        selectedCountryFlow.value = country
+        refresh(isPullToRefresh = false)
+    }
+
+    private fun loadCountries() {
+        viewModelScope.launch {
+            val loadedCountries = getCountriesUseCase()
+            selectedCountryFlow.value = loadedCountries.firstOrNull {
+                it.code == GLOBAL_COUNTRY_CODE
+            }
+            countries.value = loadedCountries
+            refresh(isPullToRefresh = false)
+        }
+    }
+
     private fun refresh(
         isPullToRefresh: Boolean,
         pageSize: Int = EarthquakeConstants.PAGE_SIZE,
         selectedMagnitude: MagnitudeThreshold = this.selectedMagnitudeFlow.value
     ) {
+        val selectedCountryBounds = selectedCountryFlow.value?.bounds ?: return
         executeWithLoading(isPullToRefresh = isPullToRefresh) {
-            refreshUsgsEarthquakesUseCase(pageSize, selectedMagnitude)
+            refreshUsgsEarthquakesUseCase(
+                pageSize = pageSize,
+                selectedMagnitude = selectedMagnitude,
+                selectedCountryBounds = selectedCountryBounds,
+            )
         }
     }
 

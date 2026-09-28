@@ -23,8 +23,10 @@ internal fun MapScreen(
 ) {
     AdaptiveScaffold(
         topBar = {
+            val title = stringResource(Res.string.map)
             SGAppBar(
-                screenTitle = stringResource(Res.string.map),
+                title = { Text(title) },
+                iosTitle = title,
             )
         },
     ) { paddingValues ->

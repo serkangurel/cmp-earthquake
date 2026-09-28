@@ -31,6 +31,11 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
 
 - Inspect the current working tree before editing. Preserve unrelated staged, unstaged, and
   untracked changes; never discard or rewrite user work.
+- At the start of every task, establish a working-tree baseline. When reviewing, displaying, or
+  summarizing changes, include only the delta introduced by the current task. Exclude pre-existing
+  modifications and changes from earlier completed tasks unless the user explicitly asks for the
+  complete working-tree diff. If a file was already modified at task start, use the baseline to
+  isolate the current task's edits instead of presenting the file's entire Git diff.
 - Keep changes narrowly scoped. Do not perform drive-by formatting or broad dependency upgrades.
 - Use the checked-in Gradle wrapper (`./gradlew`), not a system Gradle installation.
 - Use JDK 17 for Gradle and Android builds.
@@ -166,7 +171,8 @@ Before handing off a change:
    which platform was not verified.
 4. Summarize changed behavior, list verification performed, and call out any remaining risk or
    prerequisite.
-5. End every task with a `Code changes` section. For tasks that edit files, show a concise diff
-   grouped by affected file and include only changes made for that task, excluding unrelated
-   working-tree changes. For tasks without file edits, explicitly state that there were no code
-   changes.
+5. End every task with a `Code changes` section. For tasks that edit files, group changes by file
+   and show the actual added and removed lines in concise `diff` code blocks; a file link or
+   summary alone is not sufficient. Include only the task-baseline delta, never the whole file,
+   pre-existing working-tree changes, or changes from earlier completed tasks. For tasks without
+   file edits, explicitly state that there were no code changes.

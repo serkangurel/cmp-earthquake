@@ -23,8 +23,10 @@ internal fun SettingsScreen(
 ) {
     AdaptiveScaffold(
         topBar = {
+            val title = stringResource(Res.string.settings)
             SGAppBar(
-                screenTitle = stringResource(Res.string.settings),
+                title = { Text(title) },
+                iosTitle = title,
             )
         },
     ) { paddingValues ->

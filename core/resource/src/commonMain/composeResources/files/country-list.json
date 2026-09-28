@@ -1,0 +1,1918 @@
+{
+  "countries": [
+    {
+      "code": "GLOBAL",
+      "name": "Global",
+      "flagUrl": "",
+      "bounds": {
+        "minLongitude": -180.0,
+        "minLatitude": -90.0,
+        "maxLongitude": 180.0,
+        "maxLatitude": 90.0
+      }
+    },
+    {
+      "code": "AE",
+      "name": "United Arab Emirates",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 51.58,
+        "minLatitude": 22.5,
+        "maxLongitude": 56.4,
+        "maxLatitude": 26.06
+      }
+    },
+    {
+      "code": "AF",
+      "name": "Afghanistan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1eb.svg",
+      "bounds": {
+        "minLongitude": 60.53,
+        "minLatitude": 29.32,
+        "maxLongitude": 75.16,
+        "maxLatitude": 38.49
+      }
+    },
+    {
+      "code": "AL",
+      "name": "Albania",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1f1.svg",
+      "bounds": {
+        "minLongitude": 19.3,
+        "minLatitude": 39.62,
+        "maxLongitude": 21.02,
+        "maxLatitude": 42.69
+      }
+    },
+    {
+      "code": "AM",
+      "name": "Armenia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1f2.svg",
+      "bounds": {
+        "minLongitude": 43.58,
+        "minLatitude": 38.74,
+        "maxLongitude": 46.51,
+        "maxLatitude": 41.25
+      }
+    },
+    {
+      "code": "AO",
+      "name": "Angola",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1f4.svg",
+      "bounds": {
+        "minLongitude": 11.64,
+        "minLatitude": -17.93,
+        "maxLongitude": 24.08,
+        "maxLatitude": -4.44
+      }
+    },
+    {
+      "code": "AQ",
+      "name": "Antarctica",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1f6.svg",
+      "bounds": {
+        "minLongitude": -180.0,
+        "minLatitude": -90.0,
+        "maxLongitude": 180.0,
+        "maxLatitude": -63.27
+      }
+    },
+    {
+      "code": "AR",
+      "name": "Argentina",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1f7.svg",
+      "bounds": {
+        "minLongitude": -73.42,
+        "minLatitude": -55.25,
+        "maxLongitude": -53.63,
+        "maxLatitude": -21.83
+      }
+    },
+    {
+      "code": "AT",
+      "name": "Austria",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1f9.svg",
+      "bounds": {
+        "minLongitude": 9.48,
+        "minLatitude": 46.43,
+        "maxLongitude": 16.98,
+        "maxLatitude": 49.04
+      }
+    },
+    {
+      "code": "AU",
+      "name": "Australia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1fa.svg",
+      "bounds": {
+        "minLongitude": 113.34,
+        "minLatitude": -43.63,
+        "maxLongitude": 153.57,
+        "maxLatitude": -10.67
+      }
+    },
+    {
+      "code": "AZ",
+      "name": "Azerbaijan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e6-1f1ff.svg",
+      "bounds": {
+        "minLongitude": 44.79,
+        "minLatitude": 38.27,
+        "maxLongitude": 50.39,
+        "maxLatitude": 41.86
+      }
+    },
+    {
+      "code": "BA",
+      "name": "Bosnia and Herzegovina",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1e6.svg",
+      "bounds": {
+        "minLongitude": 15.75,
+        "minLatitude": 42.65,
+        "maxLongitude": 19.6,
+        "maxLatitude": 45.23
+      }
+    },
+    {
+      "code": "BD",
+      "name": "Bangladesh",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1e9.svg",
+      "bounds": {
+        "minLongitude": 88.08,
+        "minLatitude": 20.67,
+        "maxLongitude": 92.67,
+        "maxLatitude": 26.45
+      }
+    },
+    {
+      "code": "BE",
+      "name": "Belgium",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 2.51,
+        "minLatitude": 49.53,
+        "maxLongitude": 6.16,
+        "maxLatitude": 51.48
+      }
+    },
+    {
+      "code": "BF",
+      "name": "Burkina Faso",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1eb.svg",
+      "bounds": {
+        "minLongitude": -5.47,
+        "minLatitude": 9.61,
+        "maxLongitude": 2.18,
+        "maxLatitude": 15.12
+      }
+    },
+    {
+      "code": "BG",
+      "name": "Bulgaria",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1ec.svg",
+      "bounds": {
+        "minLongitude": 22.38,
+        "minLatitude": 41.23,
+        "maxLongitude": 28.56,
+        "maxLatitude": 44.23
+      }
+    },
+    {
+      "code": "BI",
+      "name": "Burundi",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1ee.svg",
+      "bounds": {
+        "minLongitude": 29.02,
+        "minLatitude": -4.5,
+        "maxLongitude": 30.75,
+        "maxLatitude": -2.35
+      }
+    },
+    {
+      "code": "BJ",
+      "name": "Benin",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1ef.svg",
+      "bounds": {
+        "minLongitude": 0.77,
+        "minLatitude": 6.14,
+        "maxLongitude": 3.8,
+        "maxLatitude": 12.24
+      }
+    },
+    {
+      "code": "BN",
+      "name": "Brunei",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1f3.svg",
+      "bounds": {
+        "minLongitude": 114.2,
+        "minLatitude": 4.01,
+        "maxLongitude": 115.45,
+        "maxLatitude": 5.45
+      }
+    },
+    {
+      "code": "BO",
+      "name": "Bolivia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1f4.svg",
+      "bounds": {
+        "minLongitude": -69.59,
+        "minLatitude": -22.87,
+        "maxLongitude": -57.5,
+        "maxLatitude": -9.76
+      }
+    },
+    {
+      "code": "BR",
+      "name": "Brazil",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1f7.svg",
+      "bounds": {
+        "minLongitude": -73.99,
+        "minLatitude": -33.77,
+        "maxLongitude": -34.73,
+        "maxLatitude": 5.24
+      }
+    },
+    {
+      "code": "BS",
+      "name": "Bahamas",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1f8.svg",
+      "bounds": {
+        "minLongitude": -78.98,
+        "minLatitude": 23.71,
+        "maxLongitude": -77.0,
+        "maxLatitude": 27.04
+      }
+    },
+    {
+      "code": "BT",
+      "name": "Bhutan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1f9.svg",
+      "bounds": {
+        "minLongitude": 88.81,
+        "minLatitude": 26.72,
+        "maxLongitude": 92.1,
+        "maxLatitude": 28.3
+      }
+    },
+    {
+      "code": "BW",
+      "name": "Botswana",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1fc.svg",
+      "bounds": {
+        "minLongitude": 19.9,
+        "minLatitude": -26.83,
+        "maxLongitude": 29.43,
+        "maxLatitude": -17.66
+      }
+    },
+    {
+      "code": "BY",
+      "name": "Belarus",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1fe.svg",
+      "bounds": {
+        "minLongitude": 23.2,
+        "minLatitude": 51.32,
+        "maxLongitude": 32.69,
+        "maxLatitude": 56.17
+      }
+    },
+    {
+      "code": "BZ",
+      "name": "Belize",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e7-1f1ff.svg",
+      "bounds": {
+        "minLongitude": -89.23,
+        "minLatitude": 15.89,
+        "maxLongitude": -88.11,
+        "maxLatitude": 18.5
+      }
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1e6.svg",
+      "bounds": {
+        "minLongitude": -141.0,
+        "minLatitude": 41.68,
+        "maxLongitude": -52.65,
+        "maxLatitude": 73.23
+      }
+    },
+    {
+      "code": "CD",
+      "name": "Congo (Kinshasa)",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1ec.svg",
+      "bounds": {
+        "minLongitude": 12.18,
+        "minLatitude": -13.26,
+        "maxLongitude": 31.17,
+        "maxLatitude": 5.26
+      }
+    },
+    {
+      "code": "CF",
+      "name": "Central African Republic",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1eb.svg",
+      "bounds": {
+        "minLongitude": 14.46,
+        "minLatitude": 2.27,
+        "maxLongitude": 27.37,
+        "maxLatitude": 11.14
+      }
+    },
+    {
+      "code": "CG",
+      "name": "Congo (Brazzaville)",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1e9.svg",
+      "bounds": {
+        "minLongitude": 11.09,
+        "minLatitude": -5.04,
+        "maxLongitude": 18.45,
+        "maxLatitude": 3.73
+      }
+    },
+    {
+      "code": "CH",
+      "name": "Switzerland",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1ed.svg",
+      "bounds": {
+        "minLongitude": 6.02,
+        "minLatitude": 45.78,
+        "maxLongitude": 10.44,
+        "maxLatitude": 47.83
+      }
+    },
+    {
+      "code": "CI",
+      "name": "Ivory Coast",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1ee.svg",
+      "bounds": {
+        "minLongitude": -8.6,
+        "minLatitude": 4.34,
+        "maxLongitude": -2.56,
+        "maxLatitude": 10.52
+      }
+    },
+    {
+      "code": "CL",
+      "name": "Chile",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1f1.svg",
+      "bounds": {
+        "minLongitude": -75.64,
+        "minLatitude": -55.61,
+        "maxLongitude": -66.96,
+        "maxLatitude": -17.58
+      }
+    },
+    {
+      "code": "CM",
+      "name": "Cameroon",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1f2.svg",
+      "bounds": {
+        "minLongitude": 8.49,
+        "minLatitude": 1.73,
+        "maxLongitude": 16.01,
+        "maxLatitude": 12.86
+      }
+    },
+    {
+      "code": "CN",
+      "name": "China",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1f3.svg",
+      "bounds": {
+        "minLongitude": 73.68,
+        "minLatitude": 18.2,
+        "maxLongitude": 135.03,
+        "maxLatitude": 53.46
+      }
+    },
+    {
+      "code": "CO",
+      "name": "Colombia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1f4.svg",
+      "bounds": {
+        "minLongitude": -78.99,
+        "minLatitude": -4.3,
+        "maxLongitude": -66.88,
+        "maxLatitude": 12.44
+      }
+    },
+    {
+      "code": "CR",
+      "name": "Costa Rica",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1f7.svg",
+      "bounds": {
+        "minLongitude": -85.94,
+        "minLatitude": 8.23,
+        "maxLongitude": -82.55,
+        "maxLatitude": 11.22
+      }
+    },
+    {
+      "code": "CU",
+      "name": "Cuba",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1fa.svg",
+      "bounds": {
+        "minLongitude": -84.97,
+        "minLatitude": 19.86,
+        "maxLongitude": -74.18,
+        "maxLatitude": 23.19
+      }
+    },
+    {
+      "code": "CY",
+      "name": "Cyprus",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1fe.svg",
+      "bounds": {
+        "minLongitude": 32.26,
+        "minLatitude": 34.57,
+        "maxLongitude": 34.0,
+        "maxLatitude": 35.17
+      }
+    },
+    {
+      "code": "CZ",
+      "name": "Czech Republic",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e8-1f1ff.svg",
+      "bounds": {
+        "minLongitude": 12.24,
+        "minLatitude": 48.56,
+        "maxLongitude": 18.85,
+        "maxLatitude": 51.12
+      }
+    },
+    {
+      "code": "DE",
+      "name": "Germany",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e9-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 5.99,
+        "minLatitude": 47.3,
+        "maxLongitude": 15.02,
+        "maxLatitude": 54.98
+      }
+    },
+    {
+      "code": "DJ",
+      "name": "Djibouti",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e9-1f1ef.svg",
+      "bounds": {
+        "minLongitude": 41.66,
+        "minLatitude": 10.93,
+        "maxLongitude": 43.32,
+        "maxLatitude": 12.7
+      }
+    },
+    {
+      "code": "DK",
+      "name": "Denmark",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e9-1f1f0.svg",
+      "bounds": {
+        "minLongitude": 8.09,
+        "minLatitude": 54.8,
+        "maxLongitude": 12.69,
+        "maxLatitude": 57.73
+      }
+    },
+    {
+      "code": "DO",
+      "name": "Dominican Republic",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e9-1f1f4.svg",
+      "bounds": {
+        "minLongitude": -71.95,
+        "minLatitude": 17.6,
+        "maxLongitude": -68.32,
+        "maxLatitude": 19.88
+      }
+    },
+    {
+      "code": "DZ",
+      "name": "Algeria",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1e9-1f1ff.svg",
+      "bounds": {
+        "minLongitude": -8.68,
+        "minLatitude": 19.06,
+        "maxLongitude": 12.0,
+        "maxLatitude": 37.12
+      }
+    },
+    {
+      "code": "EC",
+      "name": "Ecuador",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ea-1f1e8.svg",
+      "bounds": {
+        "minLongitude": -80.97,
+        "minLatitude": -4.96,
+        "maxLongitude": -75.23,
+        "maxLatitude": 1.38
+      }
+    },
+    {
+      "code": "EE",
+      "name": "Estonia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ea-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 23.34,
+        "minLatitude": 57.47,
+        "maxLongitude": 28.13,
+        "maxLatitude": 59.61
+      }
+    },
+    {
+      "code": "EG",
+      "name": "Egypt",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ea-1f1ec.svg",
+      "bounds": {
+        "minLongitude": 24.7,
+        "minLatitude": 22.0,
+        "maxLongitude": 36.87,
+        "maxLatitude": 31.59
+      }
+    },
+    {
+      "code": "ER",
+      "name": "Eritrea",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ea-1f1f7.svg",
+      "bounds": {
+        "minLongitude": 36.32,
+        "minLatitude": 12.46,
+        "maxLongitude": 43.08,
+        "maxLatitude": 18.0
+      }
+    },
+    {
+      "code": "ES",
+      "name": "Spain",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ea-1f1f8.svg",
+      "bounds": {
+        "minLongitude": -9.39,
+        "minLatitude": 35.95,
+        "maxLongitude": 3.04,
+        "maxLatitude": 43.75
+      }
+    },
+    {
+      "code": "ET",
+      "name": "Ethiopia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ea-1f1f9.svg",
+      "bounds": {
+        "minLongitude": 32.95,
+        "minLatitude": 3.42,
+        "maxLongitude": 47.79,
+        "maxLatitude": 14.96
+      }
+    },
+    {
+      "code": "FI",
+      "name": "Finland",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1eb-1f1ee.svg",
+      "bounds": {
+        "minLongitude": 20.65,
+        "minLatitude": 59.85,
+        "maxLongitude": 31.52,
+        "maxLatitude": 70.16
+      }
+    },
+    {
+      "code": "FJ",
+      "name": "Fiji",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1eb-1f1ef.svg",
+      "bounds": {
+        "minLongitude": -180.0,
+        "minLatitude": -18.29,
+        "maxLongitude": 180.0,
+        "maxLatitude": -16.02
+      }
+    },
+    {
+      "code": "FK",
+      "name": "Falkland Islands",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1eb-1f1f0.svg",
+      "bounds": {
+        "minLongitude": -61.2,
+        "minLatitude": -52.3,
+        "maxLongitude": -57.75,
+        "maxLatitude": -51.1
+      }
+    },
+    {
+      "code": "FR",
+      "name": "France",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1eb-1f1f7.svg",
+      "bounds": {
+        "minLongitude": -5.0,
+        "minLatitude": 42.5,
+        "maxLongitude": 9.56,
+        "maxLatitude": 51.15
+      }
+    },
+    {
+      "code": "GA",
+      "name": "Gabon",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1e6.svg",
+      "bounds": {
+        "minLongitude": 8.8,
+        "minLatitude": -3.98,
+        "maxLongitude": 14.43,
+        "maxLatitude": 2.33
+      }
+    },
+    {
+      "code": "GB",
+      "name": "United Kingdom",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1e7.svg",
+      "bounds": {
+        "minLongitude": -7.57,
+        "minLatitude": 49.96,
+        "maxLongitude": 1.68,
+        "maxLatitude": 58.64
+      }
+    },
+    {
+      "code": "GE",
+      "name": "Georgia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 39.96,
+        "minLatitude": 41.06,
+        "maxLongitude": 46.64,
+        "maxLatitude": 43.55
+      }
+    },
+    {
+      "code": "GH",
+      "name": "Ghana",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1ed.svg",
+      "bounds": {
+        "minLongitude": -3.24,
+        "minLatitude": 4.71,
+        "maxLongitude": 1.06,
+        "maxLatitude": 11.1
+      }
+    },
+    {
+      "code": "GL",
+      "name": "Greenland",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1f1.svg",
+      "bounds": {
+        "minLongitude": -73.3,
+        "minLatitude": 60.04,
+        "maxLongitude": -12.21,
+        "maxLatitude": 83.65
+      }
+    },
+    {
+      "code": "GM",
+      "name": "Gambia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1f2.svg",
+      "bounds": {
+        "minLongitude": -16.84,
+        "minLatitude": 13.13,
+        "maxLongitude": -13.84,
+        "maxLatitude": 13.88
+      }
+    },
+    {
+      "code": "GN",
+      "name": "Guinea",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1f3.svg",
+      "bounds": {
+        "minLongitude": -15.13,
+        "minLatitude": 7.31,
+        "maxLongitude": -7.83,
+        "maxLatitude": 12.59
+      }
+    },
+    {
+      "code": "GQ",
+      "name": "Equatorial Guinea",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1f6.svg",
+      "bounds": {
+        "minLongitude": 9.31,
+        "minLatitude": 1.01,
+        "maxLongitude": 11.29,
+        "maxLatitude": 2.28
+      }
+    },
+    {
+      "code": "GR",
+      "name": "Greece",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1f7.svg",
+      "bounds": {
+        "minLongitude": 20.15,
+        "minLatitude": 34.92,
+        "maxLongitude": 26.6,
+        "maxLatitude": 41.83
+      }
+    },
+    {
+      "code": "GT",
+      "name": "Guatemala",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1f9.svg",
+      "bounds": {
+        "minLongitude": -92.23,
+        "minLatitude": 13.74,
+        "maxLongitude": -88.23,
+        "maxLatitude": 17.82
+      }
+    },
+    {
+      "code": "GW",
+      "name": "Guinea Bissau",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1fc.svg",
+      "bounds": {
+        "minLongitude": -16.68,
+        "minLatitude": 11.04,
+        "maxLongitude": -13.7,
+        "maxLatitude": 12.63
+      }
+    },
+    {
+      "code": "GY",
+      "name": "Guyana",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1fe.svg",
+      "bounds": {
+        "minLongitude": -61.41,
+        "minLatitude": 1.27,
+        "maxLongitude": -56.54,
+        "maxLatitude": 8.37
+      }
+    },
+    {
+      "code": "HN",
+      "name": "Honduras",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ed-1f1f3.svg",
+      "bounds": {
+        "minLongitude": -89.35,
+        "minLatitude": 12.98,
+        "maxLongitude": -83.15,
+        "maxLatitude": 16.01
+      }
+    },
+    {
+      "code": "HR",
+      "name": "Croatia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ed-1f1f7.svg",
+      "bounds": {
+        "minLongitude": 13.66,
+        "minLatitude": 42.48,
+        "maxLongitude": 19.39,
+        "maxLatitude": 46.5
+      }
+    },
+    {
+      "code": "HT",
+      "name": "Haiti",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ed-1f1f9.svg",
+      "bounds": {
+        "minLongitude": -74.46,
+        "minLatitude": 18.03,
+        "maxLongitude": -71.62,
+        "maxLatitude": 19.92
+      }
+    },
+    {
+      "code": "HU",
+      "name": "Hungary",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ed-1f1fa.svg",
+      "bounds": {
+        "minLongitude": 16.2,
+        "minLatitude": 45.76,
+        "maxLongitude": 22.71,
+        "maxLatitude": 48.62
+      }
+    },
+    {
+      "code": "ID",
+      "name": "Indonesia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ee-1f1e9.svg",
+      "bounds": {
+        "minLongitude": 95.29,
+        "minLatitude": -10.36,
+        "maxLongitude": 141.03,
+        "maxLatitude": 5.48
+      }
+    },
+    {
+      "code": "IE",
+      "name": "Ireland",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ee-1f1ea.svg",
+      "bounds": {
+        "minLongitude": -9.98,
+        "minLatitude": 51.67,
+        "maxLongitude": -6.03,
+        "maxLatitude": 55.13
+      }
+    },
+    {
+      "code": "IL",
+      "name": "Israel",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ee-1f1f1.svg",
+      "bounds": {
+        "minLongitude": 34.27,
+        "minLatitude": 29.5,
+        "maxLongitude": 35.84,
+        "maxLatitude": 33.28
+      }
+    },
+    {
+      "code": "IN",
+      "name": "India",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ee-1f1f3.svg",
+      "bounds": {
+        "minLongitude": 68.18,
+        "minLatitude": 7.97,
+        "maxLongitude": 97.4,
+        "maxLatitude": 35.49
+      }
+    },
+    {
+      "code": "IQ",
+      "name": "Iraq",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ee-1f1f6.svg",
+      "bounds": {
+        "minLongitude": 38.79,
+        "minLatitude": 29.1,
+        "maxLongitude": 48.57,
+        "maxLatitude": 37.39
+      }
+    },
+    {
+      "code": "IR",
+      "name": "Iran",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ee-1f1f7.svg",
+      "bounds": {
+        "minLongitude": 44.11,
+        "minLatitude": 25.08,
+        "maxLongitude": 63.32,
+        "maxLatitude": 39.71
+      }
+    },
+    {
+      "code": "IS",
+      "name": "Iceland",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ee-1f1f8.svg",
+      "bounds": {
+        "minLongitude": -24.33,
+        "minLatitude": 63.5,
+        "maxLongitude": -13.61,
+        "maxLatitude": 66.53
+      }
+    },
+    {
+      "code": "IT",
+      "name": "Italy",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ee-1f1f9.svg",
+      "bounds": {
+        "minLongitude": 6.75,
+        "minLatitude": 36.62,
+        "maxLongitude": 18.48,
+        "maxLatitude": 47.12
+      }
+    },
+    {
+      "code": "JM",
+      "name": "Jamaica",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ef-1f1f2.svg",
+      "bounds": {
+        "minLongitude": -78.34,
+        "minLatitude": 17.7,
+        "maxLongitude": -76.2,
+        "maxLatitude": 18.52
+      }
+    },
+    {
+      "code": "JO",
+      "name": "Jordan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ef-1f1f4.svg",
+      "bounds": {
+        "minLongitude": 34.92,
+        "minLatitude": 29.2,
+        "maxLongitude": 39.2,
+        "maxLatitude": 33.38
+      }
+    },
+    {
+      "code": "JP",
+      "name": "Japan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ef-1f1f5.svg",
+      "bounds": {
+        "minLongitude": 129.41,
+        "minLatitude": 31.03,
+        "maxLongitude": 145.54,
+        "maxLatitude": 45.55
+      }
+    },
+    {
+      "code": "KE",
+      "name": "Kenya",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f0-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 33.89,
+        "minLatitude": -4.68,
+        "maxLongitude": 41.86,
+        "maxLatitude": 5.51
+      }
+    },
+    {
+      "code": "KG",
+      "name": "Kyrgyzstan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f0-1f1ec.svg",
+      "bounds": {
+        "minLongitude": 69.46,
+        "minLatitude": 39.28,
+        "maxLongitude": 80.26,
+        "maxLatitude": 43.3
+      }
+    },
+    {
+      "code": "KH",
+      "name": "Cambodia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f0-1f1ed.svg",
+      "bounds": {
+        "minLongitude": 102.35,
+        "minLatitude": 10.49,
+        "maxLongitude": 107.61,
+        "maxLatitude": 14.57
+      }
+    },
+    {
+      "code": "KP",
+      "name": "North Korea",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f0-1f1f5.svg",
+      "bounds": {
+        "minLongitude": 124.27,
+        "minLatitude": 37.67,
+        "maxLongitude": 130.78,
+        "maxLatitude": 42.99
+      }
+    },
+    {
+      "code": "KR",
+      "name": "South Korea",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f0-1f1f7.svg",
+      "bounds": {
+        "minLongitude": 126.12,
+        "minLatitude": 34.39,
+        "maxLongitude": 129.47,
+        "maxLatitude": 38.61
+      }
+    },
+    {
+      "code": "KW",
+      "name": "Kuwait",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f0-1f1fc.svg",
+      "bounds": {
+        "minLongitude": 46.57,
+        "minLatitude": 28.53,
+        "maxLongitude": 48.42,
+        "maxLatitude": 30.06
+      }
+    },
+    {
+      "code": "KZ",
+      "name": "Kazakhstan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f0-1f1ff.svg",
+      "bounds": {
+        "minLongitude": 46.47,
+        "minLatitude": 40.66,
+        "maxLongitude": 87.36,
+        "maxLatitude": 55.39
+      }
+    },
+    {
+      "code": "LA",
+      "name": "Laos",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1e6.svg",
+      "bounds": {
+        "minLongitude": 100.12,
+        "minLatitude": 13.88,
+        "maxLongitude": 107.56,
+        "maxLatitude": 22.46
+      }
+    },
+    {
+      "code": "LB",
+      "name": "Lebanon",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1e7.svg",
+      "bounds": {
+        "minLongitude": 35.13,
+        "minLatitude": 33.09,
+        "maxLongitude": 36.61,
+        "maxLatitude": 34.64
+      }
+    },
+    {
+      "code": "LK",
+      "name": "Sri Lanka",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1f0.svg",
+      "bounds": {
+        "minLongitude": 79.7,
+        "minLatitude": 5.97,
+        "maxLongitude": 81.79,
+        "maxLatitude": 9.82
+      }
+    },
+    {
+      "code": "LR",
+      "name": "Liberia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1f7.svg",
+      "bounds": {
+        "minLongitude": -11.44,
+        "minLatitude": 4.36,
+        "maxLongitude": -7.54,
+        "maxLatitude": 8.54
+      }
+    },
+    {
+      "code": "LS",
+      "name": "Lesotho",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1f8.svg",
+      "bounds": {
+        "minLongitude": 27.0,
+        "minLatitude": -30.65,
+        "maxLongitude": 29.33,
+        "maxLatitude": -28.65
+      }
+    },
+    {
+      "code": "LT",
+      "name": "Lithuania",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1f9.svg",
+      "bounds": {
+        "minLongitude": 21.06,
+        "minLatitude": 53.91,
+        "maxLongitude": 26.59,
+        "maxLatitude": 56.37
+      }
+    },
+    {
+      "code": "LU",
+      "name": "Luxembourg",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1fa.svg",
+      "bounds": {
+        "minLongitude": 5.67,
+        "minLatitude": 49.44,
+        "maxLongitude": 6.24,
+        "maxLatitude": 50.13
+      }
+    },
+    {
+      "code": "LV",
+      "name": "Latvia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1fb.svg",
+      "bounds": {
+        "minLongitude": 21.06,
+        "minLatitude": 55.62,
+        "maxLongitude": 28.18,
+        "maxLatitude": 57.97
+      }
+    },
+    {
+      "code": "LY",
+      "name": "Libya",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f1-1f1fe.svg",
+      "bounds": {
+        "minLongitude": 9.32,
+        "minLatitude": 19.58,
+        "maxLongitude": 25.16,
+        "maxLatitude": 33.14
+      }
+    },
+    {
+      "code": "MA",
+      "name": "Morocco",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1e6.svg",
+      "bounds": {
+        "minLongitude": -17.02,
+        "minLatitude": 21.42,
+        "maxLongitude": -1.12,
+        "maxLatitude": 35.76
+      }
+    },
+    {
+      "code": "MD",
+      "name": "Moldova",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1e9.svg",
+      "bounds": {
+        "minLongitude": 26.62,
+        "minLatitude": 45.49,
+        "maxLongitude": 30.02,
+        "maxLatitude": 48.47
+      }
+    },
+    {
+      "code": "ME",
+      "name": "Montenegro",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 18.45,
+        "minLatitude": 41.88,
+        "maxLongitude": 20.34,
+        "maxLatitude": 43.52
+      }
+    },
+    {
+      "code": "MG",
+      "name": "Madagascar",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1ec.svg",
+      "bounds": {
+        "minLongitude": 43.25,
+        "minLatitude": -25.6,
+        "maxLongitude": 50.48,
+        "maxLatitude": -12.04
+      }
+    },
+    {
+      "code": "MK",
+      "name": "Macedonia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1f0.svg",
+      "bounds": {
+        "minLongitude": 20.46,
+        "minLatitude": 40.84,
+        "maxLongitude": 22.95,
+        "maxLatitude": 42.32
+      }
+    },
+    {
+      "code": "ML",
+      "name": "Mali",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1f1.svg",
+      "bounds": {
+        "minLongitude": -12.17,
+        "minLatitude": 10.1,
+        "maxLongitude": 4.27,
+        "maxLatitude": 24.97
+      }
+    },
+    {
+      "code": "MM",
+      "name": "Myanmar",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1f2.svg",
+      "bounds": {
+        "minLongitude": 92.3,
+        "minLatitude": 9.93,
+        "maxLongitude": 101.18,
+        "maxLatitude": 28.34
+      }
+    },
+    {
+      "code": "MN",
+      "name": "Mongolia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1f3.svg",
+      "bounds": {
+        "minLongitude": 87.75,
+        "minLatitude": 41.6,
+        "maxLongitude": 119.77,
+        "maxLatitude": 52.05
+      }
+    },
+    {
+      "code": "MR",
+      "name": "Mauritania",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1f7.svg",
+      "bounds": {
+        "minLongitude": -17.06,
+        "minLatitude": 14.62,
+        "maxLongitude": -4.92,
+        "maxLatitude": 27.4
+      }
+    },
+    {
+      "code": "MW",
+      "name": "Malawi",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1fc.svg",
+      "bounds": {
+        "minLongitude": 32.69,
+        "minLatitude": -16.8,
+        "maxLongitude": 35.77,
+        "maxLatitude": -9.23
+      }
+    },
+    {
+      "code": "MX",
+      "name": "Mexico",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1fd.svg",
+      "bounds": {
+        "minLongitude": -117.13,
+        "minLatitude": 14.54,
+        "maxLongitude": -86.81,
+        "maxLatitude": 32.72
+      }
+    },
+    {
+      "code": "MY",
+      "name": "Malaysia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1fe.svg",
+      "bounds": {
+        "minLongitude": 100.09,
+        "minLatitude": 0.77,
+        "maxLongitude": 119.18,
+        "maxLatitude": 6.93
+      }
+    },
+    {
+      "code": "MZ",
+      "name": "Mozambique",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f2-1f1ff.svg",
+      "bounds": {
+        "minLongitude": 30.18,
+        "minLatitude": -26.74,
+        "maxLongitude": 40.78,
+        "maxLatitude": -10.32
+      }
+    },
+    {
+      "code": "NA",
+      "name": "Namibia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1e6.svg",
+      "bounds": {
+        "minLongitude": 11.73,
+        "minLatitude": -29.05,
+        "maxLongitude": 25.08,
+        "maxLatitude": -16.94
+      }
+    },
+    {
+      "code": "NC",
+      "name": "New Caledonia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1e8.svg",
+      "bounds": {
+        "minLongitude": 164.03,
+        "minLatitude": -22.4,
+        "maxLongitude": 167.12,
+        "maxLatitude": -20.11
+      }
+    },
+    {
+      "code": "NE",
+      "name": "Niger",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 0.3,
+        "minLatitude": 11.66,
+        "maxLongitude": 15.9,
+        "maxLatitude": 23.47
+      }
+    },
+    {
+      "code": "NG",
+      "name": "Nigeria",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1ec.svg",
+      "bounds": {
+        "minLongitude": 2.69,
+        "minLatitude": 4.24,
+        "maxLongitude": 14.58,
+        "maxLatitude": 13.87
+      }
+    },
+    {
+      "code": "NI",
+      "name": "Nicaragua",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1ee.svg",
+      "bounds": {
+        "minLongitude": -87.67,
+        "minLatitude": 10.73,
+        "maxLongitude": -83.15,
+        "maxLatitude": 15.02
+      }
+    },
+    {
+      "code": "NL",
+      "name": "Netherlands",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1f1.svg",
+      "bounds": {
+        "minLongitude": 3.31,
+        "minLatitude": 50.8,
+        "maxLongitude": 7.09,
+        "maxLatitude": 53.51
+      }
+    },
+    {
+      "code": "NO",
+      "name": "Norway",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1f4.svg",
+      "bounds": {
+        "minLongitude": 4.99,
+        "minLatitude": 58.08,
+        "maxLongitude": 31.29,
+        "maxLatitude": 70.92
+      }
+    },
+    {
+      "code": "NP",
+      "name": "Nepal",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1f5.svg",
+      "bounds": {
+        "minLongitude": 80.09,
+        "minLatitude": 26.4,
+        "maxLongitude": 88.17,
+        "maxLatitude": 30.42
+      }
+    },
+    {
+      "code": "NZ",
+      "name": "New Zealand",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f3-1f1ff.svg",
+      "bounds": {
+        "minLongitude": 166.51,
+        "minLatitude": -46.64,
+        "maxLongitude": 178.52,
+        "maxLatitude": -34.45
+      }
+    },
+    {
+      "code": "OM",
+      "name": "Oman",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f4-1f1f2.svg",
+      "bounds": {
+        "minLongitude": 52.0,
+        "minLatitude": 16.65,
+        "maxLongitude": 59.81,
+        "maxLatitude": 26.4
+      }
+    },
+    {
+      "code": "PA",
+      "name": "Panama",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1e6.svg",
+      "bounds": {
+        "minLongitude": -82.97,
+        "minLatitude": 7.22,
+        "maxLongitude": -77.24,
+        "maxLatitude": 9.61
+      }
+    },
+    {
+      "code": "PE",
+      "name": "Peru",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1ea.svg",
+      "bounds": {
+        "minLongitude": -81.41,
+        "minLatitude": -18.35,
+        "maxLongitude": -68.67,
+        "maxLatitude": -0.06
+      }
+    },
+    {
+      "code": "PG",
+      "name": "Papua New Guinea",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1ec.svg",
+      "bounds": {
+        "minLongitude": 141.0,
+        "minLatitude": -10.65,
+        "maxLongitude": 156.02,
+        "maxLatitude": -2.5
+      }
+    },
+    {
+      "code": "PH",
+      "name": "Philippines",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1ed.svg",
+      "bounds": {
+        "minLongitude": 117.17,
+        "minLatitude": 5.58,
+        "maxLongitude": 126.54,
+        "maxLatitude": 18.51
+      }
+    },
+    {
+      "code": "PK",
+      "name": "Pakistan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1f0.svg",
+      "bounds": {
+        "minLongitude": 60.87,
+        "minLatitude": 23.69,
+        "maxLongitude": 77.84,
+        "maxLatitude": 37.13
+      }
+    },
+    {
+      "code": "PL",
+      "name": "Poland",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1f1.svg",
+      "bounds": {
+        "minLongitude": 14.07,
+        "minLatitude": 49.03,
+        "maxLongitude": 24.03,
+        "maxLatitude": 54.85
+      }
+    },
+    {
+      "code": "PR",
+      "name": "Puerto Rico",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1f7.svg",
+      "bounds": {
+        "minLongitude": -67.24,
+        "minLatitude": 17.95,
+        "maxLongitude": -65.59,
+        "maxLatitude": 18.52
+      }
+    },
+    {
+      "code": "PS",
+      "name": "West Bank",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1f8.svg",
+      "bounds": {
+        "minLongitude": 34.93,
+        "minLatitude": 31.35,
+        "maxLongitude": 35.55,
+        "maxLatitude": 32.53
+      }
+    },
+    {
+      "code": "PT",
+      "name": "Portugal",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1f9.svg",
+      "bounds": {
+        "minLongitude": -9.53,
+        "minLatitude": 36.84,
+        "maxLongitude": -6.39,
+        "maxLatitude": 42.28
+      }
+    },
+    {
+      "code": "PY",
+      "name": "Paraguay",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f5-1f1fe.svg",
+      "bounds": {
+        "minLongitude": -62.69,
+        "minLatitude": -27.55,
+        "maxLongitude": -54.29,
+        "maxLatitude": -19.34
+      }
+    },
+    {
+      "code": "QA",
+      "name": "Qatar",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f6-1f1e6.svg",
+      "bounds": {
+        "minLongitude": 50.74,
+        "minLatitude": 24.56,
+        "maxLongitude": 51.61,
+        "maxLatitude": 26.11
+      }
+    },
+    {
+      "code": "RO",
+      "name": "Romania",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f7-1f1f4.svg",
+      "bounds": {
+        "minLongitude": 20.22,
+        "minLatitude": 43.69,
+        "maxLongitude": 29.63,
+        "maxLatitude": 48.22
+      }
+    },
+    {
+      "code": "RS",
+      "name": "Serbia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f7-1f1f8.svg",
+      "bounds": {
+        "minLongitude": 18.83,
+        "minLatitude": 42.25,
+        "maxLongitude": 22.99,
+        "maxLatitude": 46.17
+      }
+    },
+    {
+      "code": "RU",
+      "name": "Russia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f7-1f1fa.svg",
+      "bounds": {
+        "minLongitude": -180.0,
+        "minLatitude": 41.15,
+        "maxLongitude": 180.0,
+        "maxLatitude": 81.25
+      }
+    },
+    {
+      "code": "RW",
+      "name": "Rwanda",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f7-1f1fc.svg",
+      "bounds": {
+        "minLongitude": 29.02,
+        "minLatitude": -2.92,
+        "maxLongitude": 30.82,
+        "maxLatitude": -1.13
+      }
+    },
+    {
+      "code": "SA",
+      "name": "Saudi Arabia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1e6.svg",
+      "bounds": {
+        "minLongitude": 34.63,
+        "minLatitude": 16.35,
+        "maxLongitude": 55.67,
+        "maxLatitude": 32.16
+      }
+    },
+    {
+      "code": "SB",
+      "name": "Solomon Islands",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1e7.svg",
+      "bounds": {
+        "minLongitude": 156.49,
+        "minLatitude": -10.83,
+        "maxLongitude": 162.4,
+        "maxLatitude": -6.6
+      }
+    },
+    {
+      "code": "SD",
+      "name": "Sudan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1e9.svg",
+      "bounds": {
+        "minLongitude": 21.94,
+        "minLatitude": 8.62,
+        "maxLongitude": 38.41,
+        "maxLatitude": 22.0
+      }
+    },
+    {
+      "code": "SE",
+      "name": "Sweden",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 11.03,
+        "minLatitude": 55.36,
+        "maxLongitude": 23.9,
+        "maxLatitude": 69.11
+      }
+    },
+    {
+      "code": "SI",
+      "name": "Slovenia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1ee.svg",
+      "bounds": {
+        "minLongitude": 13.7,
+        "minLatitude": 45.45,
+        "maxLongitude": 16.56,
+        "maxLatitude": 46.85
+      }
+    },
+    {
+      "code": "SK",
+      "name": "Slovakia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1f0.svg",
+      "bounds": {
+        "minLongitude": 16.88,
+        "minLatitude": 47.76,
+        "maxLongitude": 22.56,
+        "maxLatitude": 49.57
+      }
+    },
+    {
+      "code": "SL",
+      "name": "Sierra Leone",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1f1.svg",
+      "bounds": {
+        "minLongitude": -13.25,
+        "minLatitude": 6.79,
+        "maxLongitude": -10.23,
+        "maxLatitude": 10.05
+      }
+    },
+    {
+      "code": "SN",
+      "name": "Senegal",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1f3.svg",
+      "bounds": {
+        "minLongitude": -17.63,
+        "minLatitude": 12.33,
+        "maxLongitude": -11.47,
+        "maxLatitude": 16.6
+      }
+    },
+    {
+      "code": "SO",
+      "name": "Somalia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1f4.svg",
+      "bounds": {
+        "minLongitude": 40.98,
+        "minLatitude": -1.68,
+        "maxLongitude": 51.13,
+        "maxLatitude": 12.02
+      }
+    },
+    {
+      "code": "SR",
+      "name": "Suriname",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1f7.svg",
+      "bounds": {
+        "minLongitude": -58.04,
+        "minLatitude": 1.82,
+        "maxLongitude": -53.96,
+        "maxLatitude": 6.03
+      }
+    },
+    {
+      "code": "SS",
+      "name": "South Sudan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1f8.svg",
+      "bounds": {
+        "minLongitude": 23.89,
+        "minLatitude": 3.51,
+        "maxLongitude": 35.3,
+        "maxLatitude": 12.25
+      }
+    },
+    {
+      "code": "SV",
+      "name": "El Salvador",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1fb.svg",
+      "bounds": {
+        "minLongitude": -90.1,
+        "minLatitude": 13.15,
+        "maxLongitude": -87.72,
+        "maxLatitude": 14.42
+      }
+    },
+    {
+      "code": "SY",
+      "name": "Syria",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1fe.svg",
+      "bounds": {
+        "minLongitude": 35.7,
+        "minLatitude": 32.31,
+        "maxLongitude": 42.35,
+        "maxLatitude": 37.23
+      }
+    },
+    {
+      "code": "SZ",
+      "name": "Swaziland",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f8-1f1ff.svg",
+      "bounds": {
+        "minLongitude": 30.68,
+        "minLatitude": -27.29,
+        "maxLongitude": 32.07,
+        "maxLatitude": -25.66
+      }
+    },
+    {
+      "code": "TD",
+      "name": "Chad",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1e9.svg",
+      "bounds": {
+        "minLongitude": 13.54,
+        "minLatitude": 7.42,
+        "maxLongitude": 23.89,
+        "maxLatitude": 23.41
+      }
+    },
+    {
+      "code": "TF",
+      "name": "French Southern Territories",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1eb.svg",
+      "bounds": {
+        "minLongitude": 68.72,
+        "minLatitude": -49.78,
+        "maxLongitude": 70.56,
+        "maxLatitude": -48.63
+      }
+    },
+    {
+      "code": "TG",
+      "name": "Togo",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1ec.svg",
+      "bounds": {
+        "minLongitude": -0.05,
+        "minLatitude": 5.93,
+        "maxLongitude": 1.87,
+        "maxLatitude": 11.02
+      }
+    },
+    {
+      "code": "TH",
+      "name": "Thailand",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1ed.svg",
+      "bounds": {
+        "minLongitude": 97.38,
+        "minLatitude": 5.69,
+        "maxLongitude": 105.59,
+        "maxLatitude": 20.42
+      }
+    },
+    {
+      "code": "TJ",
+      "name": "Tajikistan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1ef.svg",
+      "bounds": {
+        "minLongitude": 67.44,
+        "minLatitude": 36.74,
+        "maxLongitude": 74.98,
+        "maxLatitude": 40.96
+      }
+    },
+    {
+      "code": "TL",
+      "name": "East Timor",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1f1.svg",
+      "bounds": {
+        "minLongitude": 124.97,
+        "minLatitude": -9.39,
+        "maxLongitude": 127.34,
+        "maxLatitude": -8.27
+      }
+    },
+    {
+      "code": "TM",
+      "name": "Turkmenistan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1f2.svg",
+      "bounds": {
+        "minLongitude": 52.5,
+        "minLatitude": 35.27,
+        "maxLongitude": 66.55,
+        "maxLatitude": 42.75
+      }
+    },
+    {
+      "code": "TN",
+      "name": "Tunisia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1f3.svg",
+      "bounds": {
+        "minLongitude": 7.52,
+        "minLatitude": 30.31,
+        "maxLongitude": 11.49,
+        "maxLatitude": 37.35
+      }
+    },
+    {
+      "code": "TR",
+      "name": "Turkey",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1f7.svg",
+      "bounds": {
+        "minLongitude": 26.04,
+        "minLatitude": 35.82,
+        "maxLongitude": 44.79,
+        "maxLatitude": 42.14
+      }
+    },
+    {
+      "code": "TT",
+      "name": "Trinidad and Tobago",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1f9.svg",
+      "bounds": {
+        "minLongitude": -61.95,
+        "minLatitude": 10.0,
+        "maxLongitude": -60.9,
+        "maxLatitude": 10.89
+      }
+    },
+    {
+      "code": "TW",
+      "name": "Taiwan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1fc.svg",
+      "bounds": {
+        "minLongitude": 120.11,
+        "minLatitude": 21.97,
+        "maxLongitude": 121.95,
+        "maxLatitude": 25.3
+      }
+    },
+    {
+      "code": "TZ",
+      "name": "Tanzania",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1f9-1f1ff.svg",
+      "bounds": {
+        "minLongitude": 29.34,
+        "minLatitude": -11.72,
+        "maxLongitude": 40.32,
+        "maxLatitude": -0.95
+      }
+    },
+    {
+      "code": "UA",
+      "name": "Ukraine",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fa-1f1e6.svg",
+      "bounds": {
+        "minLongitude": 22.09,
+        "minLatitude": 44.36,
+        "maxLongitude": 40.08,
+        "maxLatitude": 52.34
+      }
+    },
+    {
+      "code": "UG",
+      "name": "Uganda",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fa-1f1ec.svg",
+      "bounds": {
+        "minLongitude": 29.58,
+        "minLatitude": -1.44,
+        "maxLongitude": 35.04,
+        "maxLatitude": 4.25
+      }
+    },
+    {
+      "code": "US",
+      "name": "United States",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fa-1f1f8.svg",
+      "bounds": {
+        "minLongitude": -125.0,
+        "minLatitude": 25.0,
+        "maxLongitude": -66.96,
+        "maxLatitude": 49.5
+      }
+    },
+    {
+      "code": "UY",
+      "name": "Uruguay",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fa-1f1fe.svg",
+      "bounds": {
+        "minLongitude": -58.43,
+        "minLatitude": -34.95,
+        "maxLongitude": -53.21,
+        "maxLatitude": -30.11
+      }
+    },
+    {
+      "code": "UZ",
+      "name": "Uzbekistan",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fa-1f1ff.svg",
+      "bounds": {
+        "minLongitude": 55.93,
+        "minLatitude": 37.14,
+        "maxLongitude": 73.06,
+        "maxLatitude": 45.59
+      }
+    },
+    {
+      "code": "VE",
+      "name": "Venezuela",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fb-1f1ea.svg",
+      "bounds": {
+        "minLongitude": -73.3,
+        "minLatitude": 0.72,
+        "maxLongitude": -59.76,
+        "maxLatitude": 12.16
+      }
+    },
+    {
+      "code": "VN",
+      "name": "Vietnam",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fb-1f1f3.svg",
+      "bounds": {
+        "minLongitude": 102.17,
+        "minLatitude": 8.6,
+        "maxLongitude": 109.34,
+        "maxLatitude": 23.35
+      }
+    },
+    {
+      "code": "VU",
+      "name": "Vanuatu",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fb-1f1fa.svg",
+      "bounds": {
+        "minLongitude": 166.63,
+        "minLatitude": -16.6,
+        "maxLongitude": 167.84,
+        "maxLatitude": -14.63
+      }
+    },
+    {
+      "code": "YE",
+      "name": "Yemen",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1fe-1f1ea.svg",
+      "bounds": {
+        "minLongitude": 42.6,
+        "minLatitude": 12.59,
+        "maxLongitude": 53.11,
+        "maxLatitude": 19.0
+      }
+    },
+    {
+      "code": "ZA",
+      "name": "South Africa",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ff-1f1e6.svg",
+      "bounds": {
+        "minLongitude": 16.34,
+        "minLatitude": -34.82,
+        "maxLongitude": 32.83,
+        "maxLatitude": -22.09
+      }
+    },
+    {
+      "code": "ZM",
+      "name": "Zambia",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ff-1f1f2.svg",
+      "bounds": {
+        "minLongitude": 21.89,
+        "minLatitude": -17.96,
+        "maxLongitude": 33.49,
+        "maxLatitude": -8.24
+      }
+    },
+    {
+      "code": "ZW",
+      "name": "Zimbabwe",
+      "flagUrl": "https://twemoji.maxcdn.com/2/svg/1f1ff-1f1fc.svg",
+      "bounds": {
+        "minLongitude": 25.26,
+        "minLatitude": -22.27,
+        "maxLongitude": 32.85,
+        "maxLatitude": -15.51
+      }
+    }
+  ]
+}

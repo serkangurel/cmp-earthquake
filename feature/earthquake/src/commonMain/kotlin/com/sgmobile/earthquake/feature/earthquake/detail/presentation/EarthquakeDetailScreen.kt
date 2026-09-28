@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,12 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mohamedrejeb.calf.sf.symbols.SFSymbol
 import com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi
 import com.mohamedrejeb.calf.ui.navigation.AdaptiveScaffold
 import com.mohamedrejeb.calf.ui.navigation.UIKitUIBarButtonItem
 import com.mohamedrejeb.calf.ui.navigation.UIKitUIBarButtonSystemItem
+import com.mohamedrejeb.calf.ui.uikit.UIKitImage
 import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.resource.Res
+import com.sgmobile.earthquake.core.resource.back_button
 import com.sgmobile.earthquake.core.resource.share
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
@@ -44,11 +48,26 @@ internal fun EarthquakeDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val navigator = LocalNavigator.current
+    val backContentDescription = stringResource(Res.string.back_button)
 
     AdaptiveScaffold(
         topBar = {
             SGAppBar(
-                onNavigationClick = navigator::goBack,
+                navigationIcon = {
+                    IconButton(onClick = navigator::goBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = backContentDescription,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                },
+                iosLeadingItems = listOf(
+                    UIKitUIBarButtonItem.image(
+                        image = UIKitImage.SystemName(SFSymbol.chevronBackward),
+                        onClick = navigator::goBack,
+                    ),
+                ),
                 iosTrailingItems = listOf(
                     UIKitUIBarButtonItem.systemItem(
                         systemItem = UIKitUIBarButtonSystemItem.Action,
