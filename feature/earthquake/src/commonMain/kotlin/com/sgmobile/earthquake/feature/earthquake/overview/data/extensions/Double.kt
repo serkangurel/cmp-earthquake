@@ -2,7 +2,7 @@ package com.sgmobile.earthquake.feature.earthquake.overview.data.extensions
 
 import kotlin.math.round
 
-fun Double.formattedToTwoDecimals(): String {
+internal fun Double.formattedToTwoDecimals(): String {
     val rounded = round(this * 100.0).toLong()
     val intPart = rounded / 100
     val fracPart = rounded % 100

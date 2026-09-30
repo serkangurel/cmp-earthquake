@@ -64,6 +64,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    sourceSets {
+        getByName("main").assets.directories.add(
+            rootProject.file("feature/earthquake/src/commonMain/resources").absolutePath
+        )
+    }
 }
 
 base {
@@ -78,8 +84,15 @@ kotlin {
 
 dependencies {
     implementation(projects.shared)
+    implementation(projects.core.navigation)
+    implementation(projects.core.resource)
+    implementation(projects.core.ui)
+    implementation(projects.feature.earthquakeUi)
+    implementation(projects.feature.map)
+    implementation(projects.feature.settings)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.compose.components.uiToolingPreview)
+    implementation(libs.koin.core)
     debugImplementation(libs.compose.uiTooling)
 }

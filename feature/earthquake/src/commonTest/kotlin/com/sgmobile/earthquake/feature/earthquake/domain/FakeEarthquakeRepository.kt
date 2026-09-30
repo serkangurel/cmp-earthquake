@@ -16,6 +16,11 @@ internal class FakeEarthquakeRepository : EarthquakeRepository {
     private val _isEndReached = MutableStateFlow(false)
     override val isEndReached: StateFlow<Boolean> = _isEndReached.asStateFlow()
 
+    var refreshCount: Int = 0
+        private set
+    var loadNextPageCount: Int = 0
+        private set
+
     var refreshedPageSize: Int? = null
         private set
     var refreshedMagnitude: MagnitudeThreshold? = null
@@ -27,12 +32,17 @@ internal class FakeEarthquakeRepository : EarthquakeRepository {
         _earthquakeFlow.value = earthquakes
     }
 
+    fun setEndReached(value: Boolean) {
+        _isEndReached.value = value
+    }
+
     override suspend fun refresh(
         startTime: String,
         pageSize: Int,
         selectedMagnitude: MagnitudeThreshold,
         selectedCountryBounds: CountryBounds,
     ): EarthquakeState {
+        refreshCount += 1
         refreshedPageSize = pageSize
         refreshedMagnitude = selectedMagnitude
         refreshedCountryBounds = selectedCountryBounds
@@ -40,6 +50,7 @@ internal class FakeEarthquakeRepository : EarthquakeRepository {
     }
 
     override suspend fun loadNextPage(): EarthquakeState {
+        loadNextPageCount += 1
         return EarthquakeState.Success
     }
 }

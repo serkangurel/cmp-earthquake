@@ -1,14 +1,45 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# CMP Earthquake
 
-* `/shared` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+CMP Earthquake is a Kotlin Multiplatform application that shares data, domain, and presentation
+logic while keeping each platform's UI native:
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+- Android renders the existing Compose UI and uses Navigation 3.
+- iOS renders a native SwiftUI hierarchy and embeds the Google Maps iOS SDK directly.
+- Kotlin shared code owns Ktor networking, serialization, repositories, use cases, filtering,
+  pagination, display-ready models, and overview/detail state controllers.
+- The Ktor server remains an independent JVM application.
 
+## Module boundaries
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+- `shared` builds the small `Shared` Apple framework entry point. It starts the shared Koin graph
+  and exposes factories for the public earthquake screen controllers.
+- `core:network` contains platform-independent HTTP client configuration.
+- `feature:earthquake` contains shared earthquake data, domain, and presentation state. It has no UI
+  toolkit dependency.
+- `androidApp`, `feature:earthquake-ui`, `feature:map`, `feature:settings`, `core:navigation`,
+  `core:resource`, and `core:ui` contain Android-only Compose UI and navigation.
+- `iosApp` contains the SwiftUI root, views, thin observable adapters, native localizations, and
+  Google Maps integration.
+- `server` contains the standalone JVM Ktor server.
+
+The country bounds JSON is owned by `feature:earthquake` as shared data. Android packages it as an
+asset and iOS embeds the same source file as a bundle resource. Display strings and visual assets
+are platform-native resources.
+
+## Build
+
+Use JDK 17 and the checked-in Gradle wrapper:
+
+```sh
+./gradlew :feature:earthquake:testAndroidHostTest
+./gradlew allTests
+./gradlew :androidApp:assembleDevDebug
+./gradlew lint
+./gradlew :server:build
+```
+
+Build iOS with the `iosApp` scheme in Xcode. Its build phase links the simulator or device variant
+of the `Shared` framework before Swift compilation.
+
+`MAPS_API_KEY` remains optional at compile time and is read from untracked `local.properties` for
+both Android and iOS. A real key is required only to render Google Maps at runtime.

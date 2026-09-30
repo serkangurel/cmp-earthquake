@@ -9,10 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-internal actual fun AnimatedBottomBar(
+internal fun AnimatedBottomBar(
     isVisible: Boolean,
-    modifier: Modifier,
-    animationDuration: Int,
+    modifier: Modifier = Modifier,
+    animationDuration: Int = 300,
     content: @Composable () -> Unit,
 ) {
     AnimatedVisibility(

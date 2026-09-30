@@ -1,10 +1,10 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions
 
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetailVo
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
 
-internal fun Earthquake.toDetailUi(): EarthquakeDetailVo =
-    EarthquakeDetailVo(
+internal fun Earthquake.toDetailUi(): EarthquakeDetail =
+    EarthquakeDetail(
         place = place,
         magnitude = magnitude,
         magnitudeThreshold = magnitudeThreshold,

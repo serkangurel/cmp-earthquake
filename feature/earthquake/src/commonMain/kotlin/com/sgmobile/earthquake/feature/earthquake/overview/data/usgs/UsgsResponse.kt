@@ -4,13 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UsgsResponse(
+internal data class UsgsResponse(
     @SerialName("features")
     val features: List<FeaturesResponse>? = null
 )
 
 @Serializable
-data class FeaturesResponse(
+internal data class FeaturesResponse(
     @SerialName("type")
     val type: String? = null,
     @SerialName("properties")
@@ -22,7 +22,7 @@ data class FeaturesResponse(
 )
 
 @Serializable
-data class PropertiesResponse(
+internal data class PropertiesResponse(
     @SerialName("mag")
     val mag: Double? = null,
     @SerialName("place")
@@ -32,14 +32,14 @@ data class PropertiesResponse(
 )
 
 @Serializable
-data class GeometryResponse(
+internal data class GeometryResponse(
     @SerialName("type")
     val type: String? = null,
     @SerialName("coordinates")
     val coordinates: List<Double>? = null
 )
 
-enum class CoordinateListItem(val index: Int) {
+internal enum class CoordinateListItem(val index: Int) {
     Latitude(1),
     Longitude(0),
     Depth(2)

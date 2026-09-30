@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
 @Single
-fun provideHttpClient(): HttpClient = HttpClient {
+internal fun provideHttpClient(): HttpClient = HttpClient {
     install(Logging) {
         level = LogLevel.ALL
         logger = object : Logger {

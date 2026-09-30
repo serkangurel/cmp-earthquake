@@ -1,17 +1,17 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.data.country
 
-import com.sgmobile.earthquake.core.resource.Res
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Property
 import org.koin.core.annotation.Single
 
-private const val COUNTRY_RESOURCE_PATH = "files/country-list.json"
-
 @Single
-internal class CountryResourceDataSource {
+internal class CountryResourceDataSource(
+    @Property("earthquake.countryResource")
+    private val countryResource: String,
+) {
 
     suspend fun getCountries(): List<CountryResource> {
-        val resource = Res.readBytes(COUNTRY_RESOURCE_PATH).decodeToString()
-        return decodeCountryResources(resource)
+        return decodeCountryResources(countryResource)
     }
 }
 

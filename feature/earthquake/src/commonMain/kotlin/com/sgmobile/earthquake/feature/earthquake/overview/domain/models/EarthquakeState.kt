@@ -1,6 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.domain.models
 
-sealed interface EarthquakeState {
+internal sealed interface EarthquakeState {
     data object Loading : EarthquakeState
 
     data object Success : EarthquakeState

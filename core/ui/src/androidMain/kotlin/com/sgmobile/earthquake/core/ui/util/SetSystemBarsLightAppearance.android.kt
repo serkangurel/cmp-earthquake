@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.WindowCompat
 
 @Composable
-actual fun SetSystemBarsLightAppearance(
+fun SetSystemBarsLightAppearance(
     isAppearanceLightStatusBars: Boolean,
     isAppearanceLightNavigationBars: Boolean
 ) {

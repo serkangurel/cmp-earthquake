@@ -7,7 +7,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-class UsgsApi(
+internal class UsgsApi(
     private val httpClient: HttpClient
 ) {
     suspend fun getEarthquakes(

@@ -27,6 +27,11 @@
 			isa = PBXBuildFile;
 			productRef = DEEA5270C1A214BF23808F6D;
 		};
+		A10000000000000000000002 = {isa = PBXBuildFile; fileRef = A10000000000000000000001; };
+		A10000000000000000000004 = {isa = PBXBuildFile; fileRef = A10000000000000000000003; };
+		A10000000000000000000006 = {isa = PBXBuildFile; fileRef = A10000000000000000000005; };
+		A10000000000000000000008 = {isa = PBXBuildFile; fileRef = A10000000000000000000007; };
+		A1000000000000000000000A = {isa = PBXBuildFile; fileRef = A10000000000000000000009; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +79,11 @@
 			path = Config.xcconfig;
 			sourceTree = "<group>";
 		};
+		A10000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStores.swift; sourceTree = "<group>"; };
+		A10000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeDetailView.swift; sourceTree = "<group>"; };
+		A10000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeMapView.swift; sourceTree = "<group>"; };
+		A10000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		A10000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = text.json; name = "country-list.json"; path = "../feature/earthquake/src/commonMain/resources/country-list.json"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +136,11 @@
 			children = (
 				058557BA273AAA24004C7B11,
 				7555FF82242A565900829871,
+				A10000000000000000000001,
+				A10000000000000000000003,
+				A10000000000000000000005,
+				A10000000000000000000007,
+				A10000000000000000000009,
 				7555FF8C242A565B00829871,
 				2152FB032600AC8F00CF470E,
 				058557D7273AAEEB004C7B11,
@@ -208,6 +223,8 @@
 			files = (
 				058557D9273AAEEB004C7B11,
 				058557BB273AAA24004C7B11,
+				A10000000000000000000008,
+				A1000000000000000000000A,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +258,9 @@
 			files = (
 				2152FB042600AC8F00CF470E,
 				7555FF83242A565900829871,
+				A10000000000000000000002,
+				A10000000000000000000004,
+				A10000000000000000000006,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,21 +7,23 @@ These instructions apply to the entire repository. If a nested directory later c
 
 ## Project overview
 
-This is a Kotlin Multiplatform earthquake application with shared Compose UI for Android and iOS,
-plus a small Ktor server. The project uses Gradle Kotlin DSL, a centralized version catalog, Koin,
-Ktor, Kotlin serialization, Navigation 3, and Compose Multiplatform resources.
+This is a Kotlin Multiplatform earthquake application with an Android Compose UI, a native SwiftUI
+iOS UI, shared application logic, and a small Ktor server. The project uses Gradle Kotlin DSL, a
+centralized version catalog, Koin, Ktor, Kotlin serialization, Android Navigation 3, and Android
+Compose resources.
 
 The main modules are:
 
 - `androidApp`: Android application entry point, product flavors, manifest, and Android packaging.
-- `iosApp`: SwiftUI/Xcode application entry point and Swift Package integration.
-- `shared`: shared application composition, root Compose UI, and dependency-injection bootstrap.
+- `iosApp`: native SwiftUI application, observable adapters, localizations, and Google Maps SDK UI.
+- `shared`: UI-free Apple framework entry point and dependency-injection bootstrap.
 - `core:network`: shared HTTP client configuration and network DI.
-- `core:navigation`: shared navigation state, navigator, host, and navigation contracts.
-- `core:resource`: shared Compose resources. Its generated `Res` class is public.
-- `core:ui`: reusable UI components, previews, and theming.
-- `feature:earthquake`: earthquake overview/detail data, domain, presentation, and navigation.
-- `feature:map` and `feature:settings`: self-contained feature UI, DI, and navigation.
+- `core:navigation`: Android-only Compose navigation state, navigator, host, and contracts.
+- `core:resource`: Android-only Compose resources. Its generated `Res` class is public.
+- `core:ui`: reusable Android Compose components, previews, and theming.
+- `feature:earthquake`: UI-free shared data, domain, presentation state, and controllers.
+- `feature:earthquake-ui`: Android-only Compose earthquake screens and navigation.
+- `feature:map` and `feature:settings`: Android-only Compose feature UI and navigation.
 - `server`: JVM Ktor server.
 
 Treat `settings.gradle.kts` as the source of truth for included modules and
@@ -61,13 +63,12 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
 - Preserve the existing feature layering: data sources and repository implementations in `data`,
   contracts/models/use cases in `domain`, and UI state, view models, intents, view objects, and
   composables in `presentation`.
-- View models expose immutable observable state and accept user actions through the feature's
-  intent type. Launch asynchronous work in `viewModelScope` and keep mutable flows private.
-- Keep transport/domain models out of composables. Map them to presentation models at the
-  presentation boundary.
-- Add Koin registrations using the existing annotation-based module/component scan. Navigation
-  providers are registered through each feature's explicit navigation module and included from
-  `shared`.
+- Shared screen controllers expose immutable presentation state and own platform-independent state
+  transitions. Platform view models or observable adapters remain thin and lifecycle-scoped.
+- Keep transport/domain models out of Compose and SwiftUI. Map them to presentation models at the
+  shared presentation boundary.
+- Add shared Koin registrations using the existing annotation-based module/component scan. Android
+  navigation providers are registered through their Android UI modules.
 
 ### Compose UI and resources
 
@@ -77,17 +78,18 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
   Compose effect APIs.
 - Reuse components and theme values from `core:ui`; do not duplicate app-wide colors, typography,
   loading UI, app bars, or preview wrappers inside features.
-- Put user-visible strings and other shared assets in `core/resource/src/commonMain/composeResources`
-  and access them through the generated `Res` API. Do not hard-code display text in production UI.
+- Put Android display strings and visual assets in `core:resource/src/androidMain/composeResources`
+  and access them through the generated `Res` API. Put iOS strings and visual assets in native
+  bundle resources. Do not hard-code display text in production UI.
 - Add focused previews for meaningful UI states when changing a composable.
 - Preserve accessibility: add semantic labels/content descriptions where appropriate and keep
   touch targets usable.
 
 ### Navigation, networking, and server code
 
-- Define feature destinations in that feature's navigation package and keep route arguments
-  serializable. Navigate through the shared `Navigator`/composition locals rather than introducing
-  a second navigation mechanism.
+- Define Android feature destinations in the Android UI module's navigation package and keep route
+  arguments serializable. Android navigates through `Navigator`/composition locals; iOS uses native
+  SwiftUI navigation values and containers.
 - Reuse `core:network` for shared client configuration. Keep wire models and API mapping inside the
   feature data layer.
 - Keep server configuration separate from application logic. Credentials and deployment-specific
