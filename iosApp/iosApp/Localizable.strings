@@ -11,6 +11,7 @@
 "source" = "Source";
 "share" = "Share";
 "filter" = "Filter";
+"select_country" = "Select Country";
 "done" = "Done";
 "loading" = "Loading";
 "no_earthquakes_found" = "No earthquakes found";

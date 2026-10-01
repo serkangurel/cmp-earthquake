@@ -14,14 +14,14 @@ struct ContentView: View {
             }
 
             NavigationStack {
-                PlaceholderView(title: "map", message: "map_placeholder")
+                PlaceholderView(message: "map_placeholder")
             }
             .tabItem {
                 Label("map", systemImage: "map.fill")
             }
 
             NavigationStack {
-                PlaceholderView(title: "settings", message: "settings_placeholder")
+                PlaceholderView(message: "settings_placeholder")
             }
             .tabItem {
                 Label("settings", systemImage: "gearshape.fill")
@@ -32,12 +32,10 @@ struct ContentView: View {
 }
 
 private struct PlaceholderView: View {
-    let title: LocalizedStringKey
     let message: LocalizedStringKey
 
     var body: some View {
         Text(message)
-            .navigationTitle(title)
     }
 }
 
@@ -66,7 +64,6 @@ private struct EarthquakeOverviewView: View {
                     .accessibilityLabel(Text("loading"))
             }
         }
-        .navigationTitle("earthquakes")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
@@ -100,7 +97,9 @@ private struct EarthquakeOverviewView: View {
 
     private var earthquakeList: some View {
         List {
-            if store.state.earthquakes.isEmpty && !store.state.isLoading {
+            if store.state.earthquakes.isEmpty &&
+                !store.state.isLoading &&
+                !store.state.isPullToRefresh {
                 EmptyStateView(
                     title: "no_earthquakes_found",
                     systemImage: "magnifyingglass",
@@ -151,11 +150,15 @@ private struct EarthquakeOverviewView: View {
                 }
             }
         } label: {
-            Label(
-                store.state.selectedMagnitude.label,
-                systemImage: "chevron.down"
-            )
-            .labelStyle(.titleAndIcon)
+            HStack(spacing: 6) {
+                Text(store.state.selectedMagnitude.label)
+                    .font(.body.weight(.semibold))
+                Image(systemName: "chevron.down")
+                    .font(.caption.weight(.semibold))
+                    .accessibilityHidden(true)
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 8)
         }
         .accessibilityLabel(
             Text(
@@ -247,7 +250,7 @@ private struct CountrySelectionView: View {
                     country.code == selectedCountry?.code ? .isSelected : []
                 )
             }
-            .navigationTitle("filter")
+            .navigationTitle("select_country")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
