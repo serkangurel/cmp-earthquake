@@ -32,6 +32,7 @@ import com.sgmobile.earthquake.core.resource.earthquake_row_accessibility
 import com.sgmobile.earthquake.core.resource.magnitude_short
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
 import org.jetbrains.compose.resources.stringResource
@@ -103,11 +104,7 @@ private fun EarthquakeLocationAndTime(
 
 @Composable
 private fun MagnitudeBadge(model: EarthquakeListItem) {
-    val color = when (model.magnitudeThreshold) {
-        MagnitudeThreshold.TWO_PLUS -> MaterialTheme.colorScheme.onSurface
-        MagnitudeThreshold.FOUR_PLUS -> MaterialTheme.colorScheme.tertiary
-        MagnitudeThreshold.FIVE_PLUS -> MaterialTheme.colorScheme.error
-    }
+    val color = model.magnitudeThreshold.toTierColor()
     Column(
         modifier = Modifier
             .background(color.copy(alpha = 0.12f), MaterialTheme.shapes.medium)

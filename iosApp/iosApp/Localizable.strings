@@ -29,3 +29,8 @@
 "no_countries_found_description" = "Try another country name or country code.";
 "earthquake_timestamp_accessibility" = "%@ at %@ local time";
 "earthquake_time_unavailable" = "Date and time unavailable";
+"earthquake_details" = "Earthquake details";
+"date_and_time_local" = "Date & time";
+"detail_value_unavailable" = "Unavailable";
+"earthquake_share_summary" = "%@\nMagnitude: %@\nDate & time: %@\nDepth: %@\nSource: USGS";
+"epicenter_map" = "Epicenter map";

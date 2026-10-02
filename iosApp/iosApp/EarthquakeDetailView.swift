@@ -4,7 +4,7 @@ import SwiftUI
 struct EarthquakeDetailView: View {
     @StateObject private var store: EarthquakeDetailStore
     @State private var recenterRequest = 0
-    @State private var detailSheetHeight: CGFloat = 0
+    @State private var detailContentHeight: CGFloat = 0
 
     init(application: SharedApplication, earthquakeID: String) {
         _store = StateObject(
@@ -16,63 +16,88 @@ struct EarthquakeDetailView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            if store.state.isLoading {
-                ProgressView()
-                    .controlSize(.large)
-            } else if let earthquake = store.state.earthquake {
-                EarthquakeMapView(
-                    earthquake: earthquake,
-                    recenterRequest: recenterRequest,
-                    bottomInset: detailSheetHeight
-                )
-                .ignoresSafeArea(edges: .bottom)
+        GeometryReader { geometry in
+            let cardHeight = min(detailContentHeight, geometry.size.height * 0.55)
 
-                VStack {
-                    HStack {
-                        Spacer()
+            ZStack(alignment: .bottom) {
+                if store.state.isLoading {
+                    ProgressView("loading")
+                        .controlSize(.large)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let earthquake = store.state.earthquake {
+                    EarthquakeMapView(
+                        earthquake: earthquake,
+                        recenterRequest: recenterRequest,
+                        bottomInset: cardHeight + geometry.safeAreaInsets.bottom
+                    )
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text("epicenter_map"))
+                    .accessibilityValue(Text(earthquake.place))
+                    .ignoresSafeArea(edges: .bottom)
+                    .overlay(alignment: .bottomTrailing) {
                         Button {
                             recenterRequest += 1
                         } label: {
                             Image(systemName: "scope")
+                                .font(.system(size: 22, weight: .medium))
                                 .frame(width: 48, height: 48)
-                                .background(AppColors.primary, in: Circle())
-                                .foregroundStyle(.white)
+                                .foregroundStyle(AppColors.primary)
+                                .background(.regularMaterial, in: Circle())
+                                .shadow(color: .black.opacity(0.12), radius: 6, y: 2)
                         }
                         .accessibilityLabel(Text("center_map_on_earthquake"))
-                        .padding()
+                        .padding(16)
+                        .padding(.bottom, cardHeight)
                     }
-                    Spacer()
-                }
 
-                EarthquakeDetailCard(earthquake: earthquake)
-                    .background(
-                        GeometryReader { proxy in
-                            Color.clear.preference(
-                                key: DetailSheetHeightKey.self,
-                                value: proxy.size.height
+                    ScrollView {
+                        EarthquakeDetailCard(earthquake: earthquake)
+                            .background(
+                                GeometryReader { proxy in
+                                    Color.clear.preference(
+                                        key: DetailSheetHeightKey.self,
+                                        value: proxy.size.height
+                                    )
+                                }
                             )
-                        }
+                    }
+                    .frame(height: cardHeight)
+                    .background(Color(uiColor: .systemGroupedBackground))
+                    .clipShape(
+                        UnevenRoundedRectangle(
+                            topLeadingRadius: 24,
+                            topTrailingRadius: 24
+                        )
                     )
-            } else {
-                EmptyStateView(
-                    title: "earthquake_not_found",
-                    systemImage: "exclamationmark.triangle",
-                    message: nil
-                )
+                    .overlay(alignment: .bottom) {
+                        Color(uiColor: .systemGroupedBackground)
+                            .frame(height: geometry.safeAreaInsets.bottom)
+                            .offset(y: geometry.safeAreaInsets.bottom)
+                            .allowsHitTesting(false)
+                    }
+                } else {
+                    EmptyStateView(
+                        title: "earthquake_not_found",
+                        systemImage: "exclamationmark.triangle",
+                        message: nil
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             }
         }
         .onPreferenceChange(DetailSheetHeightKey.self) {
-            detailSheetHeight = $0
+            detailContentHeight = $0
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {}) {
-                    Image(systemName: "square.and.arrow.up")
+            if let earthquake = store.state.earthquake, !store.state.isLoading {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ShareLink(item: earthquake.shareSummary) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .accessibilityLabel(Text("share"))
                 }
-                .accessibilityLabel(Text("share"))
             }
         }
     }
@@ -81,59 +106,79 @@ struct EarthquakeDetailView: View {
 private struct EarthquakeDetailCard: View {
     let earthquake: EarthquakeDetail
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.locale) private var locale
+    @ScaledMetric(relativeTo: .largeTitle) private var magnitudeSize: CGFloat = 40
+
     var body: some View {
-        VStack(spacing: 0) {
-            Text("magnitude")
-                .font(.caption2.weight(.bold))
-                .textCase(.uppercase)
-                .tracking(1.5)
-                .foregroundStyle(.secondary)
-                .padding(.top, 12)
-
-            Text(earthquake.magnitude)
-                .font(.system(size: 52, weight: .heavy))
-                .foregroundStyle(AppColors.magnitude(earthquake.magnitudeThreshold))
-
-            Text(earthquake.place)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-                .padding(.top, 6)
+        VStack(alignment: .leading, spacing: 20) {
+            Group {
+                if dynamicTypeSize.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 16) {
+                        magnitude
+                        location
+                    }
+                } else {
+                    HStack(alignment: .center, spacing: 16) {
+                        magnitude
+                        location
+                    }
+                }
+            }
 
             VStack(spacing: 0) {
                 DetailRow(
                     systemImage: "calendar",
-                    label: "date",
-                    value: earthquake.date
+                    label: "date_and_time_local",
+                    value: earthquake.formattedDate(locale: locale)
                 )
-                Divider().padding(.leading, 48)
+                Divider().padding(.horizontal, 16)
                 DetailRow(
                     systemImage: "arrow.down.to.line",
                     label: "depth",
-                    value: String(
-                        format: NSLocalizedString("depth_value", comment: ""),
-                        earthquake.depth
-                    )
+                    value: earthquake.depthDisplay
                 )
-                Divider().padding(.leading, 48)
+                Divider().padding(.horizontal, 16)
                 DetailRow(
                     systemImage: "globe",
                     label: "source",
                     value: "USGS"
                 )
             }
-            .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
-            .padding(.top, 16)
-        }
-        .padding(.horizontal, 20)
-        .padding(.bottom, 16)
-        .frame(maxWidth: .infinity)
-        .background(.regularMaterial)
-        .clipShape(
-            UnevenRoundedRectangle(
-                topLeadingRadius: 28,
-                topTrailingRadius: 28
+            .background(
+                Color(uiColor: .secondarySystemGroupedBackground),
+                in: RoundedRectangle(cornerRadius: 16)
             )
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(uiColor: .systemGroupedBackground))
+    }
+
+    private var magnitude: some View {
+        VStack(spacing: 2) {
+            Text("magnitude")
+                .font(.caption.weight(.semibold))
+            Text(earthquake.magnitude)
+                .font(.system(size: magnitudeSize, weight: .bold, design: .rounded))
+                .monospacedDigit()
+        }
+        .foregroundStyle(AppColors.magnitudeText(earthquake.magnitudeThreshold))
+        .fixedSize()
+        .padding(12)
+        .background(
+            AppColors.magnitudeText(earthquake.magnitudeThreshold).opacity(0.12),
+            in: RoundedRectangle(cornerRadius: 16)
         )
+        .accessibilityElement(children: .combine)
+    }
+
+    private var location: some View {
+        Text(earthquake.place)
+            .font(.title3.weight(.semibold))
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -143,20 +188,70 @@ private struct DetailRow: View {
     let value: String
 
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: systemImage)
-                .frame(width: 20)
-                .foregroundStyle(AppColors.primary)
-                .accessibilityHidden(true)
-            Text(label)
-                .foregroundStyle(.secondary)
-            Spacer()
-            Text(value)
-                .fontWeight(.semibold)
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                rowLabel
+                    .fixedSize(horizontal: true, vertical: false)
+                Spacer(minLength: 8)
+                rowValue
+                    .multilineTextAlignment(.trailing)
+                    .fixedSize(horizontal: true, vertical: false)
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                rowLabel
+                rowValue
+            }
         }
         .font(.subheadline)
-        .frame(height: 52)
+        .frame(maxWidth: .infinity, minHeight: 28, alignment: .leading)
         .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var rowLabel: some View {
+        Label {
+            Text(label)
+                .foregroundStyle(.secondary)
+        } icon: {
+            Image(systemName: systemImage)
+                .foregroundStyle(AppColors.primary)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private var rowValue: some View {
+        Text(value)
+            .fontWeight(.semibold)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+private extension EarthquakeDetail {
+    var depthDisplay: String {
+        depth.isEmpty ? NSLocalizedString("detail_value_unavailable", comment: "") : String(
+            format: NSLocalizedString("depth_value", comment: ""),
+            depth
+        )
+    }
+
+    func formattedDate(locale: Locale) -> String {
+        let timestamp = EarthquakeTimestamp.companion.fromDisplayValue(value: date)
+        guard let display = EarthquakeTimestampDisplay(timestamp: timestamp, locale: locale) else {
+            return EarthquakeTimestampDisplay.accessibilityDescription(for: timestamp, locale: locale)
+        }
+        return "\(display.date) · \(display.time)"
+    }
+
+    var shareSummary: String {
+        String(
+            format: NSLocalizedString("earthquake_share_summary", comment: ""),
+            place,
+            magnitude,
+            formattedDate(locale: .current),
+            depthDisplay
+        )
     }
 }
 
@@ -165,5 +260,30 @@ private struct DetailSheetHeightKey: PreferenceKey {
 
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = max(value, nextValue())
+    }
+}
+
+private struct EarthquakeDetailRows_Previews: PreviewProvider {
+    static var previews: some View {
+        rows
+            .previewDisplayName("Detail facts • Light")
+        rows
+            .preferredColorScheme(.dark)
+            .previewDisplayName("Detail facts • Dark")
+        rows
+            .dynamicTypeSize(.accessibility5)
+            .previewDisplayName("Detail facts • Large text")
+    }
+
+    private static var rows: some View {
+        VStack(spacing: 0) {
+            DetailRow(systemImage: "calendar", label: "date_and_time_local", value: "Oct 2, 2026 · 15:07")
+            Divider()
+            DetailRow(systemImage: "arrow.down.to.line", label: "depth", value: "16.3 km")
+            Divider()
+            DetailRow(systemImage: "globe", label: "source", value: "USGS")
+        }
+        .padding()
+        .frame(width: 375)
     }
 }

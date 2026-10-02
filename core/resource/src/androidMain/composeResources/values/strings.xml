@@ -36,4 +36,8 @@
     <string name="done">Done</string>
     <string name="earthquake_timestamp_accessibility">%1$s at %2$s local time</string>
     <string name="earthquake_time_unavailable">Date and time unavailable</string>
+    <string name="date_and_time_local">Date &amp; time</string>
+    <string name="detail_value_unavailable">Unavailable</string>
+    <string name="earthquake_share_summary">%1$s\nMagnitude: %2$s\nDate &amp; time: %3$s\nDepth: %4$s\nSource: USGS</string>
+    <string name="epicenter_map">Epicenter map: %1$s</string>
 </resources>
