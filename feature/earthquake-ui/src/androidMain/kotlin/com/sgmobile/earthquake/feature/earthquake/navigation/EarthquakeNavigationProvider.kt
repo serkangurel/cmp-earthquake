@@ -1,7 +1,8 @@
 package com.sgmobile.earthquake.feature.earthquake.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MonitorHeart
+import androidx.compose.material.icons.outlined.MonitorHeart
 import androidx.navigation3.runtime.NavKey
 import com.sgmobile.earthquake.core.navigation.NavigationComponent
 import com.sgmobile.earthquake.core.navigation.NavigationProvider
@@ -21,8 +22,8 @@ internal class EarthquakeNavigationProvider : NavigationProvider {
                 }
             },
             topLevelDestination = TopLevelDestination(
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Filled.Home,
+                selectedIcon = Icons.Filled.MonitorHeart,
+                unselectedIcon = Icons.Outlined.MonitorHeart,
                 labelStringResource = Res.string.earthquakes,
                 route = EarthquakeRoutes.Overview,
                 order = 1

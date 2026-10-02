@@ -2,6 +2,7 @@ package com.sgmobile.earthquake.feature.settings.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Settings
 import androidx.navigation3.runtime.NavKey
 import com.sgmobile.earthquake.core.navigation.NavigationComponent
 import com.sgmobile.earthquake.core.navigation.NavigationProvider
@@ -21,7 +22,7 @@ internal class SettingsNavigationProvider : NavigationProvider {
             },
             topLevelDestination = TopLevelDestination(
                 selectedIcon = Icons.Filled.Settings,
-                unselectedIcon = Icons.Filled.Settings,
+                unselectedIcon = Icons.Outlined.Settings,
                 labelStringResource = Res.string.settings,
                 route = SettingsRoutes.Overview,
                 order = 3

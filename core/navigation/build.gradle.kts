@@ -16,6 +16,8 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(projects.core.resource)
+            implementation(projects.core.ui)
             implementation(libs.kotlin.stdlib)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)

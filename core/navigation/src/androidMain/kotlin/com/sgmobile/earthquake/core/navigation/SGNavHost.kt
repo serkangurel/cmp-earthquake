@@ -1,20 +1,13 @@
 package com.sgmobile.earthquake.core.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
@@ -53,20 +46,34 @@ fun SGNavHost(
         configuration = savedStateConfiguration,
     )
     val navigator = remember(navigationState) { Navigator(navigationState) }
-    val entries = navigationState.toEntries(koinEntryProvider())
+    val entryProvider = koinEntryProvider<NavKey>()
+    val entries = navigationState.toEntries(entryProvider)
+    val topLevelContentKeys = topLevelDestinations
+        .map { entryProvider(it.route).contentKey }
+        .toSet()
+    val layoutDirection = LocalLayoutDirection.current
     val shouldShowBottomBar = navigationComponents.all { component ->
         component.showBottomBarEvaluator(navigationState.currentKey)
     }
 
     Scaffold(
-        containerColor = Color.Transparent,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            BottomNavigationBar(
-                isVisible = shouldShowBottomBar,
-                destinations = topLevelDestinations,
-                selectedRoute = navigationState.topLevelRoute,
-                onDestinationClick = { navigator.navigate(it.route) },
-            )
+            AnimatedBottomBar(isVisible = shouldShowBottomBar) {
+                BottomNavigationBar(
+                    items = topLevelDestinations.map { destination ->
+                        BottomBarItem(
+                            label = stringResource(destination.labelStringResource),
+                            selectedIcon = destination.selectedIcon,
+                            unselectedIcon = destination.unselectedIcon,
+                        )
+                    },
+                    selectedIndex = topLevelDestinations.indexOfFirst {
+                        it.route == navigationState.topLevelRoute
+                    },
+                    onItemClick = { navigator.navigate(topLevelDestinations[it].route) },
+                )
+            }
         },
     ) { paddingValues ->
         CompositionLocalProvider(
@@ -78,58 +85,17 @@ fun SGNavHost(
                 modifier = modifier.fillMaxSize(),
                 onBack = { navigator.goBack() },
                 transitionSpec = {
-                    EnterTransition.None togetherWith ExitTransition.None
+                    navigationTransition(topLevelContentKeys, layoutDirection, isPop = false)
                 },
                 popTransitionSpec = {
-                    EnterTransition.None togetherWith ExitTransition.None
+                    navigationTransition(topLevelContentKeys, layoutDirection, isPop = true)
                 },
                 predictivePopTransitionSpec = {
-                    EnterTransition.None togetherWith ExitTransition.None
+                    navigationTransition(topLevelContentKeys, layoutDirection, isPop = true)
                 },
             )
         }
     }
-}
-
-@Composable
-private fun BottomNavigationBar(
-    isVisible: Boolean,
-    destinations: List<TopLevelDestination>,
-    selectedRoute: NavKey,
-    onDestinationClick: (TopLevelDestination) -> Unit,
-) {
-    AnimatedBottomBar(isVisible = isVisible) {
-        NavigationBar {
-            destinations.forEach { destination ->
-                BottomNavigationItem(
-                    destination = destination,
-                    isSelected = destination.route == selectedRoute,
-                    onClick = { onDestinationClick(destination) },
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun RowScope.BottomNavigationItem(
-    destination: TopLevelDestination,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-) {
-    NavigationBarItem(
-        selected = isSelected,
-        onClick = onClick,
-        icon = {
-            Icon(
-                imageVector = if (isSelected) destination.selectedIcon else destination.unselectedIcon,
-                contentDescription = null,
-            )
-        },
-        label = {
-            Text(text = stringResource(destination.labelStringResource))
-        },
-    )
 }
 
 @Composable

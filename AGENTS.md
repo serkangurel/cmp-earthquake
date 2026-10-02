@@ -144,8 +144,12 @@ before editing generated package artifacts manually.
 
 ## Testing expectations
 
-- Add or update tests for behavior changes and regressions. Prefer deterministic fakes over live
-  network, map, clock, database, or service dependencies.
+- Do not add new tests, test files, or test infrastructure during or after implementation work unless
+  the user explicitly requests them.
+- Verify implementation changes with existing tests, build/lint checks, and manual or emulator checks
+  as appropriate.
+- When the user explicitly requests test changes, prefer deterministic fakes over live network,
+  map, clock, database, or service dependencies.
 - Match the test to the layer: use-case/repository behavior in `commonTest`, Android-only JVM logic
   in `androidHostTest`, and Compose interaction/rendering in `androidDeviceTest`.
 - Use `kotlin.test` for portable tests and follow the existing Given/When/Then organization where it
