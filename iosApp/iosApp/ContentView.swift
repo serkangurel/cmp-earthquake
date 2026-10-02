@@ -45,6 +45,9 @@ private struct EarthquakeOverviewView: View {
     @StateObject private var store: EarthquakeOverviewStore
     @State private var isCountrySheetPresented = false
     @State private var overviewFiltersHeight: CGFloat = 0
+    @State private var collapsedFiltersHeight: CGFloat = 0
+    @State private var filterDragStart: CGFloat?
+    @State private var isOverviewScrolling = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.locale) private var locale
 
@@ -58,8 +61,9 @@ private struct EarthquakeOverviewView: View {
     var body: some View {
         ZStack {
             GeometryReader { geometry in
-                earthquakeList(viewportHeight: geometry.size.height)
+                scrollAwareEarthquakeList(viewportHeight: geometry.size.height)
             }
+            .clipShape(TopEdgeClip())
 
             if store.state.isLoading && store.state.earthquakes.isEmpty {
                 ProgressView("loading")
@@ -69,12 +73,22 @@ private struct EarthquakeOverviewView: View {
                     .accessibilityLabel(Text("loading"))
             }
         }
-        .navigationTitle("earthquakes")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .navigationBar)
         .safeAreaInset(edge: .top, spacing: 0) {
             if !dynamicTypeSize.isAccessibilitySize {
                 overviewFilters
+                    .modifier(CollapsingFilterHeader(
+                        fullHeight: $overviewFiltersHeight,
+                        collapsedHeight: collapsedFiltersHeight
+                    ))
             }
+        }
+        .onChange(of: store.state.earthquakes.isEmpty) { isEmpty in
+            if isEmpty { collapsedFiltersHeight = 0 }
+        }
+        .onChange(of: dynamicTypeSize) { _ in
+            collapsedFiltersHeight = 0
+            filterDragStart = nil
         }
         .sheet(isPresented: $isCountrySheetPresented) {
             CountrySelectionView(
@@ -85,6 +99,70 @@ private struct EarthquakeOverviewView: View {
                     isCountrySheetPresented = false
                 }
             )
+        }
+    }
+
+    @ViewBuilder
+    private func scrollAwareEarthquakeList(viewportHeight: CGFloat) -> some View {
+        if #available(iOS 18.0, *) {
+            earthquakeList(viewportHeight: viewportHeight)
+                .onScrollGeometryChange(for: OverviewScrollMetrics.self) { geometry in
+                    OverviewScrollMetrics(
+                        position: geometry.contentOffset.y + geometry.contentInsets.top,
+                        topInset: geometry.contentInsets.top,
+                        viewportHeight: geometry.containerSize.height,
+                        canScroll: geometry.contentSize.height + geometry.contentInsets.top +
+                            geometry.contentInsets.bottom > geometry.containerSize.height + 1
+                    )
+                } action: { old, new in
+                    if !new.canScroll || new.position <= 0 {
+                        collapsedFiltersHeight = 0
+                    } else if isOverviewScrolling && canCollapseFilters &&
+                        old.topInset == new.topInset && old.viewportHeight == new.viewportHeight {
+                        // Header resizing changes insets; only consume actual list movement.
+                        updateFilterCollapse(by: new.position - max(0, old.position))
+                    }
+                }
+                .onScrollPhaseChange { _, phase in
+                    isOverviewScrolling = phase.isScrolling
+                    if phase == .idle { settleFilterCollapse() }
+                }
+        } else {
+            // Keep the same gesture behavior on iOS 16–17, before scroll geometry is available.
+            earthquakeList(viewportHeight: viewportHeight)
+                .simultaneousGesture(
+                    DragGesture()
+                        .onChanged { value in
+                            guard canCollapseFilters,
+                                abs(value.translation.height) > abs(value.translation.width) else { return }
+                            if filterDragStart == nil { filterDragStart = collapsedFiltersHeight }
+                            collapsedFiltersHeight = min(
+                                overviewFiltersHeight,
+                                max(0, (filterDragStart ?? 0) - value.translation.height)
+                            )
+                        }
+                        .onEnded { _ in
+                            filterDragStart = nil
+                            settleFilterCollapse()
+                        }
+                )
+        }
+    }
+
+    private var canCollapseFilters: Bool {
+        !dynamicTypeSize.isAccessibilitySize && !store.state.isPullToRefresh &&
+            !store.state.earthquakes.isEmpty
+    }
+
+    private func updateFilterCollapse(by delta: CGFloat) {
+        collapsedFiltersHeight = min(overviewFiltersHeight, max(0, collapsedFiltersHeight + delta))
+    }
+
+    private func settleFilterCollapse() {
+        guard canCollapseFilters else { return }
+        withAnimation(.easeOut(duration: 0.2)) {
+            collapsedFiltersHeight = collapsedFiltersHeight > overviewFiltersHeight / 2
+                ? overviewFiltersHeight : 0
         }
     }
 
@@ -129,6 +207,10 @@ private struct EarthquakeOverviewView: View {
                     } label: {
                         EarthquakeRow(earthquake: earthquake)
                     }
+                    .listRowSeparator(
+                        earthquake.id == store.state.earthquakes.first?.id ? .hidden : .automatic,
+                        edges: .top
+                    )
                     .accessibilityElement(children: .ignore)
                     .accessibilityAddTraits(.isButton)
                     .accessibilityLabel(
@@ -179,10 +261,41 @@ private struct EarthquakeOverviewView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(.bar)
-        .overlay(alignment: .bottom) {
-            Color(uiColor: .separator)
-                .frame(height: 0.5)
-        }
+    }
+}
+
+private struct TopEdgeClip: Shape {
+    func path(in rect: CGRect) -> Path {
+        var clippingRect = rect
+        // Keep bottom overflow visible beneath the floating tab bar.
+        clippingRect.size.height += rect.height
+        return Path(clippingRect)
+    }
+}
+
+private struct OverviewScrollMetrics: Equatable {
+    let position: CGFloat
+    let topInset: CGFloat
+    let viewportHeight: CGFloat
+    let canScroll: Bool
+}
+
+private struct CollapsingFilterHeader: ViewModifier {
+    @Binding var fullHeight: CGFloat
+    let collapsedHeight: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .fixedSize(horizontal: false, vertical: true)
+            .onGeometryChange(for: CGFloat.self) { geometry in
+                geometry.size.height
+            } action: { height in
+                fullHeight = height
+            }
+            .offset(y: -collapsedHeight)
+            .frame(height: max(0, fullHeight - collapsedHeight), alignment: .top)
+            .clipped()
+            .accessibilityHidden(fullHeight > 0 && collapsedHeight >= fullHeight)
     }
 }
 
@@ -523,6 +636,10 @@ private extension Color {
 
 private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
     static var previews: some View {
+        CollapsingFiltersPreview(collapsedFraction: 0)
+            .previewDisplayName("Filters • Expanded")
+        CollapsingFiltersPreview(collapsedFraction: 0.6)
+            .previewDisplayName("Filters • Collapsing")
         rows
             .previewDisplayName("Earthquake rows • Light")
         rows
@@ -592,5 +709,24 @@ private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
             magnitudeThreshold: threshold,
             date: "01.10.2026 21:53"
         )
+    }
+}
+
+private struct CollapsingFiltersPreview: View {
+    let collapsedFraction: CGFloat
+    @State private var headerHeight: CGFloat = 0
+
+    var body: some View {
+        OverviewFilters(
+            selectedCountry: CountryOption(code: "GLOBAL", name: "Global", flag: "🌍"),
+            selectedMagnitude: .constant("2+"),
+            onSelectCountry: {}
+        )
+        .padding()
+        .modifier(CollapsingFilterHeader(
+            fullHeight: $headerHeight,
+            collapsedHeight: headerHeight * collapsedFraction
+        ))
+        .frame(width: 375)
     }
 }

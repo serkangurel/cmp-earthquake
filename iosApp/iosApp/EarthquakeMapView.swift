@@ -8,6 +8,7 @@ import UIKit
 struct EarthquakeMapView: UIViewRepresentable {
     let earthquake: EarthquakeDetail
     let recenterRequest: Int
+    let topInset: CGFloat
     let bottomInset: CGFloat
 
     @Environment(\.colorScheme) private var colorScheme
@@ -36,7 +37,7 @@ struct EarthquakeMapView: UIViewRepresentable {
         mapView.settings.indoorPicker = false
         mapView.settings.myLocationButton = false
         mapView.padding = UIEdgeInsets(
-            top: 0,
+            top: topInset,
             left: 0,
             bottom: bottomInset,
             right: 0
@@ -63,7 +64,7 @@ struct EarthquakeMapView: UIViewRepresentable {
 
     func updateUIView(_ mapView: GMSMapView, context: Context) {
         mapView.padding = UIEdgeInsets(
-            top: 0,
+            top: topInset,
             left: 0,
             bottom: bottomInset,
             right: 0

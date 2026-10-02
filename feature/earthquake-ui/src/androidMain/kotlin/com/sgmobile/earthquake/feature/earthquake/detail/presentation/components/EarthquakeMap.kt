@@ -64,6 +64,7 @@ import kotlin.math.pow
 import kotlin.math.sin
 
 private const val EPICENTER_ZOOM = 8f
+private const val RECENTER_DURATION_MILLIS = 400
 private const val CIRCLE_FILL_ALPHA = 0.035f
 private const val CIRCLE_STROKE_ALPHA = 0.4f
 private const val CIRCLE_WAVE_DURATION_MILLIS = 3_000
@@ -128,8 +129,11 @@ internal fun EarthquakeMap(
             onClick = {
                 coroutineScope.launch {
                     val update = CameraUpdateFactory.newLatLngZoom(epicenter, EPICENTER_ZOOM)
-                    if (motionScale > 0f) cameraPositionState.animate(update)
-                    else cameraPositionState.move(update)
+                    if (motionScale > 0f) {
+                        cameraPositionState.animate(update, durationMs = RECENTER_DURATION_MILLIS)
+                    } else {
+                        cameraPositionState.move(update)
+                    }
                 }
             },
             modifier = Modifier

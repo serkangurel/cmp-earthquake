@@ -2,12 +2,13 @@ package com.sgmobile.earthquake.feature.earthquake.overview.presentation.compone
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
@@ -15,6 +16,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -31,6 +35,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sgmobile.earthquake.core.resource.Res
@@ -140,7 +145,7 @@ private fun MagnitudeFilter(
     modifier: Modifier = Modifier,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    Box(modifier) {
+    BoxWithConstraints(modifier) {
         FilterButton(
             title = stringResource(Res.string.minimum_magnitude),
             value = selectedMagnitude.label,
@@ -148,28 +153,77 @@ private fun MagnitudeFilter(
             onClick = { expanded = true },
             modifier = Modifier.fillMaxWidth(),
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            Text(
-                text = stringResource(Res.string.minimum_magnitude),
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.width(maxWidth),
+        ) {
             MagnitudeThreshold.entries.forEach { threshold ->
                 val isSelected = threshold == selectedMagnitude
-                DropdownMenuItem(
-                    text = { Text(threshold.label) },
+                MagnitudeDropdownItem(
+                    threshold = threshold,
+                    isSelected = isSelected,
                     onClick = {
                         expanded = false
                         if (!isSelected) onSelect(threshold)
                     },
-                    modifier = Modifier.semantics { selected = isSelected },
-                    trailingIcon = if (isSelected) {
-                        { Icon(Icons.Filled.Check, contentDescription = null) }
-                    } else {
-                        null
-                    },
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MagnitudeDropdownItem(
+    threshold: MagnitudeThreshold,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+) {
+    val contentColor = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer
+    else MaterialTheme.colorScheme.onSurface
+    DropdownMenuItem(
+        text = {
+            Text(
+                text = threshold.label,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = if (isSelected) FontWeight.SemiBold else null,
+            )
+        },
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 2.dp)
+            .clip(MaterialTheme.shapes.small)
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+            )
+            .semantics { selected = isSelected },
+        colors = MenuDefaults.itemColors(
+            textColor = contentColor,
+            trailingIconColor = contentColor,
+        ),
+        trailingIcon = if (isSelected) {
+            { Icon(Icons.Filled.Check, contentDescription = null) }
+        } else {
+            null
+        },
+    )
+}
+
+@PreviewThemes
+@Preview(name = "Large text magnitude menu", fontScale = 1.8f)
+@Composable
+private fun MagnitudeDropdownItemsPreview() {
+    SGPreview {
+        Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
+            Column(Modifier.width(180.dp).padding(vertical = 8.dp)) {
+                MagnitudeThreshold.entries.forEach { threshold ->
+                    MagnitudeDropdownItem(
+                        threshold = threshold,
+                        isSelected = threshold == MagnitudeThreshold.FOUR_PLUS,
+                        onClick = {},
+                    )
+                }
             }
         }
     }

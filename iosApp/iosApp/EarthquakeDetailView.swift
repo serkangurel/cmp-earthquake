@@ -5,6 +5,7 @@ struct EarthquakeDetailView: View {
     @StateObject private var store: EarthquakeDetailStore
     @State private var recenterRequest = 0
     @State private var detailContentHeight: CGFloat = 0
+    @Environment(\.dismiss) private var dismiss
 
     init(application: SharedApplication, earthquakeID: String) {
         _store = StateObject(
@@ -28,23 +29,20 @@ struct EarthquakeDetailView: View {
                     EarthquakeMapView(
                         earthquake: earthquake,
                         recenterRequest: recenterRequest,
+                        topInset: geometry.safeAreaInsets.top + 80,
                         bottomInset: cardHeight + geometry.safeAreaInsets.bottom
                     )
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text("epicenter_map"))
                     .accessibilityValue(Text(earthquake.place))
-                    .ignoresSafeArea(edges: .bottom)
+                    .ignoresSafeArea(edges: [.top, .bottom])
                     .overlay(alignment: .bottomTrailing) {
                         Button {
                             recenterRequest += 1
                         } label: {
-                            Image(systemName: "scope")
-                                .font(.system(size: 22, weight: .medium))
-                                .frame(width: 48, height: 48)
-                                .foregroundStyle(AppColors.primary)
-                                .background(.regularMaterial, in: Circle())
-                                .shadow(color: .black.opacity(0.12), radius: 6, y: 2)
+                            MapControlLabel(systemImage: "scope")
                         }
+                        .buttonStyle(.plain)
                         .accessibilityLabel(Text("center_map_on_earthquake"))
                         .padding(16)
                         .padding(.bottom, cardHeight)
@@ -84,22 +82,56 @@ struct EarthquakeDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
+            .overlay(alignment: .top) {
+                EarthquakeDetailActions(
+                    onBack: { dismiss() },
+                    shareSummary: store.state.isLoading ? nil : store.state.earthquake?.shareSummary
+                )
+                .padding(16)
+            }
         }
         .onPreferenceChange(DetailSheetHeightKey.self) {
             detailContentHeight = $0
         }
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
-        .toolbar {
-            if let earthquake = store.state.earthquake, !store.state.isLoading {
-                ToolbarItem(placement: .topBarTrailing) {
-                    ShareLink(item: earthquake.shareSummary) {
-                        Image(systemName: "square.and.arrow.up")
-                    }
-                    .accessibilityLabel(Text("share"))
+    }
+}
+
+private struct EarthquakeDetailActions: View {
+    let onBack: () -> Void
+    let shareSummary: String?
+
+    var body: some View {
+        HStack {
+            Button(action: onBack) {
+                MapControlLabel(systemImage: "arrow.backward")
+            }
+            .accessibilityLabel(Text("back_button"))
+
+            Spacer()
+
+            if let shareSummary {
+                ShareLink(item: shareSummary) {
+                    MapControlLabel(systemImage: "square.and.arrow.up")
                 }
+                .accessibilityLabel(Text("share"))
             }
         }
+        .buttonStyle(.plain)
+    }
+}
+
+private struct MapControlLabel: View {
+    let systemImage: String
+
+    var body: some View {
+        Image(systemName: systemImage)
+            .font(.system(size: 22, weight: .medium))
+            .frame(width: 48, height: 48)
+            .foregroundStyle(AppColors.primary)
+            .background(Color(uiColor: .systemBackground), in: Circle())
+            .shadow(color: .black.opacity(0.12), radius: 6, y: 2)
     }
 }
 
@@ -265,6 +297,16 @@ private struct DetailSheetHeightKey: PreferenceKey {
 
 private struct EarthquakeDetailRows_Previews: PreviewProvider {
     static var previews: some View {
+        EarthquakeDetailActions(onBack: {}, shareSummary: "Preview earthquake summary")
+            .padding()
+            .previewDisplayName("Map controls • Light")
+        EarthquakeDetailActions(onBack: {}, shareSummary: "Preview earthquake summary")
+            .padding()
+            .preferredColorScheme(.dark)
+            .previewDisplayName("Map controls • Dark")
+        EarthquakeDetailActions(onBack: {}, shareSummary: nil)
+            .padding()
+            .previewDisplayName("Map controls • Loading or unavailable")
         rows
             .previewDisplayName("Detail facts • Light")
         rows
