@@ -8,4 +8,6 @@ data class EarthquakeListItem(
     val magnitude: String,
     val magnitudeThreshold: MagnitudeThreshold,
     val date: String
-)
+) {
+    val timestamp: EarthquakeTimestamp = EarthquakeTimestamp.fromDisplayValue(date)
+}

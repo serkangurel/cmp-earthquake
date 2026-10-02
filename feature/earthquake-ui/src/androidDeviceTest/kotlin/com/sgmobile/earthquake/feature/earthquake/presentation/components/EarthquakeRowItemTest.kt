@@ -2,15 +2,21 @@
 
 package com.sgmobile.earthquake.feature.earthquake.presentation.components
 
+import android.text.format.DateFormat
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.sgmobile.earthquake.core.ui.theme.AppTheme
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeRowItem
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.formatEarthquakeTimestamp
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -34,9 +40,8 @@ class EarthquakeRowItemTest {
         }
 
         // Then
-        onNodeWithText("Istanbul, Turkey").assertIsDisplayed()
-        onNodeWithText("01.01.2025 12:00").assertIsDisplayed()
-        onNodeWithText("3.4").assertIsDisplayed()
+        onNodeWithContentDescription(rowDescription(model))
+            .assertIsDisplayed().assertHasClickAction()
     }
 
     @Test
@@ -56,8 +61,45 @@ class EarthquakeRowItemTest {
             }
         }
         // Then
-        onNodeWithText("San Francisco").assertIsDisplayed()
-        onNodeWithText("19.10.2025 14:30").assertIsDisplayed()
-        onNodeWithText("5.2").assertIsDisplayed()
+        onNodeWithContentDescription(rowDescription(model))
+            .assertIsDisplayed().assertHasClickAction()
+    }
+
+    @Test
+    fun row_click_invokes_detail_callback_once() = runComposeUiTest {
+        var clicks = 0
+        val model = EarthquakeListItem(
+            id = "eq-click",
+            place = "Istanbul, Turkey",
+            magnitude = "4.3",
+            magnitudeThreshold = MagnitudeThreshold.FOUR_PLUS,
+            date = "01.01.2025 12:00"
+        )
+        setContent {
+            AppTheme(darkTheme = false, dynamicColor = false) {
+                EarthquakeRowItem(model, onClick = { clicks++ })
+            }
+        }
+        onNodeWithContentDescription(rowDescription(model))
+            .performClick()
+        runOnIdle { assertEquals(1, clicks) }
+    }
+
+    @Test
+    fun missing_timestamp_is_explained_in_the_row_label() = runComposeUiTest {
+        val model = EarthquakeListItem("missing", "Istanbul, Turkey", "3.4", MagnitudeThreshold.TWO_PLUS, "")
+        setContent {
+            AppTheme(darkTheme = false, dynamicColor = false) { EarthquakeRowItem(model) }
+        }
+        onNodeWithContentDescription("Istanbul, Turkey. Magnitude 3.4. Date and time unavailable.")
+            .assertIsDisplayed().assertHasClickAction()
+    }
+
+    private fun rowDescription(model: EarthquakeListItem): String {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val timestamp = requireNotNull(formatEarthquakeTimestamp(
+            model.timestamp, context.resources.configuration.locales[0], DateFormat.is24HourFormat(context),
+        ))
+        return "${model.place}. Magnitude ${model.magnitude}. ${timestamp.date} at ${timestamp.time} local time."
     }
 }

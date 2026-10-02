@@ -22,4 +22,18 @@
     <string name="no_earthquakes_found_description">Try changing the country or magnitude filters, or pull to refresh.</string>
     <string name="center_map_on_earthquake">Center map on earthquake</string>
     <string name="earthquake_not_found">Earthquake not found</string>
+    <string name="country">Country</string>
+    <string name="country_filter">Country filter: %1$s</string>
+    <string name="select_country">Select country</string>
+    <string name="minimum_magnitude">Minimum magnitude</string>
+    <string name="magnitude_short">MAG</string>
+    <string name="earthquake_row_accessibility">%1$s. Magnitude %2$s. %3$s.</string>
+    <string name="earthquake_details_hint">Show earthquake details and map</string>
+    <string name="search_countries">Search countries</string>
+    <string name="clear_search">Clear search</string>
+    <string name="no_countries_found">No countries found</string>
+    <string name="no_countries_found_description">Try another country name or country code.</string>
+    <string name="done">Done</string>
+    <string name="earthquake_timestamp_accessibility">%1$s at %2$s local time</string>
+    <string name="earthquake_time_unavailable">Date and time unavailable</string>
 </resources>

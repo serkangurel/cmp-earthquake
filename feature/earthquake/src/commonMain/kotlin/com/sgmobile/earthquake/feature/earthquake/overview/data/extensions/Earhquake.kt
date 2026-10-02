@@ -3,11 +3,9 @@ package com.sgmobile.earthquake.feature.earthquake.overview.data.extensions
 import com.sgmobile.earthquake.feature.earthquake.overview.data.usgs.CoordinateListItem
 import com.sgmobile.earthquake.feature.earthquake.overview.data.usgs.UsgsResponse
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeDateTime
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.round
 import kotlin.time.ExperimentalTime
@@ -18,18 +16,6 @@ internal fun UsgsResponse?.toDomainList(): List<Earthquake> {
     val response = this
     val features = response?.features.orEmpty()
     if (features.isEmpty()) return emptyList()
-
-    val dateFormat = LocalDateTime.Format {
-        day()
-        char('.')
-        monthNumber()
-        char('.')
-        year()
-        char(' ')
-        hour()
-        char(':')
-        minute()
-    }
 
     return features.map { feature ->
         val place = feature.properties?.place.orEmpty()
@@ -60,7 +46,7 @@ internal fun UsgsResponse?.toDomainList(): List<Earthquake> {
             ?.let { millis ->
                 val instant = Instant.fromEpochMilliseconds(millis)
                 val local = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-                local.format(dateFormat)
+                EarthquakeDateTime.format(local)
             } ?: ""
 
         val id = feature.id ?: "$latitude,$longitude,$dateStr"

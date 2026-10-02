@@ -18,3 +18,14 @@
 "no_earthquakes_found_description" = "Try changing the country or magnitude filters, or pull to refresh.";
 "center_map_on_earthquake" = "Center map on earthquake";
 "earthquake_not_found" = "Earthquake not found";
+"country" = "Country";
+"country_filter" = "Country filter";
+"minimum_magnitude" = "Minimum magnitude";
+"magnitude_short" = "MAG";
+"earthquake_row_accessibility" = "%@. Magnitude %@. %@.";
+"earthquake_details_hint" = "Shows earthquake details and map.";
+"search_countries" = "Search countries";
+"no_countries_found" = "No countries found";
+"no_countries_found_description" = "Try another country name or country code.";
+"earthquake_timestamp_accessibility" = "%@ at %@ local time";
+"earthquake_time_unavailable" = "Date and time unavailable";

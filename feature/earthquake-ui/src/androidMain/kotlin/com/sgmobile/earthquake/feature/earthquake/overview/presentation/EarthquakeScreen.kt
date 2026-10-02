@@ -1,76 +1,44 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.outlined.SearchOff
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.selected
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquakes
-import com.sgmobile.earthquake.core.resource.filter
-import com.sgmobile.earthquake.core.resource.magnitude
-import com.sgmobile.earthquake.core.resource.magnitude_filter
 import com.sgmobile.earthquake.core.resource.no_earthquakes_found
 import com.sgmobile.earthquake.core.resource.no_earthquakes_found_description
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
@@ -80,15 +48,15 @@ import com.sgmobile.earthquake.core.ui.components.topbar.SGAppBar
 import com.sgmobile.earthquake.core.ui.util.DisableNavigationBarContrastEnforcement
 import com.sgmobile.earthquake.feature.earthquake.navigation.EarthquakeRoutes
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.CountrySelectionContent
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeFilters
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeRowItem
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EmptyResultsContent
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-
-private const val TOP_BAR_ACTION_CONTAINER_ALPHA = 0.20f
-private const val TOP_BAR_ACTION_BORDER_ALPHA = 0.30f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,33 +65,20 @@ internal fun EarthquakeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val navigator = LocalNavigator.current
-    val filterSheetState = rememberModalBottomSheetState()
+    val filterSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
     var isFilterSheetVisible by rememberSaveable { mutableStateOf(false) }
     val onFilterClick = { isFilterSheetVisible = true }
-    val selectedCountryFlag = uiState.selectedCountry?.flag
+    val dismissCountrySheet: () -> Unit = {
+        coroutineScope.launch {
+            filterSheetState.hide()
+            isFilterSheetVisible = false
+        }
+    }
 
     Scaffold(
         topBar = {
-            val title = stringResource(Res.string.earthquakes)
-            val filterContentDescription = stringResource(Res.string.filter)
-            SGAppBar(
-                title = { Text(title) },
-                navigationIcon = {
-                    CountryFilterButton(
-                        selectedCountryFlag = selectedCountryFlag,
-                        contentDescription = filterContentDescription,
-                        modifier = Modifier.padding(start = 8.dp),
-                        onClick = onFilterClick,
-                    )
-                },
-                actions = {
-                    EarthquakeTopBarActions(
-                        selectedMagnitude = uiState.selectedMagnitude,
-                        onIntent = viewModel::handleIntent
-                    )
-                }
-            )
+            SGAppBar(title = { Text(stringResource(Res.string.earthquakes)) })
         },
     ) { paddingValues ->
         Box(
@@ -137,11 +92,12 @@ internal fun EarthquakeScreen(
             EarthquakeContent(
                 uiState = uiState,
                 onIntent = viewModel::handleIntent,
+                onCountryClick = onFilterClick,
                 onEarthquakeClick = {
                     navigator.navigate(EarthquakeRoutes.Detail(it.id))
                 }
             )
-            if (uiState.isLoading) {
+            if (uiState.isLoading && uiState.earthquakes.isEmpty()) {
                 SGLoading()
             }
         }
@@ -153,387 +109,112 @@ internal fun EarthquakeScreen(
             sheetState = filterSheetState,
         ) {
             DisableNavigationBarContrastEnforcement()
-            CountryList(
+            CountrySelectionContent(
                 countries = uiState.countries,
                 selectedCountry = uiState.selectedCountry,
                 onCountryClick = { country ->
-                    if (country == uiState.selectedCountry) {
-                        coroutineScope.launch {
-                            filterSheetState.hide()
-                            if (!filterSheetState.isVisible) {
-                                isFilterSheetVisible = false
-                            }
-                        }
-                    } else {
+                    if (country != uiState.selectedCountry) {
                         viewModel.handleIntent(EarthquakeScreenIntent.SelectCountry(country))
                     }
+                    dismissCountrySheet()
                 },
+                onDismiss = dismissCountrySheet,
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CountryFilterButton(
-    selectedCountryFlag: String?,
-    contentDescription: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    val buttonColor = MaterialTheme.colorScheme.onPrimary
-    IconButton(
-        onClick = onClick,
-        modifier = modifier.border(
-            width = 1.dp,
-            color = buttonColor.copy(alpha = TOP_BAR_ACTION_BORDER_ALPHA),
-            shape = CircleShape,
-        ),
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = buttonColor.copy(alpha = TOP_BAR_ACTION_CONTAINER_ALPHA),
-            contentColor = buttonColor,
-        ),
-    ) {
-        if (selectedCountryFlag != null) {
-            Text(
-                text = selectedCountryFlag,
-                modifier = Modifier.clearAndSetSemantics {
-                    this.contentDescription = contentDescription
-                },
-                style = MaterialTheme.typography.titleLarge,
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Filled.FilterList,
-                contentDescription = contentDescription,
-            )
-        }
-    }
-}
-
-@PreviewThemes
-@Composable
-private fun CountryFilterButtonPreview() {
-    SGPreview {
-        val contentDescription = stringResource(Res.string.filter)
-        Row(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            CountryFilterButton(
-                selectedCountryFlag = null,
-                contentDescription = contentDescription,
-                onClick = {},
-            )
-            CountryFilterButton(
-                selectedCountryFlag = "🇹🇷",
-                contentDescription = contentDescription,
-                onClick = {},
-            )
-        }
-    }
-}
-
-@Composable
-private fun CountryList(
-    countries: List<CountryOption>,
-    selectedCountry: CountryOption?,
-    onCountryClick: (CountryOption) -> Unit,
-) {
-    val selectedCountryIndex = countries.indexOf(selectedCountry).takeIf { it >= 0 }
-    val listState = rememberLazyListState(
-        initialFirstVisibleItemIndex = selectedCountryIndex ?: 0,
-    )
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        state = listState,
-    ) {
-        itemsIndexed(countries) { index, country ->
-            val isSelected = country == selectedCountry
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics { selected = isSelected }
-                    .clickable { onCountryClick(country) }
-                    .padding(horizontal = 24.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = country.flag,
-                    modifier = Modifier
-                        .width(24.dp)
-                        .clearAndSetSemantics {},
-                    maxLines = 1,
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = country.name,
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
-
-            if (index < countries.lastIndex) {
-                HorizontalDivider()
-            }
-        }
-    }
-}
-
-@PreviewThemes
-@Composable
-private fun CountryListPreview() {
-    SGPreview {
-        CountryList(
-            countries = listOf(
-                CountryOption(
-                    code = "TR",
-                    name = "Turkey",
-                    flag = "🇹🇷",
-                ),
-                CountryOption(
-                    code = "US",
-                    name = "United States",
-                    flag = "🇺🇸",
-                ),
-            ),
-            selectedCountry = CountryOption(
-                code = "TR",
-                name = "Turkey",
-                flag = "🇹🇷",
-            ),
-            onCountryClick = {},
-        )
-    }
-}
-
-@Composable
-private fun EarthquakeContent(
+internal fun EarthquakeContent(
     uiState: EarthquakeOverviewState,
     onIntent: (EarthquakeScreenIntent) -> Unit,
     onEarthquakeClick: (EarthquakeListItem) -> Unit,
+    onCountryClick: () -> Unit = {},
 ) {
-    val lazyListState: LazyListState = rememberLazyListState()
-    LaunchedEffect(uiState.earthquakes) {
-        snapshotFlow {
-            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-        }.distinctUntilChanged()
-            .collect { lastVisibleIndex ->
-                if (lastVisibleIndex == uiState.earthquakes.lastIndex) {
+    val lazyListState = rememberLazyListState()
+    val density = LocalDensity.current
+    val useStackedLayout = density.fontScale >= 1.5f
+    var filterHeight by remember { mutableIntStateOf(0) }
+    val lastEarthquakeKey = uiState.earthquakes.lastOrNull()?.let { "earthquake:${it.id}" }
+    LaunchedEffect(lazyListState, lastEarthquakeKey) {
+        if (lastEarthquakeKey != null) {
+            snapshotFlow {
+                lazyListState.layoutInfo.visibleItemsInfo.any { it.key == lastEarthquakeKey }
+            }.distinctUntilChanged().collect { isLastEarthquakeVisible ->
+                if (isLastEarthquakeVisible) {
                     onIntent(EarthquakeScreenIntent.LoadMore)
                 }
             }
+        }
     }
 
-    PullToRefreshBox(
-        isRefreshing = uiState.isPullToRefresh,
-        onRefresh = { onIntent(EarthquakeScreenIntent.Refresh(isPullToRefresh = true)) },
-        modifier = Modifier.fillMaxSize(),
-        state = rememberPullToRefreshState()
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = lazyListState,
-            contentPadding = PaddingValues(16.dp),
-        ) {
-            if (
-                uiState.earthquakes.isEmpty() &&
-                !uiState.isLoading &&
-                !uiState.isPullToRefresh
+    Column(Modifier.fillMaxSize()) {
+        if (!useStackedLayout) {
+            EarthquakeFilters(
+                selectedCountry = uiState.selectedCountry,
+                selectedMagnitude = uiState.selectedMagnitude,
+                onCountryClick = onCountryClick,
+                onMagnitudeClick = { onIntent(EarthquakeScreenIntent.SelectMagnitude(it)) },
+            )
+        }
+        BoxWithConstraints(Modifier.weight(1f)) {
+            val emptyHeight = (maxHeight - 16.dp - if (useStackedLayout) {
+                with(density) { filterHeight.toDp() }
+            } else {
+                0.dp
+            }).coerceAtLeast(0.dp)
+            PullToRefreshBox(
+                isRefreshing = uiState.isPullToRefresh,
+                onRefresh = { onIntent(EarthquakeScreenIntent.Refresh(isPullToRefresh = true)) },
+                modifier = Modifier.fillMaxSize(),
+                state = rememberPullToRefreshState()
             ) {
-                item {
-                    EarthquakeEmptyContent(
-                        modifier = Modifier.fillParentMaxSize(),
-                    )
-                }
-            }
-
-            itemsIndexed(uiState.earthquakes) { index, item ->
-                EarthquakeRowItem(
-                    model = item,
-                    onClick = { onEarthquakeClick(item) }
-                )
-
-                if (index < uiState.earthquakes.size - 1) {
-                    HorizontalDivider(
-                        thickness = 0.5.dp,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun EarthquakeEmptyContent(
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.SearchOff,
-            contentDescription = null,
-            modifier = Modifier.size(72.dp),
-            tint = MaterialTheme.colorScheme.primary,
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(Res.string.no_earthquakes_found),
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(Res.string.no_earthquakes_found_description),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@PreviewThemes
-@Composable
-private fun EarthquakeEmptyContentPreview() {
-    SGPreview {
-        EarthquakeEmptyContent(
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
-}
-
-@Composable
-private fun EarthquakeTopBarActions(
-    onIntent: (EarthquakeScreenIntent) -> Unit,
-    selectedMagnitude: MagnitudeThreshold,
-) {
-    var isMenuExpanded by remember { mutableStateOf(false) }
-    val buttonColor = MaterialTheme.colorScheme.onPrimary
-    val iconRotation by animateFloatAsState(
-        targetValue = if (isMenuExpanded) 180f else 0f,
-        label = "Magnitude menu icon rotation",
-    )
-    val magnitudeFilterDescription = stringResource(
-        Res.string.magnitude_filter,
-        selectedMagnitude.label,
-    )
-
-    Box(modifier = Modifier.padding(end = 8.dp)) {
-        TextButton(
-            onClick = { isMenuExpanded = true },
-            modifier = Modifier.semantics {
-                contentDescription = magnitudeFilterDescription
-            },
-            shape = CircleShape,
-            colors = ButtonDefaults.textButtonColors(
-                containerColor = buttonColor.copy(alpha = TOP_BAR_ACTION_CONTAINER_ALPHA),
-                contentColor = buttonColor,
-            ),
-            border = BorderStroke(
-                width = 1.dp,
-                color = buttonColor.copy(alpha = TOP_BAR_ACTION_BORDER_ALPHA),
-            ),
-            contentPadding = PaddingValues(horizontal = 12.dp),
-        ) {
-            Text(selectedMagnitude.label)
-            Icon(
-                imageVector = Icons.Filled.ArrowDropDown,
-                contentDescription = null,
-                modifier = Modifier.rotate(iconRotation),
-            )
-        }
-
-        DropdownMenu(
-            expanded = isMenuExpanded,
-            onDismissRequest = { isMenuExpanded = false },
-            shape = MaterialTheme.shapes.large,
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            tonalElevation = 0.dp,
-            shadowElevation = 8.dp,
-        ) {
-            Text(
-                text = stringResource(Res.string.magnitude),
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelLarge,
-            )
-
-            MagnitudeThreshold.labels.forEach { label ->
-                val isSelected = label == selectedMagnitude.label
-                val itemContentColor = if (isSelected) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
-                DropdownMenuItem(
-                    text = { Text(label) },
-                    onClick = {
-                        isMenuExpanded = false
-                        if (!isSelected) {
-                            onIntent(
-                                EarthquakeScreenIntent.SelectMagnitude(
-                                    MagnitudeThreshold.fromLabel(label)
-                                )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                ) {
+                    if (useStackedLayout) {
+                        item(key = "filters", contentType = "filters") {
+                            EarthquakeFilters(
+                                selectedCountry = uiState.selectedCountry,
+                                selectedMagnitude = uiState.selectedMagnitude,
+                                onCountryClick = onCountryClick,
+                                onMagnitudeClick = { onIntent(EarthquakeScreenIntent.SelectMagnitude(it)) },
+                                modifier = Modifier.onSizeChanged { filterHeight = it.height },
                             )
                         }
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .then(
-                            if (isSelected) {
-                                Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
-                            } else {
-                                Modifier
-                            }
-                        )
-                        .semantics { selected = isSelected },
-                    trailingIcon = if (isSelected) {
-                        {
-                            Icon(
-                                imageVector = Icons.Filled.Check,
-                                contentDescription = null,
+                    }
+                    if (uiState.earthquakes.isEmpty() && !uiState.isLoading && !uiState.isPullToRefresh) {
+                        item(key = "empty", contentType = "empty") {
+                            EmptyResultsContent(
+                                title = stringResource(Res.string.no_earthquakes_found),
+                                message = stringResource(Res.string.no_earthquakes_found_description),
+                                modifier = Modifier.fillMaxWidth().heightIn(min = emptyHeight),
                             )
                         }
-                    } else {
-                        null
-                    },
-                    colors = MenuDefaults.itemColors(
-                        textColor = itemContentColor,
-                        trailingIconColor = itemContentColor,
-                    ),
-                )
+                    }
+                    itemsIndexed(
+                        items = uiState.earthquakes,
+                        key = { _, item -> "earthquake:${item.id}" },
+                        contentType = { _, _ -> "earthquake" },
+                    ) { index, item ->
+                        EarthquakeRowItem(model = item, onClick = { onEarthquakeClick(item) })
+                        if (index < uiState.earthquakes.lastIndex) {
+                            HorizontalDivider(
+                                thickness = 0.5.dp,
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
+                        }
+                    }
+                    if (uiState.isLoading && uiState.earthquakes.isNotEmpty()) {
+                        item(key = "loading", contentType = "loading") {
+                            SGLoading(Modifier.fillMaxWidth().height(64.dp))
+                        }
+                    }
+                }
             }
-        }
-    }
-}
-
-@PreviewThemes
-@Composable
-private fun EarthquakeTopBarActionsPreview() {
-    SGPreview {
-        Box(modifier = Modifier.background(MaterialTheme.colorScheme.primary)) {
-            EarthquakeTopBarActions(
-                selectedMagnitude = MagnitudeThreshold.FOUR_PLUS,
-                onIntent = {},
-            )
         }
     }
 }

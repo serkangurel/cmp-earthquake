@@ -10,6 +10,7 @@ kotlin {
     android {
         namespace = "com.sgmobile.earthquake.feature.earthquake.ui"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
 
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
