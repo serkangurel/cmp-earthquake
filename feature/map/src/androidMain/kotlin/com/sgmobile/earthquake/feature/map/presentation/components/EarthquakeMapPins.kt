@@ -38,14 +38,16 @@ internal fun EarthquakeMapPins(
     pins.forEach { pin ->
         key(pin.earthquake.id) {
             val selected = pin.earthquake.id == selectedEarthquakeId
+            val description = stringResource(
+                if (selected) Res.string.map_selected_earthquake_pin else Res.string.map_earthquake_pin,
+                pin.earthquake.place,
+                pin.earthquake.magnitude,
+            )
             Marker(
                 state = rememberUpdatedMarkerState(LatLng(pin.latitude, pin.longitude)),
-                title = pin.earthquake.place,
-                contentDescription = stringResource(
-                    if (selected) Res.string.map_selected_earthquake_pin else Res.string.map_earthquake_pin,
-                    pin.earthquake.place,
-                    pin.earthquake.magnitude,
-                ),
+                // Native map accessibility exposes the title even when it ignores contentDescription.
+                title = description,
+                contentDescription = description,
                 icon = icons.getValue(pin.earthquake.magnitudeThreshold)[if (selected) 1 else 0],
                 anchor = Offset(0.5f, 0.5f),
                 zIndex = if (selected) 2f else 1f,
