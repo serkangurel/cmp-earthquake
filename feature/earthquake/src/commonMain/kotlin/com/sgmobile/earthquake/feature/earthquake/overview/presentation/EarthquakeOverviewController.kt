@@ -1,6 +1,10 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
 import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
+import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapSnapshot
+import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapSnapshotStore
+import com.sgmobile.earthquake.feature.earthquake.map.presentation.toMapCountry
+import com.sgmobile.earthquake.feature.earthquake.map.presentation.toMapPins
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetCountriesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReachedFlowUseCase
@@ -16,30 +20,37 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 private const val GLOBAL_COUNTRY_CODE = "GLOBAL"
 
-@Factory
 class EarthquakeOverviewController internal constructor(
     private val refreshUsgsEarthquakesUseCase: RefreshUsgsEarthquakesUseCase,
     private val loadNextUsgsEarthquakesUseCase: LoadNextUsgsEarthquakesUseCase,
     getEarthquakeFlowUseCase: GetEarthquakeFlowUseCase,
     getIsEndReachedFlowUseCase: GetIsEndReachedFlowUseCase,
     private val getCountriesUseCase: GetCountriesUseCase,
+    private val mapSnapshotStore: EarthquakeMapSnapshotStore = EarthquakeMapSnapshotStore(),
 ) {
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default.limitedParallelism(1))
     private val earthquakeFlow = getEarthquakeFlowUseCase()
     private val isEndReachedFlow = getIsEndReachedFlowUseCase()
     private val _state = MutableStateFlow(EarthquakeOverviewState.INITIAL)
     private var countries: List<Country> = emptyList()
     private var selectedCountry: Country? = null
+    private val requestMutex = Mutex()
+    private var requestJob: Job? = null
+    private var requestGeneration = 0L
+    private var isResetting = true
 
     internal val state: StateFlow<EarthquakeOverviewState> = _state.asStateFlow()
 
@@ -47,16 +58,10 @@ class EarthquakeOverviewController internal constructor(
         get() = state.value
 
     init {
+        mapSnapshotStore.publish(EarthquakeMapSnapshot.INITIAL)
         scope.launch {
-            combine(earthquakeFlow, isEndReachedFlow) { earthquakes, isEndReached ->
-                earthquakes.mapToListItems() to isEndReached
-            }.collect { (earthquakes, isEndReached) ->
-                _state.update {
-                    it.copy(
-                        earthquakes = earthquakes,
-                        isEndReached = isEndReached,
-                    )
-                }
+            combine(earthquakeFlow, isEndReachedFlow) { _, _ -> Unit }.collect {
+                publishDataset()
             }
         }
         scope.launch {
@@ -84,28 +89,34 @@ class EarthquakeOverviewController internal constructor(
     }
 
     fun refresh(completion: () -> Unit) {
-        requestRefresh(isPullToRefresh = true, completion = completion)
+        scope.launch { requestRefresh(isPullToRefresh = true, completion = completion) }
     }
 
     fun loadMore() {
-        if (state.value.isEndReached || state.value.isLoading) return
-        executeWithLoading(isPullToRefresh = false) {
-            loadNextUsgsEarthquakesUseCase()
+        scope.launch {
+            if (state.value.isEndReached || state.value.isLoading || state.value.isPullToRefresh) return@launch
+            executeWithLoading(isPullToRefresh = false, reset = false) {
+                loadNextUsgsEarthquakesUseCase()
+            }
         }
     }
 
     fun selectMagnitude(magnitude: MagnitudeThreshold) {
-        if (magnitude == state.value.selectedMagnitude) return
-        _state.update { it.copy(selectedMagnitude = magnitude) }
-        requestRefresh(isPullToRefresh = false)
+        scope.launch {
+            if (magnitude == state.value.selectedMagnitude) return@launch
+            _state.update { it.copy(selectedMagnitude = magnitude) }
+            requestRefresh(isPullToRefresh = false)
+        }
     }
 
     fun selectCountry(countryCode: String) {
-        val country = countries.firstOrNull { it.code == countryCode } ?: return
-        if (country == selectedCountry) return
-        selectedCountry = country
-        _state.update { it.copy(selectedCountry = country.toOption()) }
-        requestRefresh(isPullToRefresh = false)
+        scope.launch {
+            val country = countries.firstOrNull { it.code == countryCode } ?: return@launch
+            if (country == selectedCountry) return@launch
+            selectedCountry = country
+            _state.update { it.copy(selectedCountry = country.toOption()) }
+            requestRefresh(isPullToRefresh = false)
+        }
     }
 
     fun close() {
@@ -121,10 +132,11 @@ class EarthquakeOverviewController internal constructor(
             completion()
             return
         }
-        executeWithLoading(isPullToRefresh = isPullToRefresh, completion = completion) {
+        val magnitude = state.value.selectedMagnitude
+        executeWithLoading(isPullToRefresh = isPullToRefresh, reset = true, completion = completion) {
             refreshUsgsEarthquakesUseCase(
                 pageSize = EarthquakeConstants.PAGE_SIZE,
-                selectedMagnitude = state.value.selectedMagnitude,
+                selectedMagnitude = magnitude,
                 selectedCountryBounds = countryBounds,
             )
         }
@@ -132,28 +144,51 @@ class EarthquakeOverviewController internal constructor(
 
     private fun executeWithLoading(
         isPullToRefresh: Boolean,
+        reset: Boolean,
         completion: () -> Unit = {},
         block: suspend () -> Unit,
     ) {
-        updateLoading(isPullToRefresh = isPullToRefresh, value = true)
-        scope.launch {
+        val generation = ++requestGeneration
+        val previousJob = requestJob
+        previousJob?.cancel()
+        isResetting = reset
+        _state.update {
+            it.copy(isLoading = !isPullToRefresh, isPullToRefresh = isPullToRefresh)
+        }
+        publishDataset()
+        requestJob = scope.launch {
             try {
-                block()
+                previousJob?.cancelAndJoin()
+                requestMutex.withLock {
+                    ensureActive()
+                    block()
+                    ensureActive()
+                }
             } finally {
-                updateLoading(isPullToRefresh = isPullToRefresh, value = false)
+                if (generation == requestGeneration) {
+                    isResetting = false
+                    _state.update { it.copy(isLoading = false, isPullToRefresh = false) }
+                    publishDataset()
+                }
                 completion()
             }
         }
     }
 
-    private fun updateLoading(isPullToRefresh: Boolean, value: Boolean) {
+    private fun publishDataset() {
+        // Read the latest value instead of replaying an emission from a superseded request.
+        val earthquakes = if (isResetting) emptyList() else earthquakeFlow.value
         _state.update {
-            if (isPullToRefresh) {
-                it.copy(isPullToRefresh = value)
-            } else {
-                it.copy(isLoading = value)
-            }
+            it.copy(earthquakes = earthquakes.mapToListItems(), isEndReached = isEndReachedFlow.value)
         }
+        mapSnapshotStore.publish(
+            EarthquakeMapSnapshot(
+                country = selectedCountry?.toMapCountry(),
+                selectedMagnitude = state.value.selectedMagnitude,
+                pins = earthquakes.toMapPins(),
+                isLoading = state.value.isLoading || state.value.isPullToRefresh,
+            ),
+        )
     }
 }
 
