@@ -34,6 +34,9 @@
 		A1000000000000000000000A = {isa = PBXBuildFile; fileRef = A10000000000000000000009; };
 		A1000000000000000000000C = {isa = PBXBuildFile; fileRef = A1000000000000000000000B; };
 		A20000000000000000000002 = {isa = PBXBuildFile; fileRef = A20000000000000000000001; };
+		A20000000000000000000004 = {isa = PBXBuildFile; fileRef = A20000000000000000000003; };
+		A20000000000000000000006 = {isa = PBXBuildFile; fileRef = A20000000000000000000005; };
+		A20000000000000000000008 = {isa = PBXBuildFile; fileRef = A20000000000000000000007; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +91,9 @@
 		A10000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = text.json; name = "country-list.json"; path = "../feature/earthquake/src/commonMain/resources/country-list.json"; sourceTree = SOURCE_ROOT; };
 		A1000000000000000000000B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeTimestamp.swift; sourceTree = "<group>"; };
 		A20000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeMapStore.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeOverviewMapView.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeMapOverviewView.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeMarkerImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +153,9 @@
 				A10000000000000000000009,
 				A1000000000000000000000B,
 				A20000000000000000000001,
+				A20000000000000000000007,
+				A20000000000000000000005,
+				A20000000000000000000003,
 				7555FF8C242A565B00829871,
 				2152FB032600AC8F00CF470E,
 				058557D7273AAEEB004C7B11,
@@ -269,6 +278,9 @@
 				A10000000000000000000006,
 				A1000000000000000000000C,
 				A20000000000000000000002,
+				A20000000000000000000008,
+				A20000000000000000000006,
+				A20000000000000000000004,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

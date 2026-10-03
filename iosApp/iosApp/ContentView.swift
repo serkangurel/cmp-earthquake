@@ -14,7 +14,7 @@ struct ContentView: View {
             }
 
             NavigationStack {
-                PlaceholderView(message: "map_placeholder")
+                EarthquakeMapOverviewView(application: application)
             }
             .tabItem {
                 Label("map", systemImage: "map.fill")
@@ -474,7 +474,7 @@ private struct EarthquakeRow: View {
     }
 }
 
-private struct EarthquakeTimestampView: View {
+struct EarthquakeTimestampView: View {
     let timestamp: EarthquakeTimestamp
     @Environment(\.locale) private var locale
     @ScaledMetric(relativeTo: .footnote) private var iconSize: CGFloat = 14

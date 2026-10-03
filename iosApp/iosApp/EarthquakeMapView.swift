@@ -113,7 +113,7 @@ struct EarthquakeMapView: UIViewRepresentable {
             self.color = color
             lastRecenterRequest = recenterRequest
 
-            marker.icon = Self.markerImage(color: color)
+            marker.icon = EarthquakeMarkerImage.make(color: color)
             waves = (0..<2).map { _ in
                 let wave = GMSCircle(position: coordinate, radius: 1)
                 wave.strokeWidth = 1.5
@@ -138,7 +138,7 @@ struct EarthquakeMapView: UIViewRepresentable {
             marker?.title = earthquake.place
             if !self.color.isEqual(color) {
                 self.color = color
-                marker?.icon = Self.markerImage(color: color)
+                marker?.icon = EarthquakeMarkerImage.make(color: color)
             }
         }
 
@@ -197,33 +197,5 @@ struct EarthquakeMapView: UIViewRepresentable {
             }
         }
 
-        private static func markerImage(color: UIColor) -> UIImage {
-            UIGraphicsImageRenderer(size: CGSize(width: 40, height: 40)).image { context in
-                let body = UIBezierPath(ovalIn: CGRect(x: 6, y: 6, width: 28, height: 28))
-                context.cgContext.saveGState()
-                context.cgContext.setShadow(
-                    offset: CGSize(width: 0, height: 2),
-                    blur: 4,
-                    color: UIColor.black.withAlphaComponent(0.25).cgColor
-                )
-                color.setFill()
-                body.fill()
-                context.cgContext.restoreGState()
-
-                UIColor.white.setStroke()
-                body.lineWidth = 3
-                body.stroke()
-                var red: CGFloat = 0
-                var green: CGFloat = 0
-                var blue: CGFloat = 0
-                color.getRed(&red, green: &green, blue: &blue, alpha: nil)
-                let brightness = 0.299 * red + 0.587 * green + 0.114 * blue
-                let centerColor: UIColor = brightness > 0.6 ? .black : .white
-                centerColor.setFill()
-                UIBezierPath(ovalIn: CGRect(x: 15, y: 15, width: 10, height: 10)).fill()
-                color.setFill()
-                UIBezierPath(ovalIn: CGRect(x: 18, y: 18, width: 4, height: 4)).fill()
-            }
-        }
     }
 }

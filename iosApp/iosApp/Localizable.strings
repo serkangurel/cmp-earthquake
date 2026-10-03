@@ -1,7 +1,14 @@
 "earthquakes" = "Earthquakes";
 "map" = "Map";
 "settings" = "Settings";
-"map_placeholder" = "Map Screen";
+"map_load_earthquakes" = "Load earthquakes on the Earthquakes screen to see them on the map.";
+"map_no_loaded_earthquakes" = "No earthquakes loaded for this view.";
+"map_no_loaded_earthquakes_description" = "Change filters or refresh on the Earthquakes screen.";
+"view_earthquake_details" = "View details";
+"dismiss_earthquake_summary" = "Dismiss earthquake summary";
+"center_map_on_country" = "Center map on selected country";
+"map_earthquake_pin" = "%@. Magnitude %@.";
+"map_selected_earthquake_pin" = "Selected. %@. Magnitude %@.";
 "settings_placeholder" = "Settings Screen";
 "magnitude" = "Magnitude";
 "magnitude_filter" = "Magnitude filter: %@";

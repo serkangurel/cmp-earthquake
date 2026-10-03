@@ -122,7 +122,7 @@ private struct EarthquakeDetailActions: View {
     }
 }
 
-private struct MapControlLabel: View {
+struct MapControlLabel: View {
     let systemImage: String
 
     var body: some View {
