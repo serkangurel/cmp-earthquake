@@ -91,15 +91,17 @@ internal fun MapContent(
         if (selected != null) {
             val safeHeight = (maxHeight - safePadding.calculateTopPadding() - bottomPadding - 32.dp)
                 .coerceAtLeast(0.dp)
-            EarthquakeMapSummary(
-                earthquake = selected,
-                onDismiss = onSelectionDismissed,
-                onViewDetails = { onViewDetails(selected.id) },
-                modifier = Modifier.align(Alignment.BottomCenter)
-                    .padding(start = 16.dp, end = 16.dp, bottom = bottomPadding + 16.dp)
-                    .heightIn(max = safeHeight * 0.45f)
-                    .onSizeChanged { summaryHeightPx = it.height },
-            )
+            key(selected.id) {
+                EarthquakeMapSummary(
+                    earthquake = selected,
+                    onDismiss = onSelectionDismissed,
+                    onViewDetails = { onViewDetails(selected.id) },
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                        .padding(start = 16.dp, end = 16.dp, bottom = bottomPadding + 16.dp)
+                        .heightIn(max = safeHeight * 0.45f)
+                        .onSizeChanged { summaryHeightPx = it.height },
+                )
+            }
         }
         EarthquakeMapStatus(
             snapshot = state.snapshot,

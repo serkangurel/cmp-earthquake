@@ -47,17 +47,22 @@ internal fun EarthquakeMapSummary(
         shadowElevation = 6.dp,
     ) {
         Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            Column(
+            Row(
                 modifier = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Text(
                     text = earthquake.magnitude,
                     color = earthquake.magnitudeThreshold.toTierColor(),
                     style = MaterialTheme.typography.headlineSmall,
                 )
-                Text(earthquake.place, style = MaterialTheme.typography.titleMedium)
-                EarthquakeTimestampLabel(earthquake.timestamp)
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(earthquake.place, style = MaterialTheme.typography.titleMedium)
+                    EarthquakeTimestampLabel(earthquake.timestamp)
+                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
