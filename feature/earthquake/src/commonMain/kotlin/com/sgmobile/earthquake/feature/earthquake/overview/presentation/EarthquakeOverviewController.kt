@@ -89,7 +89,9 @@ class EarthquakeOverviewController internal constructor(
     }
 
     fun refresh(completion: () -> Unit) {
-        scope.launch { requestRefresh(isPullToRefresh = true, completion = completion) }
+        val dispatchJob = scope.launch { requestRefresh(isPullToRefresh = true)?.join() }
+        // Also completes when cancellation prevents the dispatch or request body from starting.
+        dispatchJob.invokeOnCompletion { completion() }
     }
 
     fun loadMore() {
@@ -125,15 +127,10 @@ class EarthquakeOverviewController internal constructor(
 
     private fun requestRefresh(
         isPullToRefresh: Boolean,
-        completion: () -> Unit = {},
-    ) {
-        val countryBounds = selectedCountry?.bounds
-        if (countryBounds == null) {
-            completion()
-            return
-        }
+    ): Job? {
+        val countryBounds = selectedCountry?.bounds ?: return null
         val magnitude = state.value.selectedMagnitude
-        executeWithLoading(isPullToRefresh = isPullToRefresh, reset = true, completion = completion) {
+        return executeWithLoading(isPullToRefresh = isPullToRefresh, reset = true) {
             refreshUsgsEarthquakesUseCase(
                 pageSize = EarthquakeConstants.PAGE_SIZE,
                 selectedMagnitude = magnitude,
@@ -145,9 +142,8 @@ class EarthquakeOverviewController internal constructor(
     private fun executeWithLoading(
         isPullToRefresh: Boolean,
         reset: Boolean,
-        completion: () -> Unit = {},
         block: suspend () -> Unit,
-    ) {
+    ): Job {
         val generation = ++requestGeneration
         val previousJob = requestJob
         previousJob?.cancel()
@@ -156,7 +152,7 @@ class EarthquakeOverviewController internal constructor(
             it.copy(isLoading = !isPullToRefresh, isPullToRefresh = isPullToRefresh)
         }
         publishDataset()
-        requestJob = scope.launch {
+        val job = scope.launch {
             try {
                 previousJob?.cancelAndJoin()
                 requestMutex.withLock {
@@ -170,9 +166,10 @@ class EarthquakeOverviewController internal constructor(
                     _state.update { it.copy(isLoading = false, isPullToRefresh = false) }
                     publishDataset()
                 }
-                completion()
             }
         }
+        requestJob = job
+        return job
     }
 
     private fun publishDataset() {
