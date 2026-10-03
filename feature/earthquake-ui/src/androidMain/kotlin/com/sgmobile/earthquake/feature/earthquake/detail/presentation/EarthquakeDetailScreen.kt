@@ -90,7 +90,7 @@ internal fun EarthquakeDetailScreen(
             }
             EarthquakeDetailActions(
                 onBackClick = navigator::goBack,
-                onShareClick = if (shareSummary != null && !uiState.isLoading) {
+                onShareClick = if (uiState.canShare && shareSummary != null) {
                     {
                         val intent = Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"

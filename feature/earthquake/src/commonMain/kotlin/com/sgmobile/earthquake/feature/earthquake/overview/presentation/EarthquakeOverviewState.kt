@@ -12,6 +12,22 @@ data class EarthquakeOverviewState(
     val selectedMagnitude: MagnitudeThreshold,
     val selectedCountry: CountryOption?,
 ) {
+    val showsBlockingLoader: Boolean
+        get() = isLoading && earthquakes.isEmpty()
+
+    val showsEmptyState: Boolean
+        get() = earthquakes.isEmpty() && !isLoading && !isPullToRefresh
+
+    val showsPagingLoader: Boolean
+        get() = isLoading && earthquakes.isNotEmpty()
+
+    // Platforms add their own layout conditions, such as accessibility text sizes.
+    val canCollapseFilters: Boolean
+        get() = earthquakes.isNotEmpty() && !isPullToRefresh
+
+    val magnitudeOptions: List<MagnitudeThreshold>
+        get() = MagnitudeThreshold.entries
+
     companion object {
         val INITIAL = EarthquakeOverviewState(
             isLoading = false,

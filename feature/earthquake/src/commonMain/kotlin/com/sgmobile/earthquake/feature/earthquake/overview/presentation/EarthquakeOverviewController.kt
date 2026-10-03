@@ -94,12 +94,23 @@ class EarthquakeOverviewController internal constructor(
         dispatchJob.invokeOnCompletion { completion() }
     }
 
+    fun onIntent(intent: EarthquakeScreenIntent) {
+        when (intent) {
+            is EarthquakeScreenIntent.Refresh -> refresh()
+            is EarthquakeScreenIntent.LoadMore -> loadMore()
+            is EarthquakeScreenIntent.SelectMagnitude -> selectMagnitude(intent.selectedMagnitude)
+            is EarthquakeScreenIntent.SelectCountry -> selectCountry(intent.country.code)
+        }
+    }
+
     fun loadMore() {
+        scope.launch { requestLoadMore() }
+    }
+
+    /** Loads the next page once the last listed earthquake becomes visible. */
+    fun onEarthquakeDisplayed(id: String) {
         scope.launch {
-            if (state.value.isEndReached || state.value.isLoading || state.value.isPullToRefresh) return@launch
-            executeWithLoading(isPullToRefresh = false, reset = false) {
-                loadNextUsgsEarthquakesUseCase()
-            }
+            if (id == state.value.earthquakes.lastOrNull()?.id) requestLoadMore()
         }
     }
 
@@ -123,6 +134,13 @@ class EarthquakeOverviewController internal constructor(
 
     fun close() {
         scope.cancel()
+    }
+
+    private fun requestLoadMore() {
+        if (state.value.isEndReached || state.value.isLoading || state.value.isPullToRefresh) return
+        executeWithLoading(isPullToRefresh = false, reset = false) {
+            loadNextUsgsEarthquakesUseCase()
+        }
     }
 
     private fun requestRefresh(

@@ -9,16 +9,7 @@ class EarthquakeViewModel(
 ) : ViewModel() {
     val uiState = controller.state
 
-    fun handleIntent(intent: EarthquakeScreenIntent) {
-        when (intent) {
-            is EarthquakeScreenIntent.Refresh -> controller.refresh()
-            is EarthquakeScreenIntent.LoadMore -> controller.loadMore()
-            is EarthquakeScreenIntent.SelectMagnitude ->
-                controller.selectMagnitude(intent.selectedMagnitude)
-            is EarthquakeScreenIntent.SelectCountry ->
-                controller.selectCountry(intent.country.code)
-        }
-    }
+    fun handleIntent(intent: EarthquakeScreenIntent) = controller.onIntent(intent)
 
     override fun onCleared() {
         controller.close()

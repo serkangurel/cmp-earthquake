@@ -1,6 +1,9 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation.models
 
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeTimestamp
+
+private const val EARTHQUAKE_DATA_SOURCE = "USGS"
 
 data class EarthquakeDetail(
     val place: String,
@@ -10,4 +13,13 @@ data class EarthquakeDetail(
     val date: String,
     val latitude: Double,
     val longitude: Double,
-)
+) {
+    val timestamp: EarthquakeTimestamp = EarthquakeTimestamp.fromDisplayValue(date)
+
+    /** Depth in kilometers, or null when the feed did not report one. */
+    val depthKm: String?
+        get() = depth.takeUnless { it.isBlank() }
+
+    val source: String
+        get() = EARTHQUAKE_DATA_SOURCE
+}

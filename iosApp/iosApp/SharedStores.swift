@@ -26,8 +26,8 @@ final class EarthquakeOverviewStore: ObservableObject {
         }
     }
 
-    func loadMore() {
-        controller.loadMore()
+    func earthquakeDisplayed(id: String) {
+        controller.onEarthquakeDisplayed(id: id)
     }
 
     func select(country: CountryOption) {

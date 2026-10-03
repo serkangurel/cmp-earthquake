@@ -52,6 +52,7 @@ import com.sgmobile.earthquake.core.resource.select_country
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.CountryOption
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.filterCountries
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -64,9 +65,7 @@ internal fun CountrySelectionContent(
 ) {
     var searchText by rememberSaveable { mutableStateOf("") }
     val query = searchText.trim()
-    val filteredCountries = countries.filter {
-        it.name.contains(query, ignoreCase = true) || it.code.contains(query, ignoreCase = true)
-    }
+    val filteredCountries = filterCountries(countries, query)
     val selectedIndex = countries.indexOf(selectedCountry).coerceAtLeast(0)
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = selectedIndex)
     val keyboard = LocalSoftwareKeyboardController.current

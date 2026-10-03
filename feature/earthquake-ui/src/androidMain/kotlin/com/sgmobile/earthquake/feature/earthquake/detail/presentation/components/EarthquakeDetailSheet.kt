@@ -55,27 +55,23 @@ import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.Ear
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.earthquakeTimestampDescription
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.rememberEarthquakeTimestamp
-import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeTimestamp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-private const val SOURCE_USGS = "USGS"
-
 @Composable
 internal fun earthquakeDetailDate(earthquake: EarthquakeDetail): String {
-    val value = EarthquakeTimestamp.fromDisplayValue(earthquake.date)
-    val timestamp = rememberEarthquakeTimestamp(value)
+    val timestamp = rememberEarthquakeTimestamp(earthquake.timestamp)
     return if (timestamp != null) {
         "${timestamp.date} · ${timestamp.time}"
     } else {
-        earthquakeTimestampDescription(null, value)
+        earthquakeTimestampDescription(null, earthquake.timestamp)
     }
 }
 
 @Composable
 internal fun earthquakeDetailDepth(earthquake: EarthquakeDetail): String =
-    if (earthquake.depth.isBlank()) stringResource(Res.string.detail_value_unavailable)
-    else stringResource(Res.string.depth_value, earthquake.depth)
+    earthquake.depthKm?.let { stringResource(Res.string.depth_value, it) }
+        ?: stringResource(Res.string.detail_value_unavailable)
 
 @Composable
 internal fun earthquakeShareSummary(earthquake: EarthquakeDetail): String = stringResource(
@@ -139,7 +135,7 @@ internal fun EarthquakeDetailSheet(
                 DetailRow(
                     icon = rememberVectorPainter(Icons.Outlined.Public),
                     label = stringResource(Res.string.source),
-                    value = SOURCE_USGS,
+                    value = earthquake.source,
                 )
             }
         }

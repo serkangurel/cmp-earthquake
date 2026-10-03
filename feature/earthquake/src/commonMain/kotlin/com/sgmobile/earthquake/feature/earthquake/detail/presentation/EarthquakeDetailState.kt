@@ -6,6 +6,9 @@ data class EarthquakeDetailState(
     val isLoading: Boolean = false,
     val earthquake: EarthquakeDetail? = null,
 ) {
+    val canShare: Boolean
+        get() = !isLoading && earthquake != null
+
     companion object {
         val INITIAL = EarthquakeDetailState(isLoading = true)
     }

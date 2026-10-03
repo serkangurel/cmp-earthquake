@@ -65,7 +65,7 @@ private struct EarthquakeOverviewView: View {
             }
             .clipShape(TopEdgeClip())
 
-            if store.state.isLoading && store.state.earthquakes.isEmpty {
+            if store.state.showsBlockingLoader {
                 ProgressView("loading")
                     .controlSize(.large)
                     .padding(24)
@@ -150,8 +150,7 @@ private struct EarthquakeOverviewView: View {
     }
 
     private var canCollapseFilters: Bool {
-        !dynamicTypeSize.isAccessibilitySize && !store.state.isPullToRefresh &&
-            !store.state.earthquakes.isEmpty
+        !dynamicTypeSize.isAccessibilitySize && store.state.canCollapseFilters
     }
 
     private func updateFilterCollapse(by delta: CGFloat) {
@@ -179,9 +178,7 @@ private struct EarthquakeOverviewView: View {
                     .listRowSeparator(.hidden)
             }
 
-            if store.state.earthquakes.isEmpty &&
-                !store.state.isLoading &&
-                !store.state.isPullToRefresh {
+            if store.state.showsEmptyState {
                 EmptyStateView(
                     title: "no_earthquakes_found",
                     systemImage: "magnifyingglass",
@@ -225,13 +222,11 @@ private struct EarthquakeOverviewView: View {
                     )
                     .accessibilityHint(Text("earthquake_details_hint"))
                     .onAppear {
-                        if earthquake.id == store.state.earthquakes.last?.id {
-                            store.loadMore()
-                        }
+                        store.earthquakeDisplayed(id: earthquake.id)
                     }
                 }
 
-                if store.state.isLoading && !store.state.earthquakes.isEmpty {
+                if store.state.showsPagingLoader {
                     ProgressView("loading")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
@@ -248,13 +243,10 @@ private struct EarthquakeOverviewView: View {
     private var overviewFilters: some View {
         OverviewFilters(
             selectedCountry: store.state.selectedCountry,
+            magnitudeOptions: store.state.magnitudeOptions,
             selectedMagnitude: Binding(
-                get: { store.state.selectedMagnitude.label },
-                set: { label in
-                    store.select(
-                        magnitude: MagnitudeThreshold.companion.fromLabel(label: label)
-                    )
-                }
+                get: { store.state.selectedMagnitude },
+                set: { store.select(magnitude: $0) }
             ),
             onSelectCountry: { isCountrySheetPresented = true }
         )
@@ -301,7 +293,8 @@ private struct CollapsingFilterHeader: ViewModifier {
 
 private struct OverviewFilters: View {
     let selectedCountry: CountryOption?
-    @Binding var selectedMagnitude: String
+    let magnitudeOptions: [MagnitudeThreshold]
+    @Binding var selectedMagnitude: MagnitudeThreshold
     let onSelectCountry: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -345,13 +338,13 @@ private struct OverviewFilters: View {
     private var magnitudeMenu: some View {
         Menu {
             Picker("minimum_magnitude", selection: $selectedMagnitude) {
-                ForEach(MagnitudeThreshold.companion.labels, id: \.self) { label in
-                    Text(label).tag(label)
+                ForEach(magnitudeOptions, id: \.self) { threshold in
+                    Text(threshold.label).tag(threshold)
                 }
             }
         } label: {
             filterLabel(title: "minimum_magnitude") {
-                Text(selectedMagnitude)
+                Text(selectedMagnitude.label)
                     .monospacedDigit()
             }
         }
@@ -360,7 +353,7 @@ private struct OverviewFilters: View {
             Text(
                 String(
                     format: NSLocalizedString("magnitude_filter", comment: ""),
-                    selectedMagnitude
+                    selectedMagnitude.label
                 )
             )
         )
@@ -525,10 +518,7 @@ private struct CountrySelectionView: View {
     @State private var searchText = ""
 
     private var filteredCountries: [CountryOption] {
-        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        return query.isEmpty ? countries : countries.filter {
-            $0.name.localizedStandardContains(query) || $0.code.localizedStandardContains(query)
-        }
+        CountrySearchKt.filterCountries(countries: countries, query: searchText)
     }
 
     var body: some View {
@@ -634,6 +624,8 @@ private extension Color {
     }
 }
 
+private let previewMagnitudeOptions: [MagnitudeThreshold] = [.twoPlus, .fourPlus, .fivePlus]
+
 private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
     static var previews: some View {
         CollapsingFiltersPreview(collapsedFraction: 0)
@@ -662,14 +654,16 @@ private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
             .previewDisplayName("Timestamp • Unavailable")
         OverviewFilters(
             selectedCountry: CountryOption(code: "AE", name: "United Arab Emirates", flag: "🇦🇪"),
-            selectedMagnitude: .constant("4+"),
+            magnitudeOptions: previewMagnitudeOptions,
+            selectedMagnitude: .constant(.fourPlus),
             onSelectCountry: {}
         )
         .padding()
         .previewDisplayName("Filters • Long country name")
         OverviewFilters(
             selectedCountry: CountryOption(code: "AE", name: "United Arab Emirates", flag: "🇦🇪"),
-            selectedMagnitude: .constant("4+"),
+            magnitudeOptions: previewMagnitudeOptions,
+            selectedMagnitude: .constant(.fourPlus),
             onSelectCountry: {}
         )
         .padding()
@@ -719,7 +713,8 @@ private struct CollapsingFiltersPreview: View {
     var body: some View {
         OverviewFilters(
             selectedCountry: CountryOption(code: "GLOBAL", name: "Global", flag: "🌍"),
-            selectedMagnitude: .constant("2+"),
+            magnitudeOptions: previewMagnitudeOptions,
+            selectedMagnitude: .constant(.twoPlus),
             onSelectCountry: {}
         )
         .padding()

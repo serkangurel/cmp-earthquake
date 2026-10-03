@@ -85,7 +85,7 @@ struct EarthquakeDetailView: View {
             .overlay(alignment: .top) {
                 EarthquakeDetailActions(
                     onBack: { dismiss() },
-                    shareSummary: store.state.isLoading ? nil : store.state.earthquake?.shareSummary
+                    shareSummary: store.state.canShare ? store.state.earthquake?.shareSummary : nil
                 )
                 .padding(16)
             }
@@ -174,7 +174,7 @@ private struct EarthquakeDetailCard: View {
                 DetailRow(
                     systemImage: "globe",
                     label: "source",
-                    value: "USGS"
+                    value: earthquake.source
                 )
             }
             .background(
@@ -262,14 +262,11 @@ private struct DetailRow: View {
 
 private extension EarthquakeDetail {
     var depthDisplay: String {
-        depth.isEmpty ? NSLocalizedString("detail_value_unavailable", comment: "") : String(
-            format: NSLocalizedString("depth_value", comment: ""),
-            depth
-        )
+        guard let depthKm else { return NSLocalizedString("detail_value_unavailable", comment: "") }
+        return String(format: NSLocalizedString("depth_value", comment: ""), depthKm)
     }
 
     func formattedDate(locale: Locale) -> String {
-        let timestamp = EarthquakeTimestamp.companion.fromDisplayValue(value: date)
         guard let display = EarthquakeTimestampDisplay(timestamp: timestamp, locale: locale) else {
             return EarthquakeTimestampDisplay.accessibilityDescription(for: timestamp, locale: locale)
         }

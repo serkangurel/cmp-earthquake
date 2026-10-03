@@ -54,6 +54,7 @@ import org.jetbrains.compose.resources.stringResource
 internal fun EarthquakeFilters(
     selectedCountry: CountryOption?,
     selectedMagnitude: MagnitudeThreshold,
+    magnitudeOptions: List<MagnitudeThreshold>,
     onCountryClick: () -> Unit,
     onMagnitudeClick: (MagnitudeThreshold) -> Unit,
     modifier: Modifier = Modifier,
@@ -76,7 +77,7 @@ internal fun EarthquakeFilters(
                 onClick = onCountryClick,
                 modifier = Modifier.fillMaxWidth(),
             )
-            MagnitudeFilter(selectedMagnitude, onMagnitudeClick, Modifier.fillMaxWidth())
+            MagnitudeFilter(selectedMagnitude, magnitudeOptions, onMagnitudeClick, Modifier.fillMaxWidth())
         }
     } else {
         Row(filtersModifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -87,7 +88,7 @@ internal fun EarthquakeFilters(
                 onClick = onCountryClick,
                 modifier = Modifier.weight(1f),
             )
-            MagnitudeFilter(selectedMagnitude, onMagnitudeClick, Modifier.weight(1f))
+            MagnitudeFilter(selectedMagnitude, magnitudeOptions, onMagnitudeClick, Modifier.weight(1f))
         }
     }
 }
@@ -141,6 +142,7 @@ private fun FilterButton(
 @Composable
 private fun MagnitudeFilter(
     selectedMagnitude: MagnitudeThreshold,
+    options: List<MagnitudeThreshold>,
     onSelect: (MagnitudeThreshold) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -158,7 +160,7 @@ private fun MagnitudeFilter(
             onDismissRequest = { expanded = false },
             modifier = Modifier.width(maxWidth),
         ) {
-            MagnitudeThreshold.entries.forEach { threshold ->
+            options.forEach { threshold ->
                 val isSelected = threshold == selectedMagnitude
                 MagnitudeDropdownItem(
                     threshold = threshold,
@@ -237,6 +239,7 @@ private fun EarthquakeFiltersPreview() {
         EarthquakeFilters(
             selectedCountry = CountryOption("AE", "United Arab Emirates", "🇦🇪"),
             selectedMagnitude = MagnitudeThreshold.FOUR_PLUS,
+            magnitudeOptions = MagnitudeThreshold.entries,
             onCountryClick = {},
             onMagnitudeClick = {},
         )

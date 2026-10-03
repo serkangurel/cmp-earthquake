@@ -110,7 +110,7 @@ internal fun EarthquakeScreen(
                     navigator.navigate(EarthquakeRoutes.Detail(it.id))
                 }
             )
-            if (uiState.isLoading && uiState.earthquakes.isEmpty()) {
+            if (uiState.showsBlockingLoader) {
                 SGLoading()
             }
         }
@@ -153,7 +153,7 @@ internal fun EarthquakeContent(
     val filterScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = filterBarState,
         canScroll = {
-            !useStackedLayout && !uiState.isPullToRefresh &&
+            !useStackedLayout && uiState.canCollapseFilters &&
                 (lazyListState.canScrollForward || lazyListState.canScrollBackward || filterBarState.heightOffset < 0f)
         },
     )
@@ -184,6 +184,7 @@ internal fun EarthquakeContent(
             EarthquakeFilters(
                 selectedCountry = uiState.selectedCountry,
                 selectedMagnitude = uiState.selectedMagnitude,
+                magnitudeOptions = uiState.magnitudeOptions,
                 onCountryClick = onCountryClick,
                 onMagnitudeClick = { onIntent(EarthquakeScreenIntent.SelectMagnitude(it)) },
                 modifier = Modifier
@@ -224,13 +225,14 @@ internal fun EarthquakeContent(
                             EarthquakeFilters(
                                 selectedCountry = uiState.selectedCountry,
                                 selectedMagnitude = uiState.selectedMagnitude,
+                                magnitudeOptions = uiState.magnitudeOptions,
                                 onCountryClick = onCountryClick,
                                 onMagnitudeClick = { onIntent(EarthquakeScreenIntent.SelectMagnitude(it)) },
                                 modifier = Modifier.onSizeChanged { filterHeight = it.height },
                             )
                         }
                     }
-                    if (uiState.earthquakes.isEmpty() && !uiState.isLoading && !uiState.isPullToRefresh) {
+                    if (uiState.showsEmptyState) {
                         item(key = "empty", contentType = "empty") {
                             EmptyResultsContent(
                                 title = stringResource(Res.string.no_earthquakes_found),
@@ -252,7 +254,7 @@ internal fun EarthquakeContent(
                             )
                         }
                     }
-                    if (uiState.isLoading && uiState.earthquakes.isNotEmpty()) {
+                    if (uiState.showsPagingLoader) {
                         item(key = "loading", contentType = "loading") {
                             SGLoading(Modifier.fillMaxWidth().height(64.dp))
                         }
