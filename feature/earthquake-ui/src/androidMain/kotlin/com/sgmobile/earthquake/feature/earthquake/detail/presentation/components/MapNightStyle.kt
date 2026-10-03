@@ -1,5 +1,7 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation.components
 
+fun earthquakeMapNightStyleJson(): String = MAP_NIGHT_STYLE_JSON
+
 // Google Maps Styling Wizard "Night" preset. Must stay valid JSON:
 // MapStyleOptions.fromJson throws on iOS for malformed input.
 internal val MAP_NIGHT_STYLE_JSON = """

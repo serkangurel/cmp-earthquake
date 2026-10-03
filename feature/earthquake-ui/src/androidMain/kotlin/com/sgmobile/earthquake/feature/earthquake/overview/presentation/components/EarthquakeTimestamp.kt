@@ -32,6 +32,11 @@ import java.util.TimeZone
 
 internal data class EarthquakeTimestampDisplay(val date: String, val time: String)
 
+@Composable
+fun EarthquakeTimestampLabel(value: EarthquakeTimestamp) {
+    EarthquakeTimestampContent(rememberEarthquakeTimestamp(value), value)
+}
+
 internal fun formatEarthquakeTimestamp(
     value: EarthquakeTimestamp,
     locale: Locale,

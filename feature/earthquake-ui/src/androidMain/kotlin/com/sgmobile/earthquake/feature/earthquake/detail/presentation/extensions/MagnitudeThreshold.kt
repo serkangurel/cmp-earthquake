@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 
 @Composable
-internal fun MagnitudeThreshold.toTierColor(): Color = when (this) {
+fun MagnitudeThreshold.toTierColor(): Color = when (this) {
     MagnitudeThreshold.TWO_PLUS -> MaterialTheme.colorScheme.onSurface
     MagnitudeThreshold.FOUR_PLUS -> MaterialTheme.colorScheme.tertiary
     MagnitudeThreshold.FIVE_PLUS -> MaterialTheme.colorScheme.error

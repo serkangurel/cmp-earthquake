@@ -11,10 +11,13 @@ kotlin {
     android {
         namespace = "com.sgmobile.earthquake.feature.map"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
     sourceSets {
         androidMain.dependencies {
+            implementation(projects.feature.earthquake)
+            implementation(projects.feature.earthquakeUi)
             implementation(projects.core.navigation)
             implementation(projects.core.resource)
             implementation(projects.core.ui)
@@ -27,7 +30,15 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.materialIconsExtended)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.navigation3)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.kmp.maps.compose)
         }
     }
+}
+
+dependencies {
+    androidRuntimeClasspath(libs.compose.uiTooling)
 }
