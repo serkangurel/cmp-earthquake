@@ -88,7 +88,7 @@
 		A10000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeDetailView.swift; sourceTree = "<group>"; };
 		A10000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeMapView.swift; sourceTree = "<group>"; };
 		A10000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		A10000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = text.json; name = "country-list.json"; path = "../feature/earthquake/src/commonMain/resources/country-list.json"; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = text.json; name = "country-list.json"; path = "../core/data/src/commonMain/resources/country-list.json"; sourceTree = SOURCE_ROOT; };
 		A1000000000000000000000B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeTimestamp.swift; sourceTree = "<group>"; };
 		A20000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeMapStore.swift; sourceTree = "<group>"; };
 		A20000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeOverviewMapView.swift; sourceTree = "<group>"; };

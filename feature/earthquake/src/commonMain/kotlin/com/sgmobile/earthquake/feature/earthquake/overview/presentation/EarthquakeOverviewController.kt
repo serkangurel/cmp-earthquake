@@ -1,20 +1,18 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
-import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapSnapshot
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapSnapshotStore
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.toMapCountry
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.toMapPins
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetCountriesUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReachedFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextUsgsEarthquakesUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.mapToListItems
+import com.sgmobile.earthquake.core.domain.constants.EarthquakeConstants
+import com.sgmobile.earthquake.core.domain.models.Country
+import com.sgmobile.earthquake.core.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.core.domain.usecase.GetCountriesUseCase
+import com.sgmobile.earthquake.core.domain.usecase.GetEarthquakeFlowUseCase
+import com.sgmobile.earthquake.core.domain.usecase.GetIsEndReachedFlowUseCase
+import com.sgmobile.earthquake.core.domain.usecase.LoadNextUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.core.domain.usecase.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.core.presentation.EarthquakeFeed
+import com.sgmobile.earthquake.core.presentation.EarthquakeFeedStore
+import com.sgmobile.earthquake.core.presentation.Observation
+import com.sgmobile.earthquake.core.presentation.extensions.mapToListItems
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.toCountryFlagEmoji
-import com.sgmobile.earthquake.feature.earthquake.presentation.Observation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -39,7 +37,7 @@ class EarthquakeOverviewController internal constructor(
     getEarthquakeFlowUseCase: GetEarthquakeFlowUseCase,
     getIsEndReachedFlowUseCase: GetIsEndReachedFlowUseCase,
     private val getCountriesUseCase: GetCountriesUseCase,
-    private val mapSnapshotStore: EarthquakeMapSnapshotStore = EarthquakeMapSnapshotStore(),
+    private val feedStore: EarthquakeFeedStore = EarthquakeFeedStore(),
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default.limitedParallelism(1))
     private val earthquakeFlow = getEarthquakeFlowUseCase()
@@ -58,7 +56,7 @@ class EarthquakeOverviewController internal constructor(
         get() = state.value
 
     init {
-        mapSnapshotStore.publish(EarthquakeMapSnapshot.INITIAL)
+        feedStore.publish(EarthquakeFeed.INITIAL)
         scope.launch {
             combine(earthquakeFlow, isEndReachedFlow) { _, _ -> Unit }.collect {
                 publishDataset()
@@ -196,11 +194,11 @@ class EarthquakeOverviewController internal constructor(
         _state.update {
             it.copy(earthquakes = earthquakes.mapToListItems(), isEndReached = isEndReachedFlow.value)
         }
-        mapSnapshotStore.publish(
-            EarthquakeMapSnapshot(
-                country = selectedCountry?.toMapCountry(),
+        feedStore.publish(
+            EarthquakeFeed(
+                country = selectedCountry,
                 selectedMagnitude = state.value.selectedMagnitude,
-                pins = earthquakes.toMapPins(),
+                earthquakes = earthquakes,
                 isLoading = state.value.isLoading || state.value.isPullToRefresh,
             ),
         )

@@ -1,7 +1,7 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
+import com.sgmobile.earthquake.core.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.core.presentation.models.EarthquakeListItem
 
 data class EarthquakeOverviewState(
     val isLoading: Boolean,

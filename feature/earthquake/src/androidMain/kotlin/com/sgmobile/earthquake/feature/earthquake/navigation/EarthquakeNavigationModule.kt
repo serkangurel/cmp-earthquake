@@ -1,0 +1,26 @@
+package com.sgmobile.earthquake.feature.earthquake.navigation
+
+import com.sgmobile.earthquake.core.navigation.EarthquakeDetailRoute
+import com.sgmobile.earthquake.core.navigation.NavigationProvider
+import com.sgmobile.earthquake.core.navigation.navigationWithContentKey
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.EarthquakeDetailScreen
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.EarthquakeScreen
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.module.Module
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+@OptIn(KoinExperimentalAPI::class)
+val earthquakeNavigationModule: Module = module {
+    single { EarthquakeNavigationProvider() } bind NavigationProvider::class
+    navigationWithContentKey<EarthquakeRoutes.Overview>(
+        contentKey = { "earthquake/overview" },
+    ) {
+        EarthquakeScreen()
+    }
+    navigationWithContentKey<EarthquakeDetailRoute>(
+        contentKey = { route -> "earthquake/detail/${route.id}" },
+    ) { route ->
+        EarthquakeDetailScreen(earthquakeId = route.id)
+    }
+}

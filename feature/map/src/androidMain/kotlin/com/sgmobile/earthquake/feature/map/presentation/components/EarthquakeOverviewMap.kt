@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_country
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.components.earthquakeMapNightStyleJson
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapCountry
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapState
+import com.sgmobile.earthquake.core.ui.components.earthquake.earthquakeMapNightStyleJson
+import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapCountry
+import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapState
 import eu.buney.maps.CameraPosition
 import eu.buney.maps.CameraUpdate
 import eu.buney.maps.CameraUpdateFactory

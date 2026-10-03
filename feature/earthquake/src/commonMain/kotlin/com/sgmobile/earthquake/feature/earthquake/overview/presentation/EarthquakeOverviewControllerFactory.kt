@@ -1,11 +1,11 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapSnapshotStore
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetCountriesUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReachedFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextUsgsEarthquakesUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.core.domain.usecase.GetCountriesUseCase
+import com.sgmobile.earthquake.core.domain.usecase.GetEarthquakeFlowUseCase
+import com.sgmobile.earthquake.core.domain.usecase.GetIsEndReachedFlowUseCase
+import com.sgmobile.earthquake.core.domain.usecase.LoadNextUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.core.domain.usecase.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.core.presentation.EarthquakeFeedStore
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -15,12 +15,12 @@ internal fun provideEarthquakeOverviewController(
     getEarthquakeFlowUseCase: GetEarthquakeFlowUseCase,
     getIsEndReachedFlowUseCase: GetIsEndReachedFlowUseCase,
     getCountriesUseCase: GetCountriesUseCase,
-    mapSnapshotStore: EarthquakeMapSnapshotStore,
+    feedStore: EarthquakeFeedStore,
 ) = EarthquakeOverviewController(
     refreshUsgsEarthquakesUseCase,
     loadNextUsgsEarthquakesUseCase,
     getEarthquakeFlowUseCase,
     getIsEndReachedFlowUseCase,
     getCountriesUseCase,
-    mapSnapshotStore,
+    feedStore,
 )

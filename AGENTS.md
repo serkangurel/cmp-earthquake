@@ -18,12 +18,15 @@ The main modules are:
 - `iosApp`: native SwiftUI application, observable adapters, localizations, and Google Maps SDK UI.
 - `shared`: UI-free Apple framework entry point and dependency-injection bootstrap.
 - `core:network`: shared HTTP client configuration and network DI.
+- `core:domain`: shared earthquake models, repository contracts, and use cases.
+- `core:data`: shared USGS API, country data source, and repository implementations.
+- `core:presentation`: shared display models and the earthquake feed shared between tabs.
 - `core:navigation`: Android-only Compose navigation state, navigator, host, and contracts.
 - `core:resource`: Android-only Compose resources. Its generated `Res` class is public.
 - `core:ui`: reusable Android Compose components, previews, and theming.
-- `feature:earthquake`: UI-free shared data, domain, presentation state, and controllers.
-- `feature:earthquake-ui`: Android-only Compose earthquake screens and navigation.
-- `feature:map` and `feature:settings`: Android-only Compose feature UI and navigation.
+- `feature:earthquake`, `feature:map`, `feature:settings`: one module per tab. Shared controllers
+  and state live in `commonMain`; Android Compose screens, view models, and navigation live in
+  `androidMain`. Feature modules do not depend on each other.
 - `server`: JVM Ktor server.
 
 Treat `settings.gradle.kts` as the source of truth for included modules and
@@ -60,15 +63,16 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
 
 ### Features and state
 
-- Preserve the existing feature layering: data sources and repository implementations in `data`,
-  contracts/models/use cases in `domain`, and UI state, view models, intents, view objects, and
-  composables in `presentation`.
+- Preserve the existing layering: data sources and repository implementations in `core:data`,
+  contracts/models/use cases in `core:domain`, and UI state, view models, intents, view objects,
+  and composables in each feature's `presentation` package. State or display models shared by
+  several tabs belong in `core:presentation`, not in another feature module.
 - Shared screen controllers expose immutable presentation state and own platform-independent state
   transitions. Platform view models or observable adapters remain thin and lifecycle-scoped.
 - Keep transport/domain models out of Compose and SwiftUI. Map them to presentation models at the
   shared presentation boundary.
 - Add shared Koin registrations using the existing annotation-based module/component scan. Android
-  navigation providers are registered through their Android UI modules.
+  navigation providers are registered through their feature modules' `androidMain` code.
 
 ### Compose UI and resources
 
@@ -87,11 +91,12 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
 
 ### Navigation, networking, and server code
 
-- Define Android feature destinations in the Android UI module's navigation package and keep route
-  arguments serializable. Android navigates through `Navigator`/composition locals; iOS uses native
-  SwiftUI navigation values and containers.
-- Reuse `core:network` for shared client configuration. Keep wire models and API mapping inside the
-  feature data layer.
+- Define Android feature destinations in the feature module's `androidMain` navigation package and
+  keep route arguments serializable. Routes that other tabs open (such as `EarthquakeDetailRoute`)
+  live in `core:navigation`. Android navigates through `Navigator`/composition locals; iOS uses
+  native SwiftUI navigation values and containers.
+- Reuse `core:network` for shared client configuration. Keep wire models and API mapping inside
+  `core:data`.
 - Keep server configuration separate from application logic. Credentials and deployment-specific
   values must come from environment/configuration, never string literals in source.
 

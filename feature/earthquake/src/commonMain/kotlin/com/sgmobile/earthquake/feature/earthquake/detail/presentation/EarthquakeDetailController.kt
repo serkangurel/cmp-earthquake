@@ -1,8 +1,8 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation
 
+import com.sgmobile.earthquake.core.domain.usecase.GetEarthquakeFlowUseCase
+import com.sgmobile.earthquake.core.presentation.Observation
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toDetailUi
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.presentation.Observation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

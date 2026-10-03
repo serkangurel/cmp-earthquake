@@ -24,12 +24,10 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sgmobile.earthquake.core.navigation.EarthquakeDetailRoute
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapState
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapViewModel
-import com.sgmobile.earthquake.feature.earthquake.navigation.earthquakeDetailRoute
 import com.sgmobile.earthquake.feature.map.presentation.components.EarthquakeMapStatus
 import com.sgmobile.earthquake.feature.map.presentation.components.EarthquakeMapSummary
 import com.sgmobile.earthquake.feature.map.presentation.components.EarthquakeOverviewMap
@@ -55,7 +53,7 @@ internal fun MapScreen(viewModel: EarthquakeMapViewModel = koinViewModel()) {
             ),
             onEarthquakeSelected = viewModel::selectEarthquake,
             onSelectionDismissed = viewModel::dismissSelection,
-            onViewDetails = { navigator.navigate(earthquakeDetailRoute(it)) },
+            onViewDetails = { navigator.navigate(EarthquakeDetailRoute(it)) },
             modifier = Modifier.fillMaxSize().padding(
                 start = padding.calculateStartPadding(layoutDirection),
                 end = padding.calculateEndPadding(layoutDirection),

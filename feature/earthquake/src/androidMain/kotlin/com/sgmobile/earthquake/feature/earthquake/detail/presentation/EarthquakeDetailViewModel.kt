@@ -1,7 +1,7 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation
 
 import androidx.lifecycle.ViewModel
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
+import com.sgmobile.earthquake.core.domain.usecase.GetEarthquakeFlowUseCase
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.KoinViewModel
 

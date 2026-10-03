@@ -14,15 +14,19 @@ logic while keeping each platform's UI native:
 - `shared` builds the small `Shared` Apple framework entry point. It starts the shared Koin graph
   and exposes factories for the public earthquake screen controllers.
 - `core:network` contains platform-independent HTTP client configuration.
-- `feature:earthquake` contains shared earthquake data, domain, and presentation state. It has no UI
-  toolkit dependency.
-- `androidApp`, `feature:earthquake-ui`, `feature:map`, `feature:settings`, `core:navigation`,
-  `core:resource`, and `core:ui` contain Android-only Compose UI and navigation.
+- `core:domain` contains earthquake models, repository contracts, and use cases shared by every tab.
+- `core:data` contains the USGS API, country data source, and repository implementations.
+- `core:presentation` contains display models and the earthquake feed shared between tabs.
+- Each tab is one feature module: `feature:earthquake` (list and detail), `feature:map`, and
+  `feature:settings`. Shared controllers and state live in `commonMain`; Android Compose screens,
+  view models, and navigation live in `androidMain`.
+- `androidApp`, `core:navigation`, `core:resource`, and `core:ui` contain Android-only Compose UI
+  and navigation.
 - `iosApp` contains the SwiftUI root, views, thin observable adapters, native localizations, and
   Google Maps integration.
 - `server` contains the standalone JVM Ktor server.
 
-The country bounds JSON is owned by `feature:earthquake` as shared data. Android packages it as an
+The country bounds JSON is owned by `core:data` as shared data. Android packages it as an
 asset and iOS embeds the same source file as a bundle resource. Display strings and visual assets
 are platform-native resources.
 

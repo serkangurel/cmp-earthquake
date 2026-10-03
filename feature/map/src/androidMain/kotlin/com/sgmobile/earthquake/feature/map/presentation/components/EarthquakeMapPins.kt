@@ -11,12 +11,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.sgmobile.earthquake.core.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.map_earthquake_pin
 import com.sgmobile.earthquake.core.resource.map_selected_earthquake_pin
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapPin
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.core.ui.components.earthquake.toTierColor
+import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapPin
 import eu.buney.maps.GoogleMapComposable
 import eu.buney.maps.LatLng
 import eu.buney.maps.Marker

@@ -27,14 +27,21 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
+            export(projects.core.domain)
+            export(projects.core.presentation)
             export(projects.feature.earthquake)
+            export(projects.feature.map)
         }
     }
 
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.network)
+            implementation(projects.core.data)
+            api(projects.core.domain)
+            api(projects.core.presentation)
             api(projects.feature.earthquake)
+            api(projects.feature.map)
             implementation(libs.koin.core)
             api(libs.koin.annotations)
             implementation(libs.napier)

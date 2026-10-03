@@ -22,15 +22,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sgmobile.earthquake.core.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.core.presentation.models.EarthquakeListItem
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.dismiss_earthquake_summary
 import com.sgmobile.earthquake.core.resource.view_earthquake_details
+import com.sgmobile.earthquake.core.ui.components.earthquake.EarthquakeTimestampLabel
+import com.sgmobile.earthquake.core.ui.components.earthquake.toTierColor
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeTimestampLabel
-import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

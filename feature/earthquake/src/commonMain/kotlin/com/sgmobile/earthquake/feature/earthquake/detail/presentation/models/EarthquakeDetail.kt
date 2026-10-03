@@ -1,7 +1,7 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation.models
 
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
-import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeTimestamp
+import com.sgmobile.earthquake.core.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.core.presentation.models.EarthquakeTimestamp
 
 private const val EARTHQUAKE_DATA_SOURCE = "USGS"
 

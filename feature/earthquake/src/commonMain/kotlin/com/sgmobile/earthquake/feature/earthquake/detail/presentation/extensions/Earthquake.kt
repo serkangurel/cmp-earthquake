@@ -1,7 +1,7 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions
 
+import com.sgmobile.earthquake.core.domain.models.Earthquake
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
 
 internal fun Earthquake.toDetailUi(): EarthquakeDetail =
     EarthquakeDetail(

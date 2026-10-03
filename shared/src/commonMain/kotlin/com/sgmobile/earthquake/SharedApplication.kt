@@ -1,10 +1,14 @@
 package com.sgmobile.earthquake
 
+import com.sgmobile.earthquake.core.data.di.DataModule
+import com.sgmobile.earthquake.core.domain.di.DomainModule
 import com.sgmobile.earthquake.core.network.di.NetworkModule
+import com.sgmobile.earthquake.core.presentation.di.PresentationModule
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.EarthquakeDetailController
 import com.sgmobile.earthquake.feature.earthquake.di.EarthquakeModule
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapController
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.EarthquakeOverviewController
+import com.sgmobile.earthquake.feature.map.di.MapModule
+import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapController
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.aakira.napier.log
@@ -20,7 +24,11 @@ private const val COUNTRY_RESOURCE_PROPERTY = "earthquake.countryResource"
 @KoinApplication(
     modules = [
         NetworkModule::class,
+        DomainModule::class,
+        DataModule::class,
+        PresentationModule::class,
         EarthquakeModule::class,
+        MapModule::class,
     ],
 )
 internal class SharedKoinApplication

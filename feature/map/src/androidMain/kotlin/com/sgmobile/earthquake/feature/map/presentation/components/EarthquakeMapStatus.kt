@@ -19,9 +19,9 @@ import com.sgmobile.earthquake.core.resource.map_no_loaded_earthquakes_descripti
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapBounds
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapCountry
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapSnapshot
+import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapBounds
+import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapCountry
+import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapSnapshot
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
