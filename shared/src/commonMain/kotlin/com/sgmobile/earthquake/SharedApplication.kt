@@ -3,6 +3,7 @@ package com.sgmobile.earthquake
 import com.sgmobile.earthquake.core.network.di.NetworkModule
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.EarthquakeDetailController
 import com.sgmobile.earthquake.feature.earthquake.di.EarthquakeModule
+import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapController
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.EarthquakeOverviewController
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -28,6 +29,8 @@ class SharedApplication internal constructor(
     private val koin: Koin,
 ) {
     fun makeEarthquakeOverviewController(): EarthquakeOverviewController = koin.get()
+
+    fun makeEarthquakeMapController(): EarthquakeMapController = koin.get()
 
     fun makeEarthquakeDetailController(earthquakeId: String): EarthquakeDetailController =
         koin.get { parametersOf(earthquakeId) }
