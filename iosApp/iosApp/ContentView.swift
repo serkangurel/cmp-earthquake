@@ -10,7 +10,7 @@ struct ContentView: View {
                 EarthquakeOverviewView(application: application)
             }
             .tabItem {
-                Label("earthquakes", systemImage: "house.fill")
+                Label("earthquakes", systemImage: "waveform.path.ecg.rectangle.fill")
             }
 
             NavigationStack {

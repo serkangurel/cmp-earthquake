@@ -66,9 +66,9 @@ struct EarthquakeMapOverviewView: View {
                     ProgressView("loading")
                         .padding(16)
                         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                         .padding(16)
-                        .padding(.bottom, overlayHeight)
+                        .allowsHitTesting(false)
                 }
             }
             .overlay(alignment: .topTrailing) {

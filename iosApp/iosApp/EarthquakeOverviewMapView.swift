@@ -29,6 +29,7 @@ struct EarthquakeOverviewMapView: UIViewRepresentable {
         let options = GMSMapViewOptions()
         options.camera = cameraMemory.position ?? GMSCameraPosition(latitude: 0, longitude: 0, zoom: 1)
         let map = LayoutAwareMapView(options: options)
+        map.accessibilityElementsHidden = false
         map.paddingAdjustmentBehavior = .never
         map.settings.compassButton = false
         map.settings.indoorPicker = false
