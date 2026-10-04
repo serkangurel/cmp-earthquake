@@ -1,6 +1,7 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.domain
 
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeTimeRange
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import org.koin.core.annotation.Factory
 
@@ -13,8 +14,9 @@ internal class RefreshUsgsEarthquakesUseCase(
         pageSize: Int,
         selectedMagnitude: MagnitudeThreshold,
         selectedCountryBounds: CountryBounds,
+        timeRange: EarthquakeTimeRange = EarthquakeTimeRange.DEFAULT,
     ) = earthquakeRepository.refresh(
-        startTime = getUsgsEarthquakeStartTimeUseCase(),
+        startTime = getUsgsEarthquakeStartTimeUseCase(timeRange),
         pageSize = pageSize,
         selectedMagnitude = selectedMagnitude,
         selectedCountryBounds = selectedCountryBounds,

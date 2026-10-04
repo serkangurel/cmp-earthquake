@@ -20,8 +20,18 @@ struct iOSApp: App {
             fatalError("Unable to read country-list.json application resource")
         }
 
+        guard let preferencesDirectory = try? FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true
+        ) else {
+            fatalError("Unable to access the Application Support directory")
+        }
+
         sharedApplication = SharedApplicationKt.startSharedApplication(
-            countryResource: countryResource
+            countryResource: countryResource,
+            preferencesDirectory: preferencesDirectory.path(percentEncoded: false)
         )
 
         let apiKey = SharedApplicationKt.mapsApiKey()

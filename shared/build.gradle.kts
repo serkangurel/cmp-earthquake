@@ -44,6 +44,7 @@ kotlin {
             api(projects.feature.map.api)
             implementation(projects.feature.earthquake.impl)
             implementation(projects.feature.map.impl)
+            implementation(projects.feature.settings.impl)
             implementation(libs.koin.core)
             api(libs.koin.annotations)
             implementation(libs.napier)

@@ -12,7 +12,7 @@ class Application : Application() {
         val countryResource = assets.open("country-list.json")
             .bufferedReader()
             .use { it.readText() }
-        startSharedApplication(countryResource)
+        startSharedApplication(countryResource, preferencesDirectory = filesDir.absolutePath)
         loadKoinModules(
             listOf(
                 earthquakeNavigationModule,

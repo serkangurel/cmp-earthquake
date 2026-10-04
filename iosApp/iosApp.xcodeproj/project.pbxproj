@@ -45,7 +45,15 @@
 		A50000000000000000000008 = {isa = PBXBuildFile; fileRef = A50000000000000000000007; };
 		A5000000000000000000000A = {isa = PBXBuildFile; fileRef = A50000000000000000000009; };
 		A5000000000000000000000C = {isa = PBXBuildFile; fileRef = A5000000000000000000000B; };
-		A5000000000000000000000E = {isa = PBXBuildFile; fileRef = A5000000000000000000000D; };
+		A60000000000000000000002 = {isa = PBXBuildFile; fileRef = A60000000000000000000001; };
+		A60000000000000000000004 = {isa = PBXBuildFile; fileRef = A60000000000000000000003; };
+		A60000000000000000000006 = {isa = PBXBuildFile; fileRef = A60000000000000000000005; };
+		A60000000000000000000008 = {isa = PBXBuildFile; fileRef = A60000000000000000000007; };
+		A6000000000000000000000A = {isa = PBXBuildFile; fileRef = A60000000000000000000009; };
+		A6000000000000000000000C = {isa = PBXBuildFile; fileRef = A6000000000000000000000B; };
+		A6000000000000000000000E = {isa = PBXBuildFile; fileRef = A6000000000000000000000D; };
+		A60000000000000000000010 = {isa = PBXBuildFile; fileRef = A6000000000000000000000F; };
+		A60000000000000000000012 = {isa = PBXBuildFile; fileRef = A60000000000000000000011; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,7 +119,15 @@
 		A50000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeTimestampView.swift; sourceTree = "<group>"; };
 		A50000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeOverviewView.swift; sourceTree = "<group>"; };
 		A5000000000000000000000B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthquakeDetailStore.swift; sourceTree = "<group>"; };
-		A5000000000000000000000D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
+		A60000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		A60000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A60000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
+		A60000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFiltersSettingsView.swift; sourceTree = "<group>"; };
+		A60000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCountrySettingsView.swift; sourceTree = "<group>"; };
+		A6000000000000000000000B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeRangeSettingsView.swift; sourceTree = "<group>"; };
+		A6000000000000000000000D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsView.swift; sourceTree = "<group>"; };
+		A6000000000000000000000F = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsComponents.swift; sourceTree = "<group>"; };
+		A60000000000000000000011 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLabels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -273,7 +289,15 @@
 		A5000000000000000000001C = {
 			isa = PBXGroup;
 			children = (
-				A5000000000000000000000D,
+				A60000000000000000000001,
+				A60000000000000000000003,
+				A60000000000000000000005,
+				A60000000000000000000007,
+				A60000000000000000000009,
+				A6000000000000000000000B,
+				A6000000000000000000000D,
+				A6000000000000000000000F,
+				A60000000000000000000011,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -416,7 +440,6 @@
 				A50000000000000000000008,
 				A5000000000000000000000A,
 				A5000000000000000000000C,
-				A5000000000000000000000E,
 				2152FB042600AC8F00CF470E,
 				7555FF83242A565900829871,
 				A10000000000000000000002,
@@ -429,6 +452,15 @@
 				A20000000000000000000008,
 				A20000000000000000000006,
 				A20000000000000000000004,
+				A60000000000000000000002,
+				A60000000000000000000004,
+				A60000000000000000000006,
+				A60000000000000000000008,
+				A6000000000000000000000A,
+				A6000000000000000000000C,
+				A6000000000000000000000E,
+				A60000000000000000000010,
+				A60000000000000000000012,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

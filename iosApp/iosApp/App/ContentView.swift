@@ -4,6 +4,12 @@ import SwiftUI
 struct ContentView: View {
     let application: SharedApplication
     @StateObject private var navigation = NavigationStore()
+    @StateObject private var settings: SettingsStore
+
+    init(application: SharedApplication) {
+        self.application = application
+        _settings = StateObject(wrappedValue: SettingsStore(application: application))
+    }
 
     var body: some View {
         TabView(selection: navigation.tabSelection) {
@@ -28,7 +34,7 @@ struct ContentView: View {
             .tag(AppTab.map)
 
             NavigationStack(path: navigation.path(for: .settings)) {
-                PlaceholderView(message: "settings_placeholder")
+                SettingsView()
                     .navigationDestination(for: NavigationRoute.self, destination: destination)
             }
             .toolbar(navigation.state.showsBottomBar ? .visible : .hidden, for: .tabBar)
@@ -38,13 +44,27 @@ struct ContentView: View {
             .tag(AppTab.settings)
         }
         .environmentObject(navigation)
+        .environmentObject(settings)
         .tint(AppColors.primary)
+        // Nil until the user picks a theme, so the app follows the device appearance.
+        .preferredColorScheme(settings.state.preferences.theme?.colorScheme)
     }
 
     @ViewBuilder
     private func destination(_ route: NavigationRoute) -> some View {
-        if let detail = navigation.destination(for: route) as? EarthquakeRoutes.Detail {
+        let destination = navigation.destination(for: route)
+        if let detail = destination as? EarthquakeRoutes.Detail {
             EarthquakeDetailView(application: application, earthquakeID: detail.id)
+        } else if destination is SettingsRoutes.Appearance {
+            AppearanceSettingsView()
+        } else if destination is SettingsRoutes.DefaultFilters {
+            DefaultFiltersSettingsView()
+        } else if destination is SettingsRoutes.DefaultCountry {
+            DefaultCountrySettingsView()
+        } else if destination is SettingsRoutes.TimeRange {
+            TimeRangeSettingsView()
+        } else if destination is SettingsRoutes.About {
+            AboutSettingsView()
         }
     }
 }

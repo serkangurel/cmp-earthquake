@@ -1,6 +1,5 @@
 package com.sgmobile.earthquake.core.ui.components.topbar
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -8,6 +7,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.sgmobile.earthquake.core.ui.theme.LocalDarkTheme
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -18,7 +18,7 @@ fun SGAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = LocalDarkTheme.current
     SetSystemBarsLightAppearance(
         isAppearanceLightStatusBars = darkTheme,
         isAppearanceLightNavigationBars = !darkTheme,

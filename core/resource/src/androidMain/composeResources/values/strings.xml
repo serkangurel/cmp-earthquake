@@ -15,7 +15,6 @@
     <string name="map_no_loaded_earthquakes_description">Change filters or refresh on the Earthquakes screen.</string>
     <string name="view_earthquake_details">View details</string>
     <string name="dismiss_earthquake_summary">Dismiss earthquake summary</string>
-    <string name="settings_placeholder">Settings Screen</string>
 
     <string name="magnitude">Magnitude</string>
     <string name="magnitude_filter">Magnitude filter: %1$s</string>
@@ -47,4 +46,28 @@
     <string name="detail_value_unavailable">Unavailable</string>
     <string name="earthquake_share_summary">%1$s\nMagnitude: %2$s\nDate &amp; time: %3$s\nDepth: %4$s\nSource: USGS</string>
     <string name="epicenter_map">Epicenter map: %1$s</string>
+
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_earthquakes">Earthquakes</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_footer">Until you choose a theme, the app matches your device setting.</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="settings_default_filters">Default filters</string>
+    <string name="settings_default_filters_summary">%1$s · %2$s</string>
+    <string name="settings_default_filters_footer">The Earthquakes screen opens with these filters. Changing a default also applies it right away.</string>
+    <string name="settings_time_range">Time range</string>
+    <string name="settings_time_range_footer">How far back the Earthquakes screen and map look for earthquakes.</string>
+    <string name="time_range_last_day">Last 24 hours</string>
+    <string name="time_range_last_week">Last 7 days</string>
+    <string name="time_range_last_month">Last 30 days</string>
+    <string name="settings_about">About</string>
+    <string name="about_version">Version</string>
+    <string name="about_data_source">Data source</string>
+    <string name="about_data_source_description">Earthquake data is provided by the U.S. Geological Survey (USGS). USGS data is in the U.S. public domain.</string>
+    <string name="about_usgs_earthquake_hazards">USGS Earthquake Hazards Program</string>
+    <string name="about_usgs_copyrights_and_credits">USGS copyrights and credits</string>
+    <string name="about_usgs_privacy_policy">USGS privacy policy</string>
+    <string name="opens_in_browser">Opens in browser</string>
 </resources>

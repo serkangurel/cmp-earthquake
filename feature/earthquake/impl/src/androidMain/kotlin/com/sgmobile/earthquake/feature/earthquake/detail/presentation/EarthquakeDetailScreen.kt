@@ -1,7 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.detail.presentation
 
 import android.content.Intent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,6 +31,7 @@ import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquake_not_found
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
+import com.sgmobile.earthquake.core.ui.theme.LocalDarkTheme
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.components.EarthquakeDetailActions
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.components.EarthquakeDetailSheet
@@ -49,7 +49,7 @@ internal fun EarthquakeDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val navigator = LocalNavigator.current
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = LocalDarkTheme.current
     val layoutDirection = LocalLayoutDirection.current
     val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateFlow.collectAsState()
     // The Sharesheet can change system-bar flags; reapply them when this screen resumes.

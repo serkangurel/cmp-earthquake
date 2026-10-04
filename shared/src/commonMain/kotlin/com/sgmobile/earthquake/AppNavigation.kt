@@ -12,7 +12,9 @@ fun createAppNavigator(): Navigator {
         startRoute = EarthquakeRoutes.Overview,
         topLevelRoutes = roots,
         resolveDestination = { key ->
-            roots.firstOrNull { it.key == key } ?: EarthquakeRoutes.Detail.fromKey(key)
+            roots.firstOrNull { it.key == key }
+                ?: EarthquakeRoutes.Detail.fromKey(key)
+                ?: SettingsRoutes.fromKey(key)
         },
     )
 }

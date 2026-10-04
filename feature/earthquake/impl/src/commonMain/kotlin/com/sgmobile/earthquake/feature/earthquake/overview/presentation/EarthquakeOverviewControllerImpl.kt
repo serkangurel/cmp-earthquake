@@ -12,10 +12,13 @@ import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReache
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextUsgsEarthquakesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeTimeRange
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.mapToListItems
-import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.toCountryFlagEmoji
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.toOption
 import com.sgmobile.earthquake.feature.earthquake.presentation.Observation
+import com.sgmobile.earthquake.feature.settings.domain.SettingsSource
+import com.sgmobile.earthquake.feature.settings.domain.models.SettingsPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,14 +35,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-private const val GLOBAL_COUNTRY_CODE = "GLOBAL"
-
 internal class EarthquakeOverviewControllerImpl(
     private val refreshUsgsEarthquakesUseCase: RefreshUsgsEarthquakesUseCase,
     private val loadNextUsgsEarthquakesUseCase: LoadNextUsgsEarthquakesUseCase,
     getEarthquakeFlowUseCase: GetEarthquakeFlowUseCase,
     getIsEndReachedFlowUseCase: GetIsEndReachedFlowUseCase,
     private val getCountriesUseCase: GetCountriesUseCase,
+    private val settingsSource: SettingsSource,
     private val datasetStore: EarthquakeDatasetStore = EarthquakeDatasetStore(),
 ) : EarthquakeOverviewController {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default.limitedParallelism(1))
@@ -48,6 +50,8 @@ internal class EarthquakeOverviewControllerImpl(
     private val _state = MutableStateFlow(EarthquakeOverviewState.INITIAL)
     private var countries: List<Country> = emptyList()
     private var selectedCountry: Country? = null
+    private var timeRange = EarthquakeTimeRange.DEFAULT
+    private var appliedPreferences: SettingsPreferences? = null
     private val requestMutex = Mutex()
     private var requestJob: Job? = null
     private var requestGeneration = 0L
@@ -67,14 +71,9 @@ internal class EarthquakeOverviewControllerImpl(
         }
         scope.launch {
             countries = getCountriesUseCase()
-            selectedCountry = countries.firstOrNull { it.code == GLOBAL_COUNTRY_CODE }
-            _state.update { state ->
-                state.copy(
-                    countries = countries.map(Country::toOption),
-                    selectedCountry = selectedCountry?.toOption(),
-                )
-            }
-            requestRefresh(isPullToRefresh = false)
+            _state.update { it.copy(countries = countries.map(Country::toOption)) }
+            // The first stored preferences start the initial load, so it never uses stale defaults.
+            settingsSource.preferences.collect { applyPreferences(it) }
         }
     }
 
@@ -137,6 +136,36 @@ internal class EarthquakeOverviewControllerImpl(
         scope.cancel()
     }
 
+    /** Applies stored defaults on first load, then only the defaults or time range that changed. */
+    private fun applyPreferences(preferences: SettingsPreferences) {
+        val previous = appliedPreferences
+        appliedPreferences = preferences
+        val magnitude = if (previous?.defaultMagnitude == preferences.defaultMagnitude) {
+            state.value.selectedMagnitude
+        } else {
+            preferences.defaultMagnitude
+        }
+        val country = if (previous?.defaultCountryCode == preferences.defaultCountryCode) {
+            selectedCountry
+        } else {
+            countries.firstOrNull { it.code == preferences.defaultCountryCode }
+                ?: selectedCountry
+                ?: countries.firstOrNull { it.code == CountryOption.GLOBAL_CODE }
+        }
+        val isUnchanged = previous != null &&
+            magnitude == state.value.selectedMagnitude &&
+            country == selectedCountry &&
+            preferences.timeRange == timeRange
+        if (isUnchanged) return
+
+        timeRange = preferences.timeRange
+        selectedCountry = country
+        _state.update {
+            it.copy(selectedMagnitude = magnitude, selectedCountry = country?.toOption())
+        }
+        requestRefresh(isPullToRefresh = false)
+    }
+
     private fun requestLoadMore() {
         if (state.value.isEndReached || state.value.isLoading || state.value.isPullToRefresh) return
         executeWithLoading(isPullToRefresh = false, reset = false) {
@@ -149,11 +178,13 @@ internal class EarthquakeOverviewControllerImpl(
     ): Job? {
         val countryBounds = selectedCountry?.bounds ?: return null
         val magnitude = state.value.selectedMagnitude
+        val requestedTimeRange = timeRange
         return executeWithLoading(isPullToRefresh = isPullToRefresh, reset = true) {
             refreshUsgsEarthquakesUseCase(
                 pageSize = EarthquakeConstants.PAGE_SIZE,
                 selectedMagnitude = magnitude,
                 selectedCountryBounds = countryBounds,
+                timeRange = requestedTimeRange,
             )
         }
     }
@@ -228,12 +259,6 @@ internal class EarthquakeOverviewControllerImpl(
         )
     }
 }
-
-private fun Country.toOption() = CountryOption(
-    code = code,
-    name = name,
-    flag = code.toCountryFlagEmoji().orEmpty(),
-)
 
 private class JobObservation(
     private val job: Job,

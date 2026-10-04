@@ -20,7 +20,9 @@ Each tab owns an `api` and an `impl` module:
 - `feature:map:api` exposes map presentation models, its controller interface, and portable destinations.
 - `feature:map:impl` owns the map controller, dataset-to-map mapping, Android view model/UI, and DI.
   It depends on `feature:earthquake:api`, never earthquake implementation or UI.
-- `feature:settings:api` exposes portable destination models; `feature:settings:impl` owns its UI.
+- `feature:settings:api` exposes preference models, the read-only `SettingsSource`, the settings
+  controller contract, and portable destinations. `feature:settings:impl` owns DataStore persistence,
+  the settings controller, Android UI, and DI. It depends on `feature:earthquake:api` only.
 - `shared` assembles shared implementation DI and exposes controller factories through the single
   `Shared` Apple framework. It exports navigation and all feature APIs, not implementation modules.
 - `androidApp` assembles the Android implementation/navigation modules.
@@ -46,6 +48,11 @@ observable adapter. Native back gestures update shared state; the detail back bu
 shared navigator. iOS retains navigation during the current app session; durable iOS navigation
 restoration is not configured. Country-picker sheets remain native presentations.
 
+Settings are stored with DataStore Preferences in shared code. Each platform passes an app-private
+directory to `startSharedApplication`. The overview applies the stored default magnitude, country,
+and time range on launch and again whenever one changes. The theme is either Light or Dark; until the
+user picks one, both platforms follow the device appearance.
+
 The country bounds JSON is owned by `feature:earthquake:impl`. Android packages it as an asset
 and iOS embeds the same source file as a bundle resource. Display resources remain platform-native.
 
@@ -55,7 +62,7 @@ Under `iosApp/iosApp`, `App` contains the application entry point and tab compos
 `Core/Navigation` contains the shared-navigation adapter and native back-gesture integration;
 `Core/UI` contains reusable components, map marker rendering, timestamp rendering, and theme colors.
 `Features/Earthquake` groups overview and detail views with their observable adapters;
-`Features/Map` owns the map tab, and `Features/Settings` contains the settings placeholder.
+`Features/Map` owns the map tab, and `Features/Settings` owns the settings screens and their adapter.
 `Resources` contains localizations, asset catalogs, and preview assets. Xcode groups mirror these folders.
 Build configuration and `Info.plist` live in `iosApp/Configuration`; the linked Kotlin package
 and Maestro flows remain in their existing dedicated directories.

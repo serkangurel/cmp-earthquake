@@ -92,6 +92,7 @@ dependencies {
     implementation(projects.feature.settings.impl)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.compose.components.uiToolingPreview)
     implementation(libs.koin.core)
     debugImplementation(libs.compose.uiTooling)

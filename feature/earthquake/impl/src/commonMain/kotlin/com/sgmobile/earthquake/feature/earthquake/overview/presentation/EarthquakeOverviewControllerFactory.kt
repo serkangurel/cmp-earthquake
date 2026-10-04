@@ -6,6 +6,7 @@ import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeF
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReachedFlowUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextUsgsEarthquakesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.feature.settings.domain.SettingsSource
 import org.koin.core.annotation.Factory
 
 @Factory(binds = [EarthquakeOverviewController::class])
@@ -15,6 +16,7 @@ internal fun provideEarthquakeOverviewController(
     getEarthquakeFlowUseCase: GetEarthquakeFlowUseCase,
     getIsEndReachedFlowUseCase: GetIsEndReachedFlowUseCase,
     getCountriesUseCase: GetCountriesUseCase,
+    settingsSource: SettingsSource,
     datasetStore: EarthquakeDatasetStore,
 ) = EarthquakeOverviewControllerImpl(
     refreshUsgsEarthquakesUseCase,
@@ -22,5 +24,6 @@ internal fun provideEarthquakeOverviewController(
     getEarthquakeFlowUseCase,
     getIsEndReachedFlowUseCase,
     getCountriesUseCase,
+    settingsSource,
     datasetStore,
 )

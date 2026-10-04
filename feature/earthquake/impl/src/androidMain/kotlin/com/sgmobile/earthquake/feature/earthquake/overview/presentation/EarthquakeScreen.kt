@@ -1,6 +1,5 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -52,6 +51,7 @@ import com.sgmobile.earthquake.core.resource.no_earthquakes_found_description
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.core.ui.theme.LocalDarkTheme
 import com.sgmobile.earthquake.core.ui.util.DisableNavigationBarContrastEnforcement
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
 import com.sgmobile.earthquake.feature.earthquake.navigation.EarthquakeRoutes
@@ -74,7 +74,7 @@ internal fun EarthquakeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val navigator = LocalNavigator.current
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = LocalDarkTheme.current
     val layoutDirection = LocalLayoutDirection.current
     SetSystemBarsLightAppearance(
         isAppearanceLightStatusBars = !darkTheme,

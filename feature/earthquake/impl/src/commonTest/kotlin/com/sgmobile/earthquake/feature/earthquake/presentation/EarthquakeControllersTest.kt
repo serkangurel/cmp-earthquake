@@ -14,9 +14,12 @@ import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.EarthquakeOverviewControllerImpl
+import com.sgmobile.earthquake.feature.settings.domain.SettingsSource
+import com.sgmobile.earthquake.feature.settings.domain.models.SettingsPreferences
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
@@ -113,7 +116,12 @@ internal class EarthquakeControllersTest {
             getEarthquakeFlowUseCase = GetEarthquakeFlowUseCase(repository),
             getIsEndReachedFlowUseCase = GetIsEndReachedFlowUseCase(repository),
             getCountriesUseCase = GetCountriesUseCase(FakeCountryRepository),
+            settingsSource = DefaultSettingsSource,
         )
+
+    private object DefaultSettingsSource : SettingsSource {
+        override val preferences = flowOf(SettingsPreferences.DEFAULT)
+    }
 
     private object FakeCountryRepository : CountryRepository {
         override suspend fun getCountries() = listOf(

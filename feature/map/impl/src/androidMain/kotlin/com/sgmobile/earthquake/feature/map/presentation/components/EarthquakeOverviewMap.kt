@@ -1,6 +1,5 @@
 package com.sgmobile.earthquake.feature.map.presentation.components
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_country
 import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
+import com.sgmobile.earthquake.core.ui.theme.LocalDarkTheme
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapCountry
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapState
 import eu.buney.maps.CameraPosition
@@ -68,7 +68,7 @@ internal fun EarthquakeOverviewMap(
     val paddingPx = with(density) { 24.dp.roundToPx() }
     val scope = rememberCoroutineScope()
     val motionScale = scope.coroutineContext[MotionDurationScale]?.scaleFactor ?: 1f
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = LocalDarkTheme.current
     val properties = remember(darkTheme) {
         MapProperties(mapStyleOptions = if (darkTheme) {
             MapStyleOptions.fromJson(mapNightStyleJson())

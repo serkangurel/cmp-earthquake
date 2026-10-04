@@ -7,7 +7,6 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,6 +41,7 @@ import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_earthquake
 import com.sgmobile.earthquake.core.resource.epicenter_map
 import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
+import com.sgmobile.earthquake.core.ui.theme.LocalDarkTheme
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
 import eu.buney.maps.CameraPosition
@@ -92,7 +92,7 @@ internal fun EarthquakeMap(
     val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateFlow.collectAsState()
     val animationsEnabled = lifecycleState.isAtLeast(Lifecycle.State.RESUMED) && motionScale > 0f
     val circleColor = earthquake.magnitudeThreshold.toTierColor()
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalDarkTheme.current
     val properties = remember(isDark) {
         MapProperties(
             mapStyleOptions = if (isDark) MapStyleOptions.fromJson(mapNightStyleJson()) else null,

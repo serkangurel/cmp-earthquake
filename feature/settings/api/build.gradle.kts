@@ -18,6 +18,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.navigation.api)
+            api(projects.feature.earthquake.api)
         }
     }
 }

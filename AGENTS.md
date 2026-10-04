@@ -26,8 +26,8 @@ The main modules are:
 - `feature:earthquake:impl`: earthquake data/domain implementations, list/detail controllers, Android UI, and DI.
 - `feature:map:api`: map models, controller interface, and portable destinations.
 - `feature:map:impl`: shared map controller/mapping, Android view model/UI, and DI.
-- `feature:settings:api`: portable settings destination models.
-- `feature:settings:impl`: Android settings UI and navigation registration.
+- `feature:settings:api`: settings preference models, source/controller interfaces, and portable destinations.
+- `feature:settings:impl`: DataStore-backed settings data, shared settings controller, Android UI, and DI.
 - `server`: JVM Ktor server.
 
 Treat `settings.gradle.kts` as the source of truth for included modules and

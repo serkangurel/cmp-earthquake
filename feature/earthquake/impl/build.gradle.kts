@@ -35,6 +35,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.earthquake.api)
+            implementation(projects.feature.settings.api)
             implementation(projects.core.network)
             implementation(libs.kotlin.stdlib)
             implementation(libs.kotlinx.coroutines.core)

@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.domain
 
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeTimeRange
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -20,14 +21,14 @@ internal class GetUsgsEarthquakeStartTimeUseCase {
         const val DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss"
     }
 
-    operator fun invoke(): String {
+    operator fun invoke(timeRange: EarthquakeTimeRange = EarthquakeTimeRange.DEFAULT): String {
         val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
-        val yesterdayDate = now.date.minus(DatePeriod(days = 7))
-        val yesterdayAtCurrentTime = yesterdayDate.atTime(now.time)
+        val startDate = now.date.minus(DatePeriod(days = timeRange.days))
+        val startAtCurrentTime = startDate.atTime(now.time)
 
         val formatter = LocalDateTime.Format {
             byUnicodePattern(DATE_PATTERN)
         }
-        return formatter.format(yesterdayAtCurrentTime)
+        return formatter.format(startAtCurrentTime)
     }
 }
