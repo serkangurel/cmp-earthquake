@@ -67,7 +67,7 @@ android {
 
     sourceSets {
         getByName("main").assets.directories.add(
-            rootProject.file("feature/earthquake/src/commonMain/resources").absolutePath
+            rootProject.file("feature/earthquake/impl/src/commonMain/resources").absolutePath
         )
     }
 }
@@ -84,12 +84,12 @@ kotlin {
 
 dependencies {
     implementation(projects.shared)
-    implementation(projects.core.navigation)
+    implementation(projects.core.navigation.impl)
     implementation(projects.core.resource)
     implementation(projects.core.ui)
-    implementation(projects.feature.earthquakeUi)
-    implementation(projects.feature.map)
-    implementation(projects.feature.settings)
+    implementation(projects.feature.earthquake.impl)
+    implementation(projects.feature.map.impl)
+    implementation(projects.feature.settings.impl)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.compose.components.uiToolingPreview)

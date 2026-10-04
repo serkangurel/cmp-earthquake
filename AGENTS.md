@@ -18,12 +18,16 @@ The main modules are:
 - `iosApp`: native SwiftUI application, observable adapters, localizations, and Google Maps SDK UI.
 - `shared`: UI-free Apple framework entry point and dependency-injection bootstrap.
 - `core:network`: shared HTTP client configuration and network DI.
-- `core:navigation`: Android-only Compose navigation state, navigator, host, and contracts.
+- `core:navigation:api`: portable destination, navigation-state, navigator, and observation contracts.
+- `core:navigation:impl`: UI-free shared navigation engine plus Android Compose host and state adapters.
 - `core:resource`: Android-only Compose resources. Its generated `Res` class is public.
 - `core:ui`: reusable Android Compose components, previews, and theming.
-- `feature:earthquake`: UI-free shared data, domain, presentation state, and controllers.
-- `feature:earthquake-ui`: Android-only Compose earthquake screens and navigation.
-- `feature:map` and `feature:settings`: Android-only Compose feature UI and navigation.
+- `feature:earthquake:api`: earthquake models, dataset/search/controller interfaces, and portable destinations.
+- `feature:earthquake:impl`: earthquake data/domain implementations, list/detail controllers, Android UI, and DI.
+- `feature:map:api`: map models, controller interface, and portable destinations.
+- `feature:map:impl`: shared map controller/mapping, Android view model/UI, and DI.
+- `feature:settings:api`: portable settings destination models.
+- `feature:settings:impl`: Android settings UI and navigation registration.
 - `server`: JVM Ktor server.
 
 Treat `settings.gradle.kts` as the source of truth for included modules and
@@ -60,6 +64,10 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
 
 ### Features and state
 
+- Feature `api` modules contain models and interfaces only; keep implementations, DI, and UI in `impl`.
+- Cross-feature dependencies must target `api` modules. Only app/shared composition roots assemble
+  multiple `impl` modules. Keep the feature API dependency graph acyclic.
+
 - Preserve the existing feature layering: data sources and repository implementations in `data`,
   contracts/models/use cases in `domain`, and UI state, view models, intents, view objects, and
   composables in `presentation`.
@@ -68,7 +76,7 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
 - Keep transport/domain models out of Compose and SwiftUI. Map them to presentation models at the
   shared presentation boundary.
 - Add shared Koin registrations using the existing annotation-based module/component scan. Android
-  navigation providers are registered through their Android UI modules.
+  navigation providers are registered through their feature implementation modules.
 
 ### Compose UI and resources
 
@@ -87,9 +95,11 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
 
 ### Navigation, networking, and server code
 
-- Define Android feature destinations in the Android UI module's navigation package and keep route
-  arguments serializable. Android navigates through `Navigator`/composition locals; iOS uses native
-  SwiftUI navigation values and containers.
+- Define portable feature destinations in the feature API module's common navigation package.
+  Give each destination a stable key that preserves its arguments. Both platforms navigate through
+  the shared `Navigator`; Android uses composition locals and Navigation 3 rendering, while iOS
+  binds native SwiftUI tab selection and navigation paths through its observable adapter. Native
+  adapters must synchronize back gestures/path changes with the shared state.
 - Reuse `core:network` for shared client configuration. Keep wire models and API mapping inside the
   feature data layer.
 - Keep server configuration separate from application logic. Credentials and deployment-specific
@@ -122,7 +132,7 @@ work. Useful commands from the repository root are:
 ./gradlew allTests
 
 # Earthquake feature Android/JVM tests
-./gradlew :feature:earthquake:testAndroidHostTest
+./gradlew :feature:earthquake:impl:testAndroidHostTest
 
 # Android lint
 ./gradlew lint

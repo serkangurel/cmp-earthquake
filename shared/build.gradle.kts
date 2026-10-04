@@ -27,14 +27,23 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
-            export(projects.feature.earthquake)
+            export(projects.core.navigation.api)
+            export(projects.feature.settings.api)
+            export(projects.feature.earthquake.api)
+            export(projects.feature.map.api)
         }
     }
 
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.network)
-            api(projects.feature.earthquake)
+            api(projects.core.navigation.api)
+            implementation(projects.core.navigation.impl)
+            api(projects.feature.settings.api)
+            api(projects.feature.earthquake.api)
+            api(projects.feature.map.api)
+            implementation(projects.feature.earthquake.impl)
+            implementation(projects.feature.map.impl)
             implementation(libs.koin.core)
             api(libs.koin.annotations)
             implementation(libs.napier)

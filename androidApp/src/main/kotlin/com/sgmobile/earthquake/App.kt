@@ -2,6 +2,7 @@ package com.sgmobile.earthquake
 
 import androidx.compose.runtime.Composable
 import com.sgmobile.earthquake.core.navigation.SGNavHost
+import com.sgmobile.earthquake.core.navigation.rememberNavigator
 import com.sgmobile.earthquake.core.ui.theme.AppTheme
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
 
@@ -18,6 +19,7 @@ fun App(
             isAppearanceLightStatusBars = darkTheme,
             isAppearanceLightNavigationBars = !darkTheme,
         )
-        SGNavHost()
+        val navigator = rememberNavigator(::createAppNavigator)
+        SGNavHost(navigator = navigator)
     }
 }

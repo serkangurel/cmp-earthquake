@@ -3,8 +3,11 @@ package com.sgmobile.earthquake
 import com.sgmobile.earthquake.core.network.di.NetworkModule
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.EarthquakeDetailController
 import com.sgmobile.earthquake.feature.earthquake.di.EarthquakeModule
-import com.sgmobile.earthquake.feature.earthquake.map.presentation.EarthquakeMapController
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.CountryOption
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.CountrySearch
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.EarthquakeOverviewController
+import com.sgmobile.earthquake.feature.map.di.MapModule
+import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapController
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.aakira.napier.log
@@ -21,6 +24,7 @@ private const val COUNTRY_RESOURCE_PROPERTY = "earthquake.countryResource"
     modules = [
         NetworkModule::class,
         EarthquakeModule::class,
+        MapModule::class,
     ],
 )
 internal class SharedKoinApplication
@@ -28,6 +32,9 @@ internal class SharedKoinApplication
 class SharedApplication internal constructor(
     private val koin: Koin,
 ) {
+    fun filterCountries(countries: List<CountryOption>, query: String): List<CountryOption> =
+        koin.get<CountrySearch>().filter(countries, query)
+
     fun makeEarthquakeOverviewController(): EarthquakeOverviewController = koin.get()
 
     fun makeEarthquakeMapController(): EarthquakeMapController = koin.get()
