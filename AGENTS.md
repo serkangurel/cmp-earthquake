@@ -7,21 +7,27 @@ These instructions apply to the entire repository. If a nested directory later c
 
 ## Project overview
 
-This is a Kotlin Multiplatform earthquake application with shared Compose UI for Android and iOS,
-plus a small Ktor server. The project uses Gradle Kotlin DSL, a centralized version catalog, Koin,
-Ktor, Kotlin serialization, Navigation 3, and Compose Multiplatform resources.
+This is a Kotlin Multiplatform earthquake application with an Android Compose UI, a native SwiftUI
+iOS UI, shared application logic, and a small Ktor server. The project uses Gradle Kotlin DSL, a
+centralized version catalog, Koin, Ktor, Kotlin serialization, Android Navigation 3, and Android
+Compose resources.
 
 The main modules are:
 
 - `androidApp`: Android application entry point, product flavors, manifest, and Android packaging.
-- `iosApp`: SwiftUI/Xcode application entry point and Swift Package integration.
-- `shared`: shared application composition, root Compose UI, and dependency-injection bootstrap.
+- `iosApp`: native SwiftUI application, observable adapters, localizations, and Google Maps SDK UI.
+- `shared`: UI-free Apple framework entry point and dependency-injection bootstrap.
 - `core:network`: shared HTTP client configuration and network DI.
-- `core:navigation`: shared navigation state, navigator, host, and navigation contracts.
-- `core:resource`: shared Compose resources. Its generated `Res` class is public.
-- `core:ui`: reusable UI components, previews, and theming.
-- `feature:earthquake`: earthquake overview/detail data, domain, presentation, and navigation.
-- `feature:map` and `feature:settings`: self-contained feature UI, DI, and navigation.
+- `core:navigation:api`: portable destination, navigation-state, navigator, and observation contracts.
+- `core:navigation:impl`: UI-free shared navigation engine plus Android Compose host and state adapters.
+- `core:resource`: Android-only Compose resources. Its generated `Res` class is public.
+- `core:ui`: reusable Android Compose components, previews, and theming.
+- `feature:earthquake:api`: earthquake models, dataset/search/controller interfaces, and portable destinations.
+- `feature:earthquake:impl`: earthquake data/domain implementations, list/detail controllers, Android UI, and DI.
+- `feature:map:api`: map models, controller interface, and portable destinations.
+- `feature:map:impl`: shared map controller/mapping, Android view model/UI, and DI.
+- `feature:settings:api`: portable settings destination models.
+- `feature:settings:impl`: Android settings UI and navigation registration.
 - `server`: JVM Ktor server.
 
 Treat `settings.gradle.kts` as the source of truth for included modules and
@@ -58,16 +64,19 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
 
 ### Features and state
 
+- Feature `api` modules contain models and interfaces only; keep implementations, DI, and UI in `impl`.
+- Cross-feature dependencies must target `api` modules. Only app/shared composition roots assemble
+  multiple `impl` modules. Keep the feature API dependency graph acyclic.
+
 - Preserve the existing feature layering: data sources and repository implementations in `data`,
   contracts/models/use cases in `domain`, and UI state, view models, intents, view objects, and
   composables in `presentation`.
-- View models expose immutable observable state and accept user actions through the feature's
-  intent type. Launch asynchronous work in `viewModelScope` and keep mutable flows private.
-- Keep transport/domain models out of composables. Map them to presentation models at the
-  presentation boundary.
-- Add Koin registrations using the existing annotation-based module/component scan. Navigation
-  providers are registered through each feature's explicit navigation module and included from
-  `shared`.
+- Shared screen controllers expose immutable presentation state and own platform-independent state
+  transitions. Platform view models or observable adapters remain thin and lifecycle-scoped.
+- Keep transport/domain models out of Compose and SwiftUI. Map them to presentation models at the
+  shared presentation boundary.
+- Add shared Koin registrations using the existing annotation-based module/component scan. Android
+  navigation providers are registered through their feature implementation modules.
 
 ### Compose UI and resources
 
@@ -77,17 +86,20 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
   Compose effect APIs.
 - Reuse components and theme values from `core:ui`; do not duplicate app-wide colors, typography,
   loading UI, app bars, or preview wrappers inside features.
-- Put user-visible strings and other shared assets in `core/resource/src/commonMain/composeResources`
-  and access them through the generated `Res` API. Do not hard-code display text in production UI.
+- Put Android display strings and visual assets in `core:resource/src/androidMain/composeResources`
+  and access them through the generated `Res` API. Put iOS strings and visual assets in native
+  bundle resources. Do not hard-code display text in production UI.
 - Add focused previews for meaningful UI states when changing a composable.
 - Preserve accessibility: add semantic labels/content descriptions where appropriate and keep
   touch targets usable.
 
 ### Navigation, networking, and server code
 
-- Define feature destinations in that feature's navigation package and keep route arguments
-  serializable. Navigate through the shared `Navigator`/composition locals rather than introducing
-  a second navigation mechanism.
+- Define portable feature destinations in the feature API module's common navigation package.
+  Give each destination a stable key that preserves its arguments. Both platforms navigate through
+  the shared `Navigator`; Android uses composition locals and Navigation 3 rendering, while iOS
+  binds native SwiftUI tab selection and navigation paths through its observable adapter. Native
+  adapters must synchronize back gestures/path changes with the shared state.
 - Reuse `core:network` for shared client configuration. Keep wire models and API mapping inside the
   feature data layer.
 - Keep server configuration separate from application logic. Credentials and deployment-specific
@@ -120,7 +132,7 @@ work. Useful commands from the repository root are:
 ./gradlew allTests
 
 # Earthquake feature Android/JVM tests
-./gradlew :feature:earthquake:testAndroidHostTest
+./gradlew :feature:earthquake:impl:testAndroidHostTest
 
 # Android lint
 ./gradlew lint
@@ -142,8 +154,12 @@ before editing generated package artifacts manually.
 
 ## Testing expectations
 
-- Add or update tests for behavior changes and regressions. Prefer deterministic fakes over live
-  network, map, clock, database, or service dependencies.
+- Do not add new tests, test files, or test infrastructure during or after implementation work unless
+  the user explicitly requests them.
+- Verify implementation changes with existing tests, build/lint checks, and manual or emulator checks
+  as appropriate.
+- When the user explicitly requests test changes, prefer deterministic fakes over live network,
+  map, clock, database, or service dependencies.
 - Match the test to the layer: use-case/repository behavior in `commonTest`, Android-only JVM logic
   in `androidHostTest`, and Compose interaction/rendering in `androidDeviceTest`.
 - Use `kotlin.test` for portable tests and follow the existing Given/When/Then organization where it

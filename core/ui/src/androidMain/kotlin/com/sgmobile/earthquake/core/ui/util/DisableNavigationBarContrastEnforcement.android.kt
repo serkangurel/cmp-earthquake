@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.DialogWindowProvider
 
 @Composable
-actual fun DisableNavigationBarContrastEnforcement() {
+fun DisableNavigationBarContrastEnforcement() {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
 
     val view = LocalView.current

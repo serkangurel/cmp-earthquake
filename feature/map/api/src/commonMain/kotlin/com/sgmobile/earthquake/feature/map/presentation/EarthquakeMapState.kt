@@ -1,0 +1,56 @@
+package com.sgmobile.earthquake.feature.map.presentation
+
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeTimestamp
+
+data class EarthquakeMapItem(
+    val id: String,
+    val place: String,
+    val magnitude: String,
+    val magnitudeThreshold: MagnitudeThreshold,
+    val date: String,
+) {
+    val timestamp: EarthquakeTimestamp = EarthquakeTimestamp.fromDisplayValue(date)
+}
+
+data class EarthquakeMapBounds(
+    val minLatitude: Double,
+    val minLongitude: Double,
+    val maxLatitude: Double,
+    val maxLongitude: Double,
+)
+
+data class EarthquakeMapCountry(
+    val code: String,
+    val name: String,
+    val bounds: EarthquakeMapBounds,
+)
+
+data class EarthquakeMapPin(
+    val earthquake: EarthquakeMapItem,
+    val latitude: Double,
+    val longitude: Double,
+)
+
+data class EarthquakeMapSnapshot(
+    val country: EarthquakeMapCountry?,
+    val selectedMagnitude: MagnitudeThreshold,
+    val pins: List<EarthquakeMapPin>,
+    val isLoading: Boolean,
+) {
+    companion object {
+        val INITIAL = EarthquakeMapSnapshot(null, MagnitudeThreshold.TWO_PLUS, emptyList(), false)
+    }
+}
+
+data class EarthquakeMapState(
+    val snapshot: EarthquakeMapSnapshot,
+    val selectedEarthquakeId: String?,
+) {
+    val selectedEarthquake: EarthquakeMapPin?
+        get() = snapshot.pins.firstOrNull { it.earthquake.id == selectedEarthquakeId }
+
+    companion object {
+        val INITIAL = EarthquakeMapState(EarthquakeMapSnapshot.INITIAL, null)
+    }
+}

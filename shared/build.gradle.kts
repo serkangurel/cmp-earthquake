@@ -6,11 +6,8 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
     alias(libs.plugins.koin.compiler)
     alias(libs.plugins.buildkonfig)
 }
@@ -25,71 +22,33 @@ kotlin {
 
     listOf(
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
-            export(libs.calf.ui)
+            export(projects.core.navigation.api)
+            export(projects.feature.settings.api)
+            export(projects.feature.earthquake.api)
+            export(projects.feature.map.api)
         }
-    }
-
-    swiftPMDependencies {
-        iosMinimumDeploymentTarget.set("16.0")
-
-        swiftPackage(
-            url = url("https://github.com/googlemaps/ios-maps-sdk"),
-            version = exact("10.8.0"),
-            products = listOf(
-                product(
-                    name = "GoogleMaps",
-                    platforms = setOf(iOS())
-                )
-            )
-        )
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.resource)
-            implementation(projects.core.ui)
             implementation(projects.core.network)
-            implementation(projects.core.navigation)
-            implementation(projects.feature.earthquake)
-            implementation(projects.feature.map)
-            implementation(projects.feature.settings)
-
-            implementation(libs.compose.runtime)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.components.resources)
-            implementation(libs.compose.components.uiToolingPreview)
-            implementation(libs.compose.material3)
-            implementation(libs.compose.materialIconsExtended)
-            api(libs.calf.ui)
-
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
+            api(projects.core.navigation.api)
+            implementation(projects.core.navigation.impl)
+            api(projects.feature.settings.api)
+            api(projects.feature.earthquake.api)
+            api(projects.feature.map.api)
+            implementation(projects.feature.earthquake.impl)
+            implementation(projects.feature.map.impl)
             implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
             api(libs.koin.annotations)
-
             implementation(libs.napier)
-            implementation(libs.kotlinx.datetime)
-        }
-        androidMain.dependencies {
-        }
-        iosMain.dependencies {
-            implementation(libs.kmp.maps.compose)
         }
     }
-}
-
-compose.resources {
-    publicResClass = false
-    generateResClass = never
 }
 
 buildkonfig {
