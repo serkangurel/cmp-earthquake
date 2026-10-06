@@ -392,7 +392,7 @@ private struct EarthquakeRow: View {
         .padding(.vertical, 8)
         .padding(.horizontal, 6)
         .foregroundStyle(magnitudeColor)
-        .background(magnitudeColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+        .background(AppColors.magnitudeTint(earthquake.magnitudeThreshold), in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var magnitudeColor: Color {

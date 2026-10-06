@@ -36,7 +36,7 @@ import com.sgmobile.earthquake.core.ui.components.timestamp.TimestampContent
 import com.sgmobile.earthquake.core.ui.components.timestamp.TimestampDisplay
 import com.sgmobile.earthquake.core.ui.components.timestamp.rememberTimestamp
 import com.sgmobile.earthquake.core.ui.components.timestamp.timestampDescription
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
 import org.jetbrains.compose.resources.stringResource
@@ -108,10 +108,11 @@ private fun EarthquakeLocationAndTime(
 
 @Composable
 private fun MagnitudeBadge(model: EarthquakeListItem) {
-    val color = model.magnitudeThreshold.toTierColor()
+    val tierColors = model.magnitudeThreshold.toTierColors()
+    val color = tierColors.text
     Column(
         modifier = Modifier
-            .background(color.copy(alpha = 0.12f), MaterialTheme.shapes.medium)
+            .background(tierColors.tint, MaterialTheme.shapes.medium)
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .widthIn(min = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

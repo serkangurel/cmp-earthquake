@@ -7,6 +7,13 @@ enum AppColors {
         dark: UIColor(red: 255 / 255, green: 179 / 255, blue: 174 / 255, alpha: 1)
     )
 
+    // Magnitude colors mirror core:ui MagnitudeColors on Android; keep the two in sync.
+    private static let magnitudeMinor = Color(
+        light: UIColor(red: 35 / 255, green: 25 / 255, blue: 24 / 255, alpha: 1),
+        dark: UIColor(red: 242 / 255, green: 222 / 255, blue: 220 / 255, alpha: 1)
+    )
+
+    /// Magnitude labels and badges.
     static func magnitudeText(_ threshold: MagnitudeThreshold) -> Color {
         switch threshold {
         case .fourPlus:
@@ -20,11 +27,17 @@ enum AppColors {
                 dark: UIColor(red: 1, green: 136 / 255, blue: 128 / 255, alpha: 1)
             )
         default:
-            return magnitude(threshold)
+            return magnitudeMinor
         }
     }
 
-    static func magnitude(_ threshold: MagnitudeThreshold) -> Color {
+    /// Badge background behind `magnitudeText`.
+    static func magnitudeTint(_ threshold: MagnitudeThreshold) -> Color {
+        magnitudeText(threshold).opacity(0.12)
+    }
+
+    /// Map pins and epicenter markers.
+    static func magnitudeFill(_ threshold: MagnitudeThreshold) -> Color {
         switch threshold {
         case .fourPlus:
             return Color(red: 1, green: 179 / 255, blue: 0)
@@ -34,7 +47,7 @@ enum AppColors {
                 dark: UIColor(red: 229 / 255, green: 57 / 255, blue: 53 / 255, alpha: 1)
             )
         default:
-            return .primary
+            return magnitudeMinor
         }
     }
 }

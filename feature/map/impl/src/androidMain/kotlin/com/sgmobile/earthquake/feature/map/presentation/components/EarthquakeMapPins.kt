@@ -16,7 +16,7 @@ import com.sgmobile.earthquake.core.resource.map_earthquake_pin
 import com.sgmobile.earthquake.core.resource.map_selected_earthquake_pin
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapPin
-import com.sgmobile.earthquake.feature.map.presentation.extensions.toTierColor
+import com.sgmobile.earthquake.feature.map.presentation.extensions.toTierColors
 import eu.buney.maps.GoogleMapComposable
 import eu.buney.maps.LatLng
 import eu.buney.maps.Marker
@@ -32,7 +32,7 @@ internal fun EarthquakeMapPins(
     onEarthquakeSelected: (String) -> Unit,
 ) {
     val icons = MagnitudeThreshold.entries.associateWith { tier ->
-        val color = tier.toTierColor()
+        val color = tier.toTierColors().fill
         listOf(rememberPinIcon(color, false), rememberPinIcon(color, true))
     }
     pins.forEach { pin ->

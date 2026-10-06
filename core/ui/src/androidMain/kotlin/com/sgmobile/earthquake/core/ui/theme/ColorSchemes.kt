@@ -1,28 +1,7 @@
 package com.sgmobile.earthquake.core.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-
-@Composable
-fun extendedColor(light: Color, dark: Color): Color {
-    return if (isSystemInDarkTheme()) dark else light
-}
-
-val ColorScheme.magYellow: Color
-    @Composable get() = extendedColor(
-        light = Color(0xFFFFB300),
-        dark = Color(0xFFFFB300)
-    )
-
-val ColorScheme.magRed: Color
-    @Composable get() = extendedColor(
-        light = Color(0xFFD32F2F),
-        dark = Color(0xFFE53935)
-    )
 
 val LightColorsScheme = lightColorScheme(
     primary = primaryLight,

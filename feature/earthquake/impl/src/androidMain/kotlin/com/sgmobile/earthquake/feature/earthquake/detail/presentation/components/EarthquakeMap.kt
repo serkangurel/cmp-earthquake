@@ -42,7 +42,7 @@ import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_earthquake
 import com.sgmobile.earthquake.core.resource.epicenter_map
 import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
 import eu.buney.maps.CameraPosition
 import eu.buney.maps.CameraUpdateFactory
@@ -91,7 +91,7 @@ internal fun EarthquakeMap(
     val motionScale = coroutineScope.coroutineContext[MotionDurationScale]?.scaleFactor ?: 1f
     val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateFlow.collectAsState()
     val animationsEnabled = lifecycleState.isAtLeast(Lifecycle.State.RESUMED) && motionScale > 0f
-    val circleColor = earthquake.magnitudeThreshold.toTierColor()
+    val circleColor = earthquake.magnitudeThreshold.toTierColors().fill
     val isDark = isSystemInDarkTheme()
     val properties = remember(isDark) {
         MapProperties(

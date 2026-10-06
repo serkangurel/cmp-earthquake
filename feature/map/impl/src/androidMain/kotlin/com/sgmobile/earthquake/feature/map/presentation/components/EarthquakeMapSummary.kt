@@ -30,7 +30,7 @@ import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.components.timestamp.TimestampLabel
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapItem
-import com.sgmobile.earthquake.feature.map.presentation.extensions.toTierColor
+import com.sgmobile.earthquake.feature.map.presentation.extensions.toTierColors
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -53,7 +53,7 @@ internal fun EarthquakeMapSummary(
             ) {
                 Text(
                     text = earthquake.magnitude,
-                    color = earthquake.magnitudeThreshold.toTierColor(),
+                    color = earthquake.magnitudeThreshold.toTierColors().text,
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 Column(

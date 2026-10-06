@@ -186,7 +186,7 @@ private struct EarthquakeDetailCard: View {
         .fixedSize()
         .padding(12)
         .background(
-            AppColors.magnitudeText(earthquake.magnitudeThreshold).opacity(0.12),
+            AppColors.magnitudeTint(earthquake.magnitudeThreshold),
             in: RoundedRectangle(cornerRadius: 16)
         )
         .accessibilityElement(children: .combine)

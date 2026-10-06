@@ -52,7 +52,7 @@ import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.components.timestamp.rememberTimestamp
 import com.sgmobile.earthquake.core.ui.components.timestamp.timestampDescription
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import org.jetbrains.compose.resources.painterResource
@@ -144,11 +144,12 @@ internal fun EarthquakeDetailSheet(
 
 @Composable
 private fun MagnitudeBadge(earthquake: EarthquakeDetail) {
-    val color = earthquake.magnitudeThreshold.toTierColor()
+    val tierColors = earthquake.magnitudeThreshold.toTierColors()
+    val color = tierColors.text
     Column(
         modifier = Modifier
             .semantics(mergeDescendants = true) {}
-            .background(color.copy(alpha = 0.12f), RoundedCornerShape(16.dp))
+            .background(tierColors.tint, RoundedCornerShape(16.dp))
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp),
