@@ -23,6 +23,7 @@ import com.sgmobile.earthquake.core.resource.back_button
 import com.sgmobile.earthquake.core.resource.share
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -32,7 +33,7 @@ internal fun EarthquakeDetailActions(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(16.dp),
+        modifier = modifier.fillMaxWidth().padding(Spacing.space16),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         MapActionButton(

@@ -36,6 +36,7 @@ import com.sgmobile.earthquake.core.ui.components.timestamp.TimestampContent
 import com.sgmobile.earthquake.core.ui.components.timestamp.TimestampDisplay
 import com.sgmobile.earthquake.core.ui.components.timestamp.rememberTimestamp
 import com.sgmobile.earthquake.core.ui.components.timestamp.timestampDescription
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
@@ -67,12 +68,15 @@ internal fun EarthquakeRowItem(
                     true
                 }
             }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = Spacing.space16, vertical = Spacing.space12),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.space12),
     ) {
         if (LocalDensity.current.fontScale >= 1.5f) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(Spacing.space12),
+            ) {
                 MagnitudeBadge(model)
                 EarthquakeLocationAndTime(model, timestamp)
             }
@@ -95,7 +99,7 @@ private fun EarthquakeLocationAndTime(
     timestamp: TimestampDisplay?,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(Spacing.space6)) {
         Text(
             text = model.place,
             style = MaterialTheme.typography.titleSmall,
@@ -113,10 +117,10 @@ private fun MagnitudeBadge(model: EarthquakeListItem) {
     Column(
         modifier = Modifier
             .background(tierColors.tint, MaterialTheme.shapes.medium)
-            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .padding(horizontal = Spacing.space8, vertical = Spacing.space8)
             .widthIn(min = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.spacedBy(Spacing.space2),
     ) {
         Text(
             text = stringResource(Res.string.magnitude_short),

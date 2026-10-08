@@ -46,6 +46,7 @@ import com.sgmobile.earthquake.core.resource.minimum_magnitude
 import com.sgmobile.earthquake.core.resource.select_country
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.CountryOption
 import org.jetbrains.compose.resources.stringResource
@@ -66,10 +67,10 @@ internal fun EarthquakeFilters(
     val filtersModifier = modifier
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.surface)
-        .padding(horizontal = 16.dp, vertical = 12.dp)
+        .padding(horizontal = Spacing.space16, vertical = Spacing.space12)
 
     if (LocalDensity.current.fontScale >= 1.5f) {
-        Column(filtersModifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(filtersModifier, verticalArrangement = Arrangement.spacedBy(Spacing.space8)) {
             FilterButton(
                 title = stringResource(Res.string.country),
                 value = countryValue,
@@ -80,7 +81,7 @@ internal fun EarthquakeFilters(
             MagnitudeFilter(selectedMagnitude, magnitudeOptions, onMagnitudeClick, Modifier.fillMaxWidth())
         }
     } else {
-        Row(filtersModifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(filtersModifier, horizontalArrangement = Arrangement.spacedBy(Spacing.space12)) {
             FilterButton(
                 title = stringResource(Res.string.country),
                 value = countryValue,
@@ -113,9 +114,9 @@ private fun FilterButton(
         Column(
             modifier = Modifier
                 .heightIn(min = 56.dp)
-                .padding(12.dp)
+                .padding(Spacing.space12)
                 .clearAndSetSemantics {},
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(Spacing.space4),
         ) {
             Text(
                 text = title,
@@ -194,7 +195,7 @@ private fun MagnitudeDropdownItem(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 2.dp)
+            .padding(horizontal = Spacing.space8, vertical = Spacing.space2)
             .clip(MaterialTheme.shapes.small)
             .background(
                 if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
@@ -218,7 +219,7 @@ private fun MagnitudeDropdownItem(
 private fun MagnitudeDropdownItemsPreview() {
     SGPreview {
         Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
-            Column(Modifier.width(180.dp).padding(vertical = 8.dp)) {
+            Column(Modifier.width(180.dp).padding(vertical = Spacing.space8)) {
                 MagnitudeThreshold.entries.forEach { threshold ->
                     MagnitudeDropdownItem(
                         threshold = threshold,

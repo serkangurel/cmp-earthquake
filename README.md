@@ -22,11 +22,14 @@ Each tab owns an `api` and an `impl` module:
   It depends on `feature:earthquake:api`, never earthquake implementation or UI.
 - `feature:settings:api` exposes portable destination models; `feature:settings:impl` owns its UI.
 - `shared` assembles shared implementation DI and exposes controller factories through the single
-  `Shared` Apple framework. It exports navigation and all feature APIs, not implementation modules.
+  `Shared` Apple framework. It exports navigation, design tokens, and all feature APIs, not
+  implementation modules.
 - `androidApp` assembles the Android implementation/navigation modules.
 - `core:network` owns HTTP client configuration. `core:navigation:api` exposes portable route/state
   contracts; `core:navigation:impl` owns shared navigation logic and the Android host/adapters.
   `core:resource` and `core:ui` own reusable Android resources and UI (including timestamp rendering).
+  `core:designsystem` holds UI-free design tokens (the color palette, spacing and corner radii) that
+  `core:ui` and iOS (`AppColors`, `AppSpacing`, `AppRadius`) read.
 - `iosApp` owns native SwiftUI views, thin observable adapters, localizations, and Google Maps.
 - `server` remains an independent JVM Ktor application.
 

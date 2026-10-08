@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.navigation.LocalNavigator
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
 import com.sgmobile.earthquake.feature.earthquake.navigation.EarthquakeRoutes
 import com.sgmobile.earthquake.feature.map.presentation.components.EarthquakeMapStatus
@@ -95,7 +96,11 @@ internal fun MapContent(
                     onDismiss = onSelectionDismissed,
                     onViewDetails = { onViewDetails(selected.id) },
                     modifier = Modifier.align(Alignment.BottomCenter)
-                        .padding(start = 16.dp, end = 16.dp, bottom = bottomPadding + 16.dp)
+                        .padding(
+                            start = Spacing.space16,
+                            end = Spacing.space16,
+                            bottom = bottomPadding + Spacing.space16,
+                        )
                         .heightIn(max = safeHeight * 0.45f)
                         .onSizeChanged { summaryHeightPx = it.height },
                 )
@@ -105,7 +110,7 @@ internal fun MapContent(
             snapshot = state.snapshot,
             modifier = Modifier.align(
                 if (state.snapshot.pins.isEmpty()) Alignment.Center else Alignment.BottomStart,
-            ).padding(safePadding).padding(16.dp),
+            ).padding(safePadding).padding(Spacing.space16),
         )
     }
 }

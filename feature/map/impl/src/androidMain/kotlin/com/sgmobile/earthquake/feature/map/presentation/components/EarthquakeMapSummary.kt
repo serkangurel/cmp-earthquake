@@ -28,6 +28,8 @@ import com.sgmobile.earthquake.core.resource.view_earthquake_details
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.components.timestamp.TimestampLabel
+import com.sgmobile.earthquake.core.ui.theme.Radius
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapItem
 import com.sgmobile.earthquake.feature.map.presentation.extensions.toTierColors
@@ -42,14 +44,14 @@ internal fun EarthquakeMapSummary(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(Radius.xxl),
         color = MaterialTheme.colorScheme.surfaceContainerLowest,
         shadowElevation = 6.dp,
     ) {
-        Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Column(Modifier.padding(horizontal = Spacing.space16, vertical = Spacing.space8)) {
             Row(
                 modifier = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.space16),
             ) {
                 Text(
                     text = earthquake.magnitude,
@@ -58,7 +60,7 @@ internal fun EarthquakeMapSummary(
                 )
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.space8),
                 ) {
                     Text(earthquake.place, style = MaterialTheme.typography.titleMedium)
                     TimestampLabel(earthquake.timestamp.formattingEpochMilliseconds, earthquake.timestamp.fallbackText)
@@ -92,7 +94,7 @@ private fun EarthquakeMapSummaryPreview() {
             ),
             onDismiss = {},
             onViewDetails = {},
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(Spacing.space16),
         )
     }
 }

@@ -6,7 +6,7 @@ struct EmptyStateView: View {
     var message: LocalizedStringKey?
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: AppSpacing.space12) {
             Image(systemName: systemImage)
                 .font(.system(size: 56))
                 .foregroundStyle(AppColors.primary)
@@ -21,6 +21,6 @@ struct EmptyStateView: View {
                     .multilineTextAlignment(.center)
             }
         }
-        .padding(32)
+        .padding(AppSpacing.space32)
     }
 }

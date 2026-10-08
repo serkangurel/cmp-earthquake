@@ -10,12 +10,12 @@ struct EarthquakeTimestampView: View {
         Group {
             if let display = EarthquakeTimestampDisplay(timestamp: timestamp, locale: locale) {
                 ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 12) {
+                    HStack(spacing: AppSpacing.space12) {
                         timestampPart(display.date, systemImage: "calendar")
                         timestampPart(display.time, systemImage: "clock")
                     }
                     .fixedSize(horizontal: true, vertical: true)
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: AppSpacing.space4) {
                         timestampPart(display.date, systemImage: "calendar")
                         timestampPart(display.time, systemImage: "clock")
                     }
@@ -33,7 +33,7 @@ struct EarthquakeTimestampView: View {
     }
 
     private func timestampPart(_ text: String, systemImage: String) -> some View {
-        HStack(spacing: 4) {
+        HStack(spacing: AppSpacing.space4) {
             Image(systemName: systemImage)
                 .resizable()
                 .frame(width: iconSize, height: iconSize)

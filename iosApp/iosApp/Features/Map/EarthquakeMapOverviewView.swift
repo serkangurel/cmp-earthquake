@@ -45,27 +45,27 @@ struct EarthquakeMapOverviewView: View {
                         })
                     }
                     .frame(height: cardHeight)
-                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24))
-                    .padding(16)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppRadius.xxl))
+                    .padding(AppSpacing.space16)
                     .id(selected.id)
                 }
 
                 if store.state.snapshot.isLoading && store.state.snapshot.pins.isEmpty {
                     ProgressView("loading")
                         .controlSize(.large)
-                        .padding(24)
-                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+                        .padding(AppSpacing.space24)
+                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppRadius.lg))
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if store.state.snapshot.pins.isEmpty {
                     EarthquakeMapEmptyState(hasCountry: store.state.snapshot.country != nil)
-                        .padding(16)
+                        .padding(AppSpacing.space16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if store.state.snapshot.isLoading {
                     ProgressView("loading")
-                        .padding(16)
-                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+                        .padding(AppSpacing.space16)
+                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppRadius.lg))
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        .padding(16)
+                        .padding(AppSpacing.space16)
                         .allowsHitTesting(false)
                 }
             }
@@ -76,7 +76,7 @@ struct EarthquakeMapOverviewView: View {
                 .buttonStyle(.plain)
                 .disabled(store.state.snapshot.country == nil)
                 .accessibilityLabel(Text("center_map_on_country"))
-                .padding(16)
+                .padding(AppSpacing.space16)
             }
         }
         .onPreferenceChange(MapSummaryHeightKey.self) { summaryHeight = $0 }
@@ -91,15 +91,15 @@ private struct EarthquakeMapSummary<DetailsAction: View>: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.space12) {
             if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 8) { magnitude; locationAndTime }
+                VStack(alignment: .leading, spacing: AppSpacing.space8) { magnitude; locationAndTime }
             } else {
-                HStack(alignment: .top, spacing: 16) { magnitude; locationAndTime }
+                HStack(alignment: .top, spacing: AppSpacing.space16) { magnitude; locationAndTime }
             }
             HStack {
                 detailsAction()
-                Spacer(minLength: 8)
+                Spacer(minLength: AppSpacing.space8)
                 Button(action: onDismiss) {
                     Image(systemName: "xmark")
                         .font(.system(size: 20, weight: .medium))
@@ -110,7 +110,7 @@ private struct EarthquakeMapSummary<DetailsAction: View>: View {
             }
             .tint(AppColors.primary)
         }
-        .padding(16)
+        .padding(AppSpacing.space16)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -125,7 +125,7 @@ private struct EarthquakeMapSummary<DetailsAction: View>: View {
     }
 
     private var locationAndTime: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.space8) {
             Text(earthquake.place)
                 .font(.headline)
                 .fixedSize(horizontal: false, vertical: true)
@@ -139,7 +139,7 @@ private struct EarthquakeMapEmptyState: View {
     let hasCountry: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.space8) {
             if hasCountry {
                 Text("map_no_loaded_earthquakes").font(.headline)
                 Text("map_no_loaded_earthquakes_description").font(.subheadline)
@@ -147,8 +147,8 @@ private struct EarthquakeMapEmptyState: View {
                 Text("map_load_earthquakes").font(.subheadline)
             }
         }
-        .padding(16)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
+        .padding(AppSpacing.space16)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppRadius.xl))
     }
 }
 
@@ -177,7 +177,7 @@ private struct EarthquakeMapOverlayPreviews: PreviewProvider {
         ) {
             Button("view_earthquake_details") {}
         }
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppRadius.xxl))
         .padding()
     }
 }

@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_country
 import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapCountry
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapState
 import eu.buney.maps.CameraPosition
@@ -112,7 +113,9 @@ internal fun EarthquakeOverviewMap(
                 }
             },
             enabled = ready && country != null,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(contentPadding).padding(16.dp)
+            modifier = Modifier.align(Alignment.BottomEnd)
+                .padding(contentPadding)
+                .padding(Spacing.space16)
                 .size(48.dp).shadow(4.dp, CircleShape),
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,

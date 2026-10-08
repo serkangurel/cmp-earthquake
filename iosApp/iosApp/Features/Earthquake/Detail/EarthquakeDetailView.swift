@@ -44,7 +44,7 @@ struct EarthquakeDetailView: View {
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(Text("center_map_on_earthquake"))
-                        .padding(16)
+                        .padding(AppSpacing.space16)
                         .padding(.bottom, cardHeight)
                     }
 
@@ -63,8 +63,8 @@ struct EarthquakeDetailView: View {
                     .background(Color(uiColor: .systemGroupedBackground))
                     .clipShape(
                         UnevenRoundedRectangle(
-                            topLeadingRadius: 24,
-                            topTrailingRadius: 24
+                            topLeadingRadius: AppRadius.xxl,
+                            topTrailingRadius: AppRadius.xxl
                         )
                     )
                     .overlay(alignment: .bottom) {
@@ -87,7 +87,7 @@ struct EarthquakeDetailView: View {
                     onBack: navigation.goBack,
                     shareSummary: store.state.canShare ? store.state.earthquake?.shareSummary : nil
                 )
-                .padding(16)
+                .padding(AppSpacing.space16)
             }
         }
         .onPreferenceChange(DetailSheetHeightKey.self) {
@@ -130,15 +130,15 @@ private struct EarthquakeDetailCard: View {
     @ScaledMetric(relativeTo: .largeTitle) private var magnitudeSize: CGFloat = 40
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: AppSpacing.space20) {
             Group {
                 if dynamicTypeSize.isAccessibilitySize {
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: AppSpacing.space16) {
                         magnitude
                         location
                     }
                 } else {
-                    HStack(alignment: .center, spacing: 16) {
+                    HStack(alignment: .center, spacing: AppSpacing.space16) {
                         magnitude
                         location
                     }
@@ -151,13 +151,13 @@ private struct EarthquakeDetailCard: View {
                     label: "date_and_time_local",
                     value: earthquake.formattedDate(locale: locale)
                 )
-                Divider().padding(.horizontal, 16)
+                Divider().padding(.horizontal, AppSpacing.space16)
                 DetailRow(
                     systemImage: "arrow.down.to.line",
                     label: "depth",
                     value: earthquake.depthDisplay
                 )
-                Divider().padding(.horizontal, 16)
+                Divider().padding(.horizontal, AppSpacing.space16)
                 DetailRow(
                     systemImage: "globe",
                     label: "source",
@@ -166,16 +166,16 @@ private struct EarthquakeDetailCard: View {
             }
             .background(
                 Color(uiColor: .secondarySystemGroupedBackground),
-                in: RoundedRectangle(cornerRadius: 16)
+                in: RoundedRectangle(cornerRadius: AppRadius.lg)
             )
         }
-        .padding(20)
+        .padding(AppSpacing.space20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(uiColor: .systemGroupedBackground))
     }
 
     private var magnitude: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: AppSpacing.space2) {
             Text("magnitude")
                 .font(.caption.weight(.semibold))
             Text(earthquake.magnitude)
@@ -184,10 +184,10 @@ private struct EarthquakeDetailCard: View {
         }
         .foregroundStyle(AppColors.magnitudeText(earthquake.magnitudeThreshold))
         .fixedSize()
-        .padding(12)
+        .padding(AppSpacing.space12)
         .background(
             AppColors.magnitudeTint(earthquake.magnitudeThreshold),
-            in: RoundedRectangle(cornerRadius: 16)
+            in: RoundedRectangle(cornerRadius: AppRadius.lg)
         )
         .accessibilityElement(children: .combine)
     }
@@ -208,24 +208,24 @@ private struct DetailRow: View {
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
-            HStack(alignment: .firstTextBaseline, spacing: 16) {
+            HStack(alignment: .firstTextBaseline, spacing: AppSpacing.space16) {
                 rowLabel
                     .fixedSize(horizontal: true, vertical: false)
-                Spacer(minLength: 8)
+                Spacer(minLength: AppSpacing.space8)
                 rowValue
                     .multilineTextAlignment(.trailing)
                     .fixedSize(horizontal: true, vertical: false)
             }
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: AppSpacing.space8) {
                 rowLabel
                 rowValue
             }
         }
         .font(.subheadline)
         .frame(maxWidth: .infinity, minHeight: 28, alignment: .leading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, AppSpacing.space16)
+        .padding(.vertical, AppSpacing.space12)
         .accessibilityElement(children: .combine)
     }
 

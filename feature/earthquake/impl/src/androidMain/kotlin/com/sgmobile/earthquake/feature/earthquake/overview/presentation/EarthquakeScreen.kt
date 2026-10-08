@@ -52,6 +52,7 @@ import com.sgmobile.earthquake.core.resource.no_earthquakes_found_description
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.core.ui.util.DisableNavigationBarContrastEnforcement
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
 import com.sgmobile.earthquake.feature.earthquake.navigation.EarthquakeRoutes
@@ -218,7 +219,7 @@ internal fun EarthquakeContent(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
-                    contentPadding = PaddingValues(vertical = 8.dp),
+                    contentPadding = PaddingValues(vertical = Spacing.space8),
                 ) {
                     if (useStackedLayout) {
                         item(key = "filters", contentType = "filters") {
@@ -250,7 +251,7 @@ internal fun EarthquakeContent(
                         if (index < uiState.earthquakes.lastIndex) {
                             HorizontalDivider(
                                 thickness = 0.5.dp,
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                                modifier = Modifier.padding(horizontal = Spacing.space16)
                             )
                         }
                     }

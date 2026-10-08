@@ -34,7 +34,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -42,6 +41,7 @@ import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_earthquake
 import com.sgmobile.earthquake.core.resource.epicenter_map
 import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
 import eu.buney.maps.CameraPosition
@@ -74,7 +74,6 @@ private const val CIRCLE_WAVE_MAX_RADIUS_SCREEN_UNITS = 56.0
 private const val EARTH_CIRCUMFERENCE_METERS = 40_075_016.686
 private const val MAP_WORLD_SIZE_AT_ZOOM_ZERO = 256.0
 private const val MAX_MERCATOR_LATITUDE = 85.05112878
-private val MAP_CONTROL_PADDING: Dp = 16.dp
 
 // No preview: GoogleMap hosts a native map view that cannot render in Compose previews.
 @Composable
@@ -140,7 +139,7 @@ internal fun EarthquakeMap(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(contentPadding)
-                .padding(MAP_CONTROL_PADDING)
+                .padding(Spacing.space16)
                 .size(48.dp)
                 .shadow(4.dp, CircleShape),
             colors = IconButtonDefaults.iconButtonColors(
