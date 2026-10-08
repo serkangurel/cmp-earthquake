@@ -28,8 +28,9 @@ Each tab owns an `api` and an `impl` module:
 - `core:network` owns HTTP client configuration. `core:navigation:api` exposes portable route/state
   contracts; `core:navigation:impl` owns shared navigation logic and the Android host/adapters.
   `core:resource` and `core:ui` own reusable Android resources and UI (including timestamp rendering).
-  `core:designsystem` holds UI-free design tokens (the color palette, spacing and corner radii) that
-  `core:ui` and iOS (`AppColors`, `AppSpacing`, `AppRadius`) read.
+  `core:designsystem` holds UI-free design tokens (the color palette, spacing, corner radii and map
+  marker geometry) that `core:ui` and iOS (`AppColors`, `AppSpacing`, `AppRadius`,
+  `EarthquakeMarkerImage`) read.
 - `iosApp` owns native SwiftUI views, thin observable adapters, localizations, and Google Maps.
 - `server` remains an independent JVM Ktor application.
 

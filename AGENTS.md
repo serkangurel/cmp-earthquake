@@ -22,7 +22,7 @@ The main modules are:
 - `core:navigation:impl`: UI-free shared navigation engine plus Android Compose host and state adapters.
 - `core:resource`: Android-only Compose resources. Its generated `Res` class is public.
 - `core:ui`: reusable Android Compose components, previews, and theming.
-- `core:designsystem`: UI-free design tokens (color palette, spacing and corner radii) shared by Android and iOS.
+- `core:designsystem`: UI-free design tokens (color palette, spacing, corner radii and map marker geometry) shared by Android and iOS.
 - `feature:earthquake:api`: earthquake models, dataset/search/controller interfaces, and portable destinations.
 - `feature:earthquake:impl`: earthquake data/domain implementations, list/detail controllers, Android UI, and DI.
 - `feature:map:api`: map models, controller interface, and portable destinations.
@@ -87,11 +87,13 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
   Compose effect APIs.
 - Reuse components and theme values from `core:ui`; do not duplicate app-wide colors, typography,
   loading UI, app bars, or preview wrappers inside features.
-- Define palette colors, spacing and corner radius once in `core:designsystem` (`DesignTokens`);
-  Android `core:ui` (`Spacing`, `Radius`, theme colors) and iOS (`AppColors`, `AppSpacing`,
-  `AppRadius`) read from it. Do not hard-code them as numeric literals on either platform; zero
-  values, fixed sizes and shadows are not tokens. (The Google Maps night-style JSON in `core:ui` is
-  map styling, not palette.)
+- Define palette colors, spacing, corner radius and map marker geometry once in `core:designsystem`
+  (`DesignTokens`); Android `core:ui` (`Spacing`, `Radius`, `EarthquakePin`, theme colors) and iOS
+  (`AppColors`, `AppSpacing`, `AppRadius`, `EarthquakeMarkerImage`) read from it. Do not hard-code
+  them as numeric literals on either platform; zero values, fixed sizes, view shadows and
+  elevation, layout math (including map-camera insets), the list divider and argument-less
+  `.padding()` are not tokens. (The Google Maps night-style JSON in `core:ui` is map styling, not
+  palette.)
 - Put Android display strings and visual assets in `core:resource/src/androidMain/composeResources`
   and access them through the generated `Res` API. Put iOS strings and visual assets in native
   bundle resources. Do not hard-code display text in production UI.

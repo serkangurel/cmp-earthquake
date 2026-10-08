@@ -113,4 +113,19 @@ object DesignTokens {
         xl = 20,
         xxl = 24,
     )
+
+    val marker = MarkerTokens(
+        canvasSize = 48,
+        bodyRadius = 14,
+        ringRadius = 16,
+        centerRadius = 5,
+        coreRadius = 2,
+        shadowRadius = 17,
+        shadowOffsetY = 1,
+        shadowAlpha = 0.15f,
+        selectedHaloRadius = 23,
+        selectedHaloAlpha = 0.3f,
+        selectedRingRadius = 20,
+        darkCenterLuminance = 0.5f,
+    )
 }

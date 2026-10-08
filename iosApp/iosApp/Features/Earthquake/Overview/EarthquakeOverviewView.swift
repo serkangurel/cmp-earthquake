@@ -162,10 +162,13 @@ struct EarthquakeOverviewView: View {
                     NavigationLink(value: NavigationRoute(key: EarthquakeRoutes.Detail(id: earthquake.id).key)) {
                         EarthquakeRow(earthquake: earthquake)
                     }
+                    .listRowInsets(EdgeInsets(top: 0, leading: AppSpacing.space16, bottom: 0, trailing: AppSpacing.space16))
                     .listRowSeparator(
                         earthquake.id == store.state.earthquakes.first?.id ? .hidden : .automatic,
                         edges: .top
                     )
+                    // Start the separator at the magnitude badge instead of the first text.
+                    .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     .accessibilityElement(children: .ignore)
                     .accessibilityAddTraits(.isButton)
                     .accessibilityLabel(
@@ -364,7 +367,7 @@ private struct EarthquakeRow: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, AppSpacing.space8)
+        .padding(.vertical, AppSpacing.space12)
         .contentShape(Rectangle())
     }
 
