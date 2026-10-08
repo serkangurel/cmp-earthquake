@@ -39,6 +39,7 @@ struct ContentView: View {
         }
         .environmentObject(navigation)
         .tint(AppColors.primary)
+        .appFont(.body)
     }
 
     @ViewBuilder

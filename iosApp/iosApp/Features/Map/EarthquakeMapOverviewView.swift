@@ -36,7 +36,7 @@ struct EarthquakeMapOverviewView: View {
                         EarthquakeMapSummary(earthquake: selected, onDismiss: store.dismissSelection) {
                             NavigationLink(value: NavigationRoute(key: EarthquakeRoutes.Detail(id: selected.id).key)) {
                                 Text("view_earthquake_details")
-                                    .font(.body.weight(.semibold))
+                                    .appFont(.body, weight: .semibold)
                                     .frame(minHeight: 48)
                             }
                         }
@@ -116,7 +116,7 @@ private struct EarthquakeMapSummary<DetailsAction: View>: View {
 
     private var magnitude: some View {
         Text(earthquake.magnitude)
-            .font(.title.weight(.semibold))
+            .appFont(.title, weight: .semibold)
             .monospacedDigit()
             .foregroundStyle(AppColors.magnitudeText(earthquake.magnitudeThreshold))
             .fixedSize()
@@ -127,7 +127,7 @@ private struct EarthquakeMapSummary<DetailsAction: View>: View {
     private var locationAndTime: some View {
         VStack(alignment: .leading, spacing: AppSpacing.space8) {
             Text(earthquake.place)
-                .font(.headline)
+                .appFont(.headline, weight: .semibold)
                 .fixedSize(horizontal: false, vertical: true)
             EarthquakeTimestampView(timestamp: earthquake.timestamp)
         }
@@ -141,10 +141,10 @@ private struct EarthquakeMapEmptyState: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.space8) {
             if hasCountry {
-                Text("map_no_loaded_earthquakes").font(.headline)
-                Text("map_no_loaded_earthquakes_description").font(.subheadline)
+                Text("map_no_loaded_earthquakes").appFont(.headline, weight: .semibold)
+                Text("map_no_loaded_earthquakes_description").appFont(.subheadline)
             } else {
-                Text("map_load_earthquakes").font(.subheadline)
+                Text("map_load_earthquakes").appFont(.subheadline)
             }
         }
         .padding(AppSpacing.space16)

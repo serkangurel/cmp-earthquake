@@ -27,7 +27,7 @@ struct EarthquakeTimestampView: View {
                 )
             }
         }
-        .font(.footnote.weight(.medium))
+        .appFont(.footnote, weight: .medium)
         .foregroundStyle(.secondary)
         .monospacedDigit()
     }

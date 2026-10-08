@@ -177,9 +177,9 @@ private struct EarthquakeDetailCard: View {
     private var magnitude: some View {
         VStack(spacing: AppSpacing.space2) {
             Text("magnitude")
-                .font(.caption.weight(.semibold))
+                .appFont(.caption, weight: .semibold)
             Text(earthquake.magnitude)
-                .font(.system(size: magnitudeSize, weight: .bold, design: .rounded))
+                .font(AppFont.fixed(size: magnitudeSize, weight: .bold))
                 .monospacedDigit()
         }
         .foregroundStyle(AppColors.magnitudeText(earthquake.magnitudeThreshold))
@@ -194,7 +194,7 @@ private struct EarthquakeDetailCard: View {
 
     private var location: some View {
         Text(earthquake.place)
-            .font(.title3.weight(.semibold))
+            .appFont(.title3, weight: .semibold)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
             .accessibilityAddTraits(.isHeader)
@@ -222,7 +222,7 @@ private struct DetailRow: View {
                 rowValue
             }
         }
-        .font(.subheadline)
+        .appFont(.subheadline)
         .frame(maxWidth: .infinity, minHeight: 28, alignment: .leading)
         .padding(.horizontal, AppSpacing.space16)
         .padding(.vertical, AppSpacing.space12)

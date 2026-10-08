@@ -31,7 +31,8 @@ Each tab owns an `api` and an `impl` module:
   `core:designsystem` holds UI-free design tokens (the color palette, spacing, corner radii and map
   marker geometry) that `core:ui` and iOS (`AppColors`, `AppSpacing`, `AppRadius`,
   `EarthquakeMarkerImage`) read.
-- `iosApp` owns native SwiftUI views, thin observable adapters, localizations, and Google Maps.
+- `iosApp` owns native SwiftUI views, thin observable adapters, localizations, and Google Maps; it
+  bundles Montserrat from `core:resource` and sets text through `AppFont`.
 - `server` remains an independent JVM Ktor application.
 
 API modules contain models and interfaces; services, controllers, mapping, DI, and Compose

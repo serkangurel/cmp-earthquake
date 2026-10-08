@@ -12,11 +12,11 @@ struct EmptyStateView: View {
                 .foregroundStyle(AppColors.primary)
                 .accessibilityHidden(true)
             Text(title)
-                .font(.title3.weight(.semibold))
+                .appFont(.title3, weight: .semibold)
                 .multilineTextAlignment(.center)
             if let message {
                 Text(message)
-                    .font(.subheadline)
+                    .appFont(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }

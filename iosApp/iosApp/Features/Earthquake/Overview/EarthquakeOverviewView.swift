@@ -326,15 +326,15 @@ private struct OverviewFilters: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.space4) {
             Text(title)
-                .font(.caption)
+                .appFont(.caption)
                 .foregroundStyle(.secondary)
             HStack(alignment: .firstTextBaseline, spacing: AppSpacing.space8) {
                 value()
-                    .font(.subheadline.weight(.semibold))
+                    .appFont(.subheadline, weight: .semibold)
                     .foregroundStyle(AppColors.primary)
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.down")
-                    .font(.caption.weight(.semibold))
+                    .appFont(.caption, weight: .semibold)
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
             }
@@ -374,7 +374,7 @@ private struct EarthquakeRow: View {
     private var locationAndTime: some View {
         VStack(alignment: .leading, spacing: AppSpacing.space6) {
             Text(earthquake.place)
-                .font(.headline)
+                .appFont(.headline, weight: .semibold)
                 .foregroundStyle(.primary)
             EarthquakeTimestampView(timestamp: earthquake.timestamp)
         }
@@ -385,9 +385,9 @@ private struct EarthquakeRow: View {
     private var magnitudeBadge: some View {
         VStack(spacing: AppSpacing.space2) {
             Text("magnitude_short")
-                .font(.caption2.weight(.semibold))
+                .appFont(.caption2, weight: .semibold)
             Text(earthquake.magnitude)
-                .font(.title3.weight(.bold))
+                .appFont(.title3, weight: .bold)
                 .monospacedDigit()
         }
         .fixedSize()

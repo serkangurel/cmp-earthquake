@@ -94,6 +94,8 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
   elevation, layout math (including map-camera insets), the list divider and argument-less
   `.padding()` are not tokens. (The Google Maps night-style JSON in `core:ui` is map styling, not
   palette.)
+- On iOS, set text with `AppFont` (Montserrat, bundled from the `core:resource` font files and sized
+  by iOS text styles); use system fonts only for SF Symbol and emoji sizing.
 - Put Android display strings and visual assets in `core:resource/src/androidMain/composeResources`
   and access them through the generated `Res` API. Put iOS strings and visual assets in native
   bundle resources. Do not hard-code display text in production UI.
