@@ -261,17 +261,21 @@ private struct OverviewFilters: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            VStack(spacing: AppSpacing.space8) {
-                countryButton
-                magnitudeMenu
-            }
-        } else {
-            HStack(alignment: .top, spacing: AppSpacing.space12) {
-                countryButton
-                magnitudeMenu
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: AppSpacing.space8) {
+                    countryButton
+                    magnitudeMenu
+                }
+            } else {
+                HStack(alignment: .top, spacing: AppSpacing.space12) {
+                    countryButton
+                    magnitudeMenu
+                }
             }
         }
+        // Size to content, so side-by-side cards share the taller card's height when a title wraps.
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private var countryButton: some View {
@@ -341,6 +345,7 @@ private struct OverviewFilters: View {
         }
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+        .frame(maxHeight: .infinity, alignment: .top)
         .padding(AppSpacing.space12)
         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: AppRadius.md))
         .contentShape(Rectangle())

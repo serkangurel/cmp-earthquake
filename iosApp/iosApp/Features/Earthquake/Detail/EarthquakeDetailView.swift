@@ -242,7 +242,7 @@ private struct DetailRow: View {
 
     private var rowValue: some View {
         Text(value)
-            .fontWeight(.semibold)
+            .appFont(.subheadline, weight: .semibold)
             .fixedSize(horizontal: false, vertical: true)
     }
 }

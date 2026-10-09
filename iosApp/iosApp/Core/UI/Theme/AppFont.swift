@@ -4,7 +4,7 @@ import UIKit
 /// Montserrat for iOS text, loaded from the same font files Android bundles (`core:resource`) and
 /// sized by iOS text styles so Dynamic Type keeps working.
 enum AppFont {
-    enum Weight {
+    enum Weight: CaseIterable {
         case regular, medium, semibold, bold
 
         var postScriptName: String {
@@ -23,25 +23,39 @@ enum AppFont {
             case .medium, .semibold, .bold: return .bold
             }
         }
+
+        fileprivate var systemWeight: UIFont.Weight {
+            switch self {
+            case .regular: return .regular
+            case .medium: return .medium
+            case .semibold: return .semibold
+            case .bold: return .bold
+            }
+        }
     }
 
     /// Montserrat at the text style's iOS size, scaling with Dynamic Type.
     static func font(_ style: Font.TextStyle, weight: Weight = .regular) -> Font {
-        verify(weight)
-        return Font.custom(weight.postScriptName, size: baseSize(of: style), relativeTo: style)
+        verifyFonts()
+        return Font.custom(weight.postScriptName, size: baseSizes[style] ?? baseSize(of: style), relativeTo: style)
     }
 
     /// For sizes that are already scaled, such as `@ScaledMetric` values.
     static func fixed(size: CGFloat, weight: Weight) -> Font {
-        verify(weight)
+        verifyFonts()
         return Font.custom(weight.postScriptName, fixedSize: size)
     }
 
     /// UIKit variant for `UIAppearance`.
     static func uiFont(size: CGFloat, weight: Weight) -> UIFont {
-        verify(weight)
-        return UIFont(name: weight.postScriptName, size: size) ?? .systemFont(ofSize: size)
+        verifyFonts()
+        return UIFont(name: weight.postScriptName, size: size) ?? .systemFont(ofSize: size, weight: weight.systemWeight)
     }
+
+    /// Base sizes read once, since `appFont` asks on every view update.
+    private static let baseSizes = Dictionary(
+        uniqueKeysWithValues: Font.TextStyle.allCases.map { ($0, baseSize(of: $0)) }
+    )
 
     /// The text style's point size at the default content size, so sizes match the system styles.
     private static func baseSize(of style: Font.TextStyle) -> CGFloat {
@@ -69,13 +83,21 @@ enum AppFont {
     }
 
     /// SwiftUI silently falls back to the system font when a face is missing; fail loudly in debug.
-    private static func verify(_ weight: Weight) {
+    private static func verifyFonts() {
         #if DEBUG
-        if UIFont(name: weight.postScriptName, size: 12) == nil {
-            assertionFailure("Missing font \(weight.postScriptName): check UIAppFonts and the Resources phase")
-        }
+        _ = fontsVerified
         #endif
     }
+
+    #if DEBUG
+    /// Checks every bundled face once, on first use.
+    private static let fontsVerified: Bool = {
+        for weight in Weight.allCases where UIFont(name: weight.postScriptName, size: 12) == nil {
+            assertionFailure("Missing font \(weight.postScriptName): check UIAppFonts and the Resources phase")
+        }
+        return true
+    }()
+    #endif
 }
 
 /// Faces chosen by name don't follow Bold Text on their own, so this reads `legibilityWeight`.
