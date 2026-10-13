@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
 
@@ -11,6 +12,7 @@ data class EarthquakeOverviewState(
     val countries: List<CountryOption>,
     val selectedMagnitude: MagnitudeThreshold,
     val selectedCountry: CountryOption?,
+    val selectedSource: EarthquakeSource,
 ) {
     val showsBlockingLoader: Boolean
         get() = isLoading && earthquakes.isEmpty()
@@ -28,6 +30,9 @@ data class EarthquakeOverviewState(
     val magnitudeOptions: List<MagnitudeThreshold>
         get() = MagnitudeThreshold.entries
 
+    val sourceOptions: List<EarthquakeSource>
+        get() = EarthquakeSource.entries
+
     companion object {
         val INITIAL = EarthquakeOverviewState(
             isLoading = false,
@@ -37,6 +42,7 @@ data class EarthquakeOverviewState(
             countries = emptyList(),
             selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
             selectedCountry = null,
+            selectedSource = EarthquakeSource.USGS,
         )
     }
 }

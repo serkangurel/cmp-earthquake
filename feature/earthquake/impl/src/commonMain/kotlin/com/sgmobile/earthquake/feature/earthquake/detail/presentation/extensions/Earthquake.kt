@@ -12,4 +12,5 @@ internal fun Earthquake.toDetailUi(): EarthquakeDetail =
         date = date,
         latitude = latitude,
         longitude = longitude,
+        source = source.label,
     )

@@ -9,4 +9,5 @@ internal data class Earthquake(
     val date: String,
     val latitude: Double,
     val longitude: Double,
+    val source: EarthquakeSource,
 )

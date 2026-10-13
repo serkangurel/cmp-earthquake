@@ -1,22 +1,23 @@
 package com.sgmobile.earthquake.feature.earthquake.domain
 
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetUsgsEarthquakeStartTimeUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeStartTimeUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshEarthquakesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class RefreshUsgsEarthquakesUseCaseTest {
+internal class RefreshEarthquakesUseCaseTest {
 
     @Test
     fun invokeShouldForwardSelectedCountryBoundsToRepository() = runBlocking {
         // Given
         val repository = FakeEarthquakeRepository()
-        val useCase = RefreshUsgsEarthquakesUseCase(
+        val useCase = RefreshEarthquakesUseCase(
             earthquakeRepository = repository,
-            getUsgsEarthquakeStartTimeUseCase = GetUsgsEarthquakeStartTimeUseCase(),
+            getEarthquakeStartTimeUseCase = GetEarthquakeStartTimeUseCase(),
         )
         val countryBounds = CountryBounds(
             minLongitude = 26.04,
@@ -27,6 +28,7 @@ internal class RefreshUsgsEarthquakesUseCaseTest {
 
         // When
         useCase(
+            source = EarthquakeSource.USGS,
             pageSize = 25,
             selectedMagnitude = MagnitudeThreshold.FOUR_PLUS,
             selectedCountryBounds = countryBounds,

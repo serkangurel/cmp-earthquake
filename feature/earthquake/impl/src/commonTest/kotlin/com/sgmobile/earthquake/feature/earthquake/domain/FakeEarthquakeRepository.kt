@@ -3,6 +3,7 @@ package com.sgmobile.earthquake.feature.earthquake.domain
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.EarthquakeRepository
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeState
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +38,7 @@ internal class FakeEarthquakeRepository : EarthquakeRepository {
     }
 
     override suspend fun refresh(
+        source: EarthquakeSource,
         startTime: String,
         pageSize: Int,
         selectedMagnitude: MagnitudeThreshold,

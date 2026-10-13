@@ -4,6 +4,7 @@ import SwiftUI
 /// App colors, read from the shared `DesignTokens` (core:designsystem) so iOS matches Android.
 enum AppColors {
     static let primary = tokenColor { $0.primary }
+    static let onPrimary = tokenColor { $0.onPrimary }
 
     /// Magnitude labels and badges.
     static func magnitudeText(_ threshold: MagnitudeThreshold) -> Color {

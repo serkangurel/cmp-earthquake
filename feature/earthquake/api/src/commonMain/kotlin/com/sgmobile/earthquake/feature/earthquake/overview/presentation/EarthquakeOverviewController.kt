@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.presentation.Observation
 import kotlinx.coroutines.flow.StateFlow
@@ -20,5 +21,6 @@ interface EarthquakeOverviewController {
     fun onEarthquakeDisplayed(id: String)
     fun selectMagnitude(magnitude: MagnitudeThreshold)
     fun selectCountry(countryCode: String)
+    fun selectSource(source: EarthquakeSource)
     fun close()
 }

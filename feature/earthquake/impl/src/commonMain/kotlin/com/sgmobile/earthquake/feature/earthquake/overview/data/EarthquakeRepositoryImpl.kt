@@ -1,11 +1,12 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.data
 
 import com.sgmobile.earthquake.feature.earthquake.constants.EarthquakeConstants
-import com.sgmobile.earthquake.feature.earthquake.overview.data.extensions.toDomainList
-import com.sgmobile.earthquake.feature.earthquake.overview.data.usgs.UsgsApi
+import com.sgmobile.earthquake.feature.earthquake.overview.data.emsc.EmscEarthquakeDataSource
+import com.sgmobile.earthquake.feature.earthquake.overview.data.usgs.UsgsEarthquakeDataSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.EarthquakeRepository
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeState
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [EarthquakeRepository::class])
 internal class EarthquakeRepositoryImpl(
-    private val usgsApi: UsgsApi
+    private val usgsDataSource: UsgsEarthquakeDataSource,
+    private val emscDataSource: EmscEarthquakeDataSource,
 ) : EarthquakeRepository {
     private val _earthquakeFlow = MutableStateFlow<List<Earthquake>>(emptyList())
     override val earthquakeFlow: StateFlow<List<Earthquake>> = _earthquakeFlow.asStateFlow()
@@ -25,6 +27,7 @@ internal class EarthquakeRepositoryImpl(
 
     private val _isRequestInFlight = MutableStateFlow(false)
 
+    private var selectedSource: EarthquakeSource = EarthquakeSource.USGS
     private var startTime: String = ""
     private var offset: Int = 1
     private var pageSize: Int = EarthquakeConstants.PAGE_SIZE
@@ -32,11 +35,13 @@ internal class EarthquakeRepositoryImpl(
     private lateinit var selectedCountryBounds: CountryBounds
 
     override suspend fun refresh(
+        source: EarthquakeSource,
         startTime: String,
         pageSize: Int,
         selectedMagnitude: MagnitudeThreshold,
         selectedCountryBounds: CountryBounds,
     ): EarthquakeState {
+        this.selectedSource = source
         this.startTime = startTime
         this.pageSize = pageSize
         this.offset = 1
@@ -56,19 +61,15 @@ internal class EarthquakeRepositoryImpl(
 
     private suspend fun fetchPage(reset: Boolean): EarthquakeState {
         _isRequestInFlight.value = true
-        return usgsApi.getEarthquakes(
-            starttime = startTime,
+        val query = EarthquakePageQuery(
+            startTime = startTime,
             offset = offset,
             limit = pageSize,
-            minmagnitude = selectedMagnitude.value,
-            minlatitude = selectedCountryBounds.minLatitude,
-            minlongitude = selectedCountryBounds.minLongitude,
-            maxlatitude = selectedCountryBounds.maxLatitude,
-            maxlongitude = selectedCountryBounds.maxLongitude,
-        ).fold(
-            onSuccess = { response ->
-                val page = response.toDomainList()
-
+            minMagnitude = selectedMagnitude.value,
+            bounds = selectedCountryBounds,
+        )
+        return dataSourceFor(selectedSource).fetchPage(query).fold(
+            onSuccess = { page ->
                 val existing = _earthquakeFlow.value
                 val merged = if (existing.isEmpty() || reset) {
                     page
@@ -91,5 +92,10 @@ internal class EarthquakeRepositoryImpl(
                 EarthquakeState.Error
             }
         )
+    }
+
+    private fun dataSourceFor(source: EarthquakeSource): EarthquakeRemoteDataSource = when (source) {
+        EarthquakeSource.USGS -> usgsDataSource
+        EarthquakeSource.EMSC -> emscDataSource
     }
 }

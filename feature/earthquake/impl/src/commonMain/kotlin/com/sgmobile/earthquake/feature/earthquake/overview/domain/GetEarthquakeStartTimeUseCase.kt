@@ -14,7 +14,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class, FormatStringsInDatetimeFormats::class)
 @Factory
-internal class GetUsgsEarthquakeStartTimeUseCase {
+internal class GetEarthquakeStartTimeUseCase {
 
     private companion object {
         const val DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss"

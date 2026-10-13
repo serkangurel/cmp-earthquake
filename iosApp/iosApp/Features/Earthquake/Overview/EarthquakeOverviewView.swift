@@ -209,6 +209,11 @@ struct EarthquakeOverviewView: View {
                 get: { store.state.selectedMagnitude },
                 set: { store.select(magnitude: $0) }
             ),
+            sourceOptions: store.state.sourceOptions,
+            selectedSource: Binding(
+                get: { store.state.selectedSource },
+                set: { store.select(source: $0) }
+            ),
             onSelectCountry: { isCountrySheetPresented = true }
         )
         .padding(.horizontal, AppSpacing.space16)
@@ -256,21 +261,26 @@ private struct OverviewFilters: View {
     let selectedCountry: CountryOption?
     let magnitudeOptions: [MagnitudeThreshold]
     @Binding var selectedMagnitude: MagnitudeThreshold
+    let sourceOptions: [EarthquakeSource]
+    @Binding var selectedSource: EarthquakeSource
     let onSelectCountry: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        Group {
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(spacing: AppSpacing.space8) {
-                    countryButton
-                    magnitudeMenu
-                }
-            } else {
-                HStack(alignment: .top, spacing: AppSpacing.space12) {
-                    countryButton
-                    magnitudeMenu
+        VStack(spacing: AppSpacing.space8) {
+            SourceSegmentedControl(options: sourceOptions, selection: $selectedSource)
+            Group {
+                if dynamicTypeSize.isAccessibilitySize {
+                    VStack(spacing: AppSpacing.space8) {
+                        countryButton
+                        magnitudeMenu
+                    }
+                } else {
+                    HStack(alignment: .top, spacing: AppSpacing.space12) {
+                        countryButton
+                        magnitudeMenu
+                    }
                 }
             }
         }
@@ -349,6 +359,45 @@ private struct OverviewFilters: View {
         .padding(AppSpacing.space12)
         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: AppRadius.md))
         .contentShape(Rectangle())
+    }
+}
+
+/// Text segments rather than `Picker(.segmented)`, whose `UISegmentedControl` ignores `appFont`.
+private struct SourceSegmentedControl: View {
+    let options: [EarthquakeSource]
+    @Binding var selection: EarthquakeSource
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(options, id: \.self) { option in
+                segment(option)
+            }
+        }
+        .padding(AppSpacing.space4)
+        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: AppRadius.md))
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Text("data_source"))
+    }
+
+    private func segment(_ option: EarthquakeSource) -> some View {
+        let isSelected = option == selection
+        return Button {
+            if !isSelected { selection = option }
+        } label: {
+            Text(option.label)
+                .appFont(.subheadline, weight: .semibold)
+                .lineLimit(1)
+                .foregroundStyle(isSelected ? AppColors.onPrimary : AppColors.primary)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .background {
+                    if isSelected {
+                        RoundedRectangle(cornerRadius: AppRadius.sm).fill(AppColors.primary)
+                    }
+                }
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -482,6 +531,7 @@ private struct CountrySelectionView: View {
 }
 
 private let previewMagnitudeOptions: [MagnitudeThreshold] = [.twoPlus, .fourPlus, .fivePlus]
+private let previewSourceOptions: [EarthquakeSource] = [.usgs, .emsc]
 
 private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
     static var previews: some View {
@@ -513,6 +563,8 @@ private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
             selectedCountry: CountryOption(code: "AE", name: "United Arab Emirates", flag: "🇦🇪"),
             magnitudeOptions: previewMagnitudeOptions,
             selectedMagnitude: .constant(.fourPlus),
+            sourceOptions: previewSourceOptions,
+            selectedSource: .constant(.usgs),
             onSelectCountry: {}
         )
         .padding()
@@ -521,11 +573,18 @@ private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
             selectedCountry: CountryOption(code: "AE", name: "United Arab Emirates", flag: "🇦🇪"),
             magnitudeOptions: previewMagnitudeOptions,
             selectedMagnitude: .constant(.fourPlus),
+            sourceOptions: previewSourceOptions,
+            selectedSource: .constant(.usgs),
             onSelectCountry: {}
         )
         .padding()
         .dynamicTypeSize(.accessibility3)
         .previewDisplayName("Filters • Large text")
+        emscFilters
+            .previewDisplayName("Filters • EMSC")
+        emscFilters
+            .preferredColorScheme(.dark)
+            .previewDisplayName("Filters • EMSC • Dark")
         EmptyStateView(
             title: "no_earthquakes_found",
             systemImage: "magnifyingglass",
@@ -541,6 +600,18 @@ private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .dynamicTypeSize(.accessibility3)
         .previewDisplayName("Empty results • Large text")
+    }
+
+    private static var emscFilters: some View {
+        OverviewFilters(
+            selectedCountry: CountryOption(code: "TR", name: "Türkiye", flag: "🇹🇷"),
+            magnitudeOptions: previewMagnitudeOptions,
+            selectedMagnitude: .constant(.twoPlus),
+            sourceOptions: previewSourceOptions,
+            selectedSource: .constant(.emsc),
+            onSelectCountry: {}
+        )
+        .padding()
     }
 
     private static var rows: some View {
@@ -572,6 +643,8 @@ private struct CollapsingFiltersPreview: View {
             selectedCountry: CountryOption(code: "GLOBAL", name: "Global", flag: "🌍"),
             magnitudeOptions: previewMagnitudeOptions,
             selectedMagnitude: .constant(.twoPlus),
+            sourceOptions: previewSourceOptions,
+            selectedSource: .constant(.usgs),
             onSelectCountry: {}
         )
         .padding()

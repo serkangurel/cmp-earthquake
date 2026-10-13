@@ -16,6 +16,7 @@
 "depth" = "Depth";
 "depth_value" = "%@ km";
 "source" = "Source";
+"data_source" = "Data source";
 "share" = "Share";
 "back_button" = "Back";
 "filter" = "Filter";
@@ -40,5 +41,5 @@
 "earthquake_details" = "Earthquake details";
 "date_and_time_local" = "Date & time";
 "detail_value_unavailable" = "Unavailable";
-"earthquake_share_summary" = "%@\nMagnitude: %@\nDate & time: %@\nDepth: %@\nSource: USGS";
+"earthquake_share_summary" = "%@\nMagnitude: %@\nDate & time: %@\nDepth: %@\nSource: %@";
 "epicenter_map" = "Epicenter map";

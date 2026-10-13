@@ -56,6 +56,7 @@ import com.sgmobile.earthquake.core.ui.theme.Radius
 import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -82,6 +83,7 @@ internal fun earthquakeShareSummary(earthquake: EarthquakeDetail): String = stri
     earthquake.magnitude,
     earthquakeDetailDate(earthquake),
     earthquakeDetailDepth(earthquake),
+    earthquake.source,
 )
 
 @Composable
@@ -261,6 +263,7 @@ private fun EarthquakeDetailSheetPreview() {
                 date = "02.10.2026 15:07",
                 latitude = 18.8971,
                 longitude = -67.8431,
+                source = EarthquakeSource.USGS.label,
             ),
             modifier = Modifier.heightIn(max = 420.dp),
         )

@@ -7,4 +7,5 @@ import kotlin.native.HiddenFromObjC
 @HiddenFromObjC
 object NetworkConstants {
     const val BASE_URL_USGS = "https://earthquake.usgs.gov/"
+    const val BASE_URL_EMSC = "https://www.seismicportal.eu/"
 }

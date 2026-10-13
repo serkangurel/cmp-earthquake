@@ -56,6 +56,7 @@ import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.core.ui.util.DisableNavigationBarContrastEnforcement
 import com.sgmobile.earthquake.core.ui.util.SetSystemBarsLightAppearance
 import com.sgmobile.earthquake.feature.earthquake.navigation.EarthquakeRoutes
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.CountrySelectionContent
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeFilters
@@ -186,8 +187,11 @@ internal fun EarthquakeContent(
                 selectedCountry = uiState.selectedCountry,
                 selectedMagnitude = uiState.selectedMagnitude,
                 magnitudeOptions = uiState.magnitudeOptions,
+                selectedSource = uiState.selectedSource,
+                sourceOptions = uiState.sourceOptions,
                 onCountryClick = onCountryClick,
                 onMagnitudeClick = { onIntent(EarthquakeScreenIntent.SelectMagnitude(it)) },
+                onSourceClick = { onIntent(EarthquakeScreenIntent.SelectSource(it)) },
                 modifier = Modifier
                     .clipToBounds()
                     .layout { measurable, constraints ->
@@ -227,8 +231,11 @@ internal fun EarthquakeContent(
                                 selectedCountry = uiState.selectedCountry,
                                 selectedMagnitude = uiState.selectedMagnitude,
                                 magnitudeOptions = uiState.magnitudeOptions,
+                                selectedSource = uiState.selectedSource,
+                                sourceOptions = uiState.sourceOptions,
                                 onCountryClick = onCountryClick,
                                 onMagnitudeClick = { onIntent(EarthquakeScreenIntent.SelectMagnitude(it)) },
+                                onSourceClick = { onIntent(EarthquakeScreenIntent.SelectSource(it)) },
                                 modifier = Modifier.onSizeChanged { filterHeight = it.height },
                             )
                         }
@@ -277,6 +284,7 @@ private fun EarthquakeContentPreview(collapsed: Boolean = false) {
                 isEndReached = false,
                 selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
                 selectedCountry = null,
+                selectedSource = EarthquakeSource.USGS,
                 countries = emptyList(),
                 earthquakes = listOf(
                     EarthquakeListItem(
