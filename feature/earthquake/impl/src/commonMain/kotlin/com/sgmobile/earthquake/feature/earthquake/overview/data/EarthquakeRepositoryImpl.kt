@@ -74,7 +74,9 @@ internal class EarthquakeRepositoryImpl(
                 val merged = if (existing.isEmpty() || reset) {
                     page
                 } else {
-                    existing + page
+                    // Offset paging shifts when an event is published between loads, so a page
+                    // can repeat the previous page's tail; list keys require unique ids.
+                    (existing + page).distinctBy { it.id }
                 }
 
                 _earthquakeFlow.value = merged
