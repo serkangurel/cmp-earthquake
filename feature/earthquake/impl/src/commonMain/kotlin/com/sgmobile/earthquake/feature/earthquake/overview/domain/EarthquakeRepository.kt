@@ -2,6 +2,7 @@ package com.sgmobile.earthquake.feature.earthquake.overview.domain
 
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeState
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +14,7 @@ internal interface EarthquakeRepository {
 
     // Resets pagination and loads the first page
     suspend fun refresh(
+        source: EarthquakeSource,
         startTime: String,
         pageSize: Int,
         selectedMagnitude: MagnitudeThreshold,

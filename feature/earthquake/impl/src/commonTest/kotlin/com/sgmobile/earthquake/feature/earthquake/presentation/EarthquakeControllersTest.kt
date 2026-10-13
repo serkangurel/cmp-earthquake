@@ -5,13 +5,14 @@ import com.sgmobile.earthquake.feature.earthquake.domain.FakeEarthquakeRepositor
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.CountryRepository
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetCountriesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeStartTimeUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReachedFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetUsgsEarthquakeStartTimeUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextUsgsEarthquakesUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextEarthquakesUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshEarthquakesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.CountryBounds
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.EarthquakeOverviewControllerImpl
 import kotlinx.coroutines.CompletableDeferred
@@ -105,11 +106,11 @@ internal class EarthquakeControllersTest {
 
     private fun makeOverviewController(repository: FakeEarthquakeRepository) =
         EarthquakeOverviewControllerImpl(
-            refreshUsgsEarthquakesUseCase = RefreshUsgsEarthquakesUseCase(
+            refreshEarthquakesUseCase = RefreshEarthquakesUseCase(
                 earthquakeRepository = repository,
-                getUsgsEarthquakeStartTimeUseCase = GetUsgsEarthquakeStartTimeUseCase(),
+                getEarthquakeStartTimeUseCase = GetEarthquakeStartTimeUseCase(),
             ),
-            loadNextUsgsEarthquakesUseCase = LoadNextUsgsEarthquakesUseCase(repository),
+            loadNextEarthquakesUseCase = LoadNextEarthquakesUseCase(repository),
             getEarthquakeFlowUseCase = GetEarthquakeFlowUseCase(repository),
             getIsEndReachedFlowUseCase = GetIsEndReachedFlowUseCase(repository),
             getCountriesUseCase = GetCountriesUseCase(FakeCountryRepository),
@@ -154,6 +155,7 @@ internal class EarthquakeControllersTest {
             date = "29.09.2026 00:00",
             latitude = 38.0,
             longitude = 35.0,
+            source = EarthquakeSource.USGS,
         )
     }
 }

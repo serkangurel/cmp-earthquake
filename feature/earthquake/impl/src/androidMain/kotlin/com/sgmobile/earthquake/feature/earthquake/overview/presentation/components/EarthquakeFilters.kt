@@ -17,6 +17,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,12 +44,14 @@ import androidx.compose.ui.unit.dp
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.country
 import com.sgmobile.earthquake.core.resource.country_filter
+import com.sgmobile.earthquake.core.resource.data_source
 import com.sgmobile.earthquake.core.resource.magnitude_filter
 import com.sgmobile.earthquake.core.resource.minimum_magnitude
 import com.sgmobile.earthquake.core.resource.select_country
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.theme.Spacing
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.CountryOption
 import org.jetbrains.compose.resources.stringResource
@@ -56,8 +61,11 @@ internal fun EarthquakeFilters(
     selectedCountry: CountryOption?,
     selectedMagnitude: MagnitudeThreshold,
     magnitudeOptions: List<MagnitudeThreshold>,
+    selectedSource: EarthquakeSource,
+    sourceOptions: List<EarthquakeSource>,
     onCountryClick: () -> Unit,
     onMagnitudeClick: (MagnitudeThreshold) -> Unit,
+    onSourceClick: (EarthquakeSource) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val countryName = selectedCountry?.name ?: stringResource(Res.string.select_country)
@@ -69,8 +77,9 @@ internal fun EarthquakeFilters(
         .background(MaterialTheme.colorScheme.surface)
         .padding(horizontal = Spacing.space16, vertical = Spacing.space12)
 
-    if (LocalDensity.current.fontScale >= 1.5f) {
-        Column(filtersModifier, verticalArrangement = Arrangement.spacedBy(Spacing.space8)) {
+    Column(filtersModifier, verticalArrangement = Arrangement.spacedBy(Spacing.space8)) {
+        SourceSelector(selectedSource, sourceOptions, onSourceClick)
+        if (LocalDensity.current.fontScale >= 1.5f) {
             FilterButton(
                 title = stringResource(Res.string.country),
                 value = countryValue,
@@ -79,17 +88,43 @@ internal fun EarthquakeFilters(
                 modifier = Modifier.fillMaxWidth(),
             )
             MagnitudeFilter(selectedMagnitude, magnitudeOptions, onMagnitudeClick, Modifier.fillMaxWidth())
+        } else {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.space12)) {
+                FilterButton(
+                    title = stringResource(Res.string.country),
+                    value = countryValue,
+                    description = countryDescription,
+                    onClick = onCountryClick,
+                    modifier = Modifier.weight(1f),
+                )
+                MagnitudeFilter(selectedMagnitude, magnitudeOptions, onMagnitudeClick, Modifier.weight(1f))
+            }
         }
-    } else {
-        Row(filtersModifier, horizontalArrangement = Arrangement.spacedBy(Spacing.space12)) {
-            FilterButton(
-                title = stringResource(Res.string.country),
-                value = countryValue,
-                description = countryDescription,
-                onClick = onCountryClick,
+    }
+}
+
+@Composable
+private fun SourceSelector(
+    selectedSource: EarthquakeSource,
+    options: List<EarthquakeSource>,
+    onSelect: (EarthquakeSource) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val description = stringResource(Res.string.data_source)
+    SingleChoiceSegmentedButtonRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = description },
+    ) {
+        options.forEachIndexed { index, source ->
+            val isSelected = source == selectedSource
+            SegmentedButton(
+                selected = isSelected,
+                onClick = { if (!isSelected) onSelect(source) },
+                shape = SegmentedButtonDefaults.itemShape(index, options.size),
                 modifier = Modifier.weight(1f),
+                label = { Text(source.label) },
             )
-            MagnitudeFilter(selectedMagnitude, magnitudeOptions, onMagnitudeClick, Modifier.weight(1f))
         }
     }
 }
@@ -241,8 +276,28 @@ private fun EarthquakeFiltersPreview() {
             selectedCountry = CountryOption("AE", "United Arab Emirates", "🇦🇪"),
             selectedMagnitude = MagnitudeThreshold.FOUR_PLUS,
             magnitudeOptions = MagnitudeThreshold.entries,
+            selectedSource = EarthquakeSource.USGS,
+            sourceOptions = EarthquakeSource.entries,
             onCountryClick = {},
             onMagnitudeClick = {},
+            onSourceClick = {},
+        )
+    }
+}
+
+@PreviewThemes
+@Composable
+private fun EarthquakeFiltersEmscPreview() {
+    SGPreview {
+        EarthquakeFilters(
+            selectedCountry = CountryOption("TR", "Türkiye", "🇹🇷"),
+            selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
+            magnitudeOptions = MagnitudeThreshold.entries,
+            selectedSource = EarthquakeSource.EMSC,
+            sourceOptions = EarthquakeSource.entries,
+            onCountryClick = {},
+            onMagnitudeClick = {},
+            onSourceClick = {},
         )
     }
 }

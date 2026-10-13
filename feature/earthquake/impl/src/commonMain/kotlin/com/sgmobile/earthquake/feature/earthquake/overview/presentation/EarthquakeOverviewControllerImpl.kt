@@ -9,9 +9,10 @@ import com.sgmobile.earthquake.feature.earthquake.domain.models.EarthquakeSummar
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetCountriesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetIsEndReachedFlowUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextUsgsEarthquakesUseCase
-import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshUsgsEarthquakesUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextEarthquakesUseCase
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshEarthquakesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.mapToListItems
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.toCountryFlagEmoji
@@ -35,8 +36,8 @@ import kotlinx.coroutines.sync.withLock
 private const val GLOBAL_COUNTRY_CODE = "GLOBAL"
 
 internal class EarthquakeOverviewControllerImpl(
-    private val refreshUsgsEarthquakesUseCase: RefreshUsgsEarthquakesUseCase,
-    private val loadNextUsgsEarthquakesUseCase: LoadNextUsgsEarthquakesUseCase,
+    private val refreshEarthquakesUseCase: RefreshEarthquakesUseCase,
+    private val loadNextEarthquakesUseCase: LoadNextEarthquakesUseCase,
     getEarthquakeFlowUseCase: GetEarthquakeFlowUseCase,
     getIsEndReachedFlowUseCase: GetIsEndReachedFlowUseCase,
     private val getCountriesUseCase: GetCountriesUseCase,
@@ -101,6 +102,7 @@ internal class EarthquakeOverviewControllerImpl(
             is EarthquakeScreenIntent.LoadMore -> loadMore()
             is EarthquakeScreenIntent.SelectMagnitude -> selectMagnitude(intent.selectedMagnitude)
             is EarthquakeScreenIntent.SelectCountry -> selectCountry(intent.country.code)
+            is EarthquakeScreenIntent.SelectSource -> selectSource(intent.source)
         }
     }
 
@@ -133,6 +135,14 @@ internal class EarthquakeOverviewControllerImpl(
         }
     }
 
+    override fun selectSource(source: EarthquakeSource) {
+        scope.launch {
+            if (source == state.value.selectedSource) return@launch
+            _state.update { it.copy(selectedSource = source) }
+            requestRefresh(isPullToRefresh = false)
+        }
+    }
+
     override fun close() {
         scope.cancel()
     }
@@ -140,7 +150,7 @@ internal class EarthquakeOverviewControllerImpl(
     private fun requestLoadMore() {
         if (state.value.isEndReached || state.value.isLoading || state.value.isPullToRefresh) return
         executeWithLoading(isPullToRefresh = false, reset = false) {
-            loadNextUsgsEarthquakesUseCase()
+            loadNextEarthquakesUseCase()
         }
     }
 
@@ -149,8 +159,10 @@ internal class EarthquakeOverviewControllerImpl(
     ): Job? {
         val countryBounds = selectedCountry?.bounds ?: return null
         val magnitude = state.value.selectedMagnitude
+        val source = state.value.selectedSource
         return executeWithLoading(isPullToRefresh = isPullToRefresh, reset = true) {
-            refreshUsgsEarthquakesUseCase(
+            refreshEarthquakesUseCase(
+                source = source,
                 pageSize = EarthquakeConstants.PAGE_SIZE,
                 selectedMagnitude = magnitude,
                 selectedCountryBounds = countryBounds,

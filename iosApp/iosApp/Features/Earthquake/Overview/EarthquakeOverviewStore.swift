@@ -38,6 +38,10 @@ final class EarthquakeOverviewStore: ObservableObject {
         controller.selectMagnitude(magnitude: magnitude)
     }
 
+    func select(source: EarthquakeSource) {
+        controller.selectSource(source: source)
+    }
+
     deinit {
         observation?.cancel()
         controller.close()

@@ -23,6 +23,7 @@
     <string name="depth">Depth</string>
     <string name="depth_value">%1$s km</string>
     <string name="source">Source</string>
+    <string name="data_source">Data source</string>
     <string name="share">Share</string>
     <string name="filter">Filter</string>
     <string name="no_earthquakes_found">No earthquakes found</string>
@@ -45,6 +46,6 @@
     <string name="earthquake_time_unavailable">Date and time unavailable</string>
     <string name="date_and_time_local">Date &amp; time</string>
     <string name="detail_value_unavailable">Unavailable</string>
-    <string name="earthquake_share_summary">%1$s\nMagnitude: %2$s\nDate &amp; time: %3$s\nDepth: %4$s\nSource: USGS</string>
+    <string name="earthquake_share_summary">%1$s\nMagnitude: %2$s\nDate &amp; time: %3$s\nDepth: %4$s\nSource: %5$s</string>
     <string name="epicenter_map">Epicenter map: %1$s</string>
 </resources>

@@ -266,7 +266,8 @@ private extension EarthquakeDetail {
             place,
             magnitude,
             formattedDate(locale: .current),
-            depthDisplay
+            depthDisplay,
+            source
         )
     }
 }

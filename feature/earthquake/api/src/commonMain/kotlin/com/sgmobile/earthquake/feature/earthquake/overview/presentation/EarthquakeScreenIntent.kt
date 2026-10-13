@@ -1,5 +1,6 @@
 package com.sgmobile.earthquake.feature.earthquake.overview.presentation
 
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 
 sealed interface EarthquakeScreenIntent {
@@ -7,4 +8,5 @@ sealed interface EarthquakeScreenIntent {
     data object LoadMore : EarthquakeScreenIntent
     data class SelectMagnitude(val selectedMagnitude: MagnitudeThreshold) : EarthquakeScreenIntent
     data class SelectCountry(val country: CountryOption) : EarthquakeScreenIntent
+    data class SelectSource(val source: EarthquakeSource) : EarthquakeScreenIntent
 }

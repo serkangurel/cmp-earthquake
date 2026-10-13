@@ -2,6 +2,7 @@ package com.sgmobile.earthquake.feature.earthquake.domain
 
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.GetEarthquakeFlowUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Earthquake
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -30,7 +31,8 @@ internal class GetEarthquakeFlowUseCaseTest {
                 depth = "10km",
                 date = "2023-10-27",
                 latitude = 37.7,
-                longitude = -122.4
+                longitude = -122.4,
+                source = EarthquakeSource.USGS
             )
         )
         fakeEarthquakeRepository.emitEarthquakes(expectedEarthquakes)
