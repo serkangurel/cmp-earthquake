@@ -13,15 +13,23 @@ data class EarthquakeOverviewState(
     val selectedMagnitude: MagnitudeThreshold,
     val selectedCountry: CountryOption?,
     val selectedSource: EarthquakeSource,
+    val loadError: EarthquakeLoadError?,
 ) {
     val showsBlockingLoader: Boolean
         get() = isLoading && earthquakes.isEmpty()
 
     val showsEmptyState: Boolean
-        get() = earthquakes.isEmpty() && !isLoading && !isPullToRefresh
+        get() = earthquakes.isEmpty() && !isLoading && !isPullToRefresh && loadError == null
+
+    val showsErrorState: Boolean
+        get() = loadError == EarthquakeLoadError.REFRESH && earthquakes.isEmpty() &&
+            !isLoading && !isPullToRefresh
 
     val showsPagingLoader: Boolean
         get() = isLoading && earthquakes.isNotEmpty()
+
+    val showsLoadMoreError: Boolean
+        get() = loadError == EarthquakeLoadError.LOAD_MORE && earthquakes.isNotEmpty() && !isLoading
 
     // Platforms add their own layout conditions, such as accessibility text sizes.
     val canCollapseFilters: Boolean
@@ -33,6 +41,9 @@ data class EarthquakeOverviewState(
     val sourceOptions: List<EarthquakeSource>
         get() = EarthquakeSource.entries
 
+    val alternativeSource: EarthquakeSource?
+        get() = sourceOptions.firstOrNull { it != selectedSource }
+
     companion object {
         val INITIAL = EarthquakeOverviewState(
             isLoading = false,
@@ -43,6 +54,7 @@ data class EarthquakeOverviewState(
             selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
             selectedCountry = null,
             selectedSource = EarthquakeSource.USGS,
+            loadError = null,
         )
     }
 }

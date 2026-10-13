@@ -28,6 +28,11 @@
     <string name="filter">Filter</string>
     <string name="no_earthquakes_found">No earthquakes found</string>
     <string name="no_earthquakes_found_description">Try changing the country or magnitude filters, or pull to refresh.</string>
+    <string name="earthquakes_load_failed">Couldn’t load earthquakes</string>
+    <string name="earthquakes_load_failed_description">%1$s may be temporarily unavailable. Check your connection and try again.</string>
+    <string name="retry">Retry</string>
+    <string name="try_source">Try %1$s</string>
+    <string name="load_more_failed">Couldn’t load more earthquakes</string>
     <string name="center_map_on_earthquake">Center map on earthquake</string>
     <string name="earthquake_not_found">Earthquake not found</string>
     <string name="country">Country</string>

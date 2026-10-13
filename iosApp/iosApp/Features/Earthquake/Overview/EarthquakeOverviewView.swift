@@ -52,6 +52,12 @@ struct EarthquakeOverviewView: View {
             collapsedFiltersHeight = 0
             filterDragStart = nil
         }
+        .onChange(of: store.state.showsErrorState) { isShown in
+            if isShown { announce("earthquakes_load_failed") }
+        }
+        .onChange(of: store.state.showsLoadMoreError) { isShown in
+            if isShown { announce("load_more_failed") }
+        }
         .sheet(isPresented: $isCountrySheetPresented) {
             CountrySelectionView(
                 countries: store.state.countries,
@@ -141,22 +147,21 @@ struct EarthquakeOverviewView: View {
                     .listRowSeparator(.hidden)
             }
 
-            if store.state.showsEmptyState {
+            if store.state.showsErrorState {
+                LoadErrorStateView(
+                    sourceLabel: store.state.selectedSource.label,
+                    alternativeSource: store.state.alternativeSource,
+                    onRetry: { store.retry() },
+                    onSelectSource: { store.select(source: $0) }
+                )
+                .modifier(FullPageListRow(minHeight: fullPageRowHeight(viewportHeight: viewportHeight)))
+            } else if store.state.showsEmptyState {
                 EmptyStateView(
                     title: "no_earthquakes_found",
                     systemImage: "magnifyingglass",
                     message: "no_earthquakes_found_description"
                 )
-                .frame(
-                    maxWidth: .infinity,
-                    minHeight: max(
-                        0,
-                        viewportHeight - (dynamicTypeSize.isAccessibilitySize ? overviewFiltersHeight : 0)
-                    )
-                )
-                .listRowInsets(EdgeInsets(top: 0, leading: AppSpacing.space16, bottom: 0, trailing: AppSpacing.space16))
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
+                .modifier(FullPageListRow(minHeight: fullPageRowHeight(viewportHeight: viewportHeight)))
             } else {
                 ForEach(store.state.earthquakes, id: \.id) { earthquake in
                     NavigationLink(value: NavigationRoute(key: EarthquakeRoutes.Detail(id: earthquake.id).key)) {
@@ -193,12 +198,27 @@ struct EarthquakeOverviewView: View {
                         .padding(.vertical, AppSpacing.space16)
                         .listRowSeparator(.hidden)
                 }
+
+                if store.state.showsLoadMoreError {
+                    LoadMoreErrorRow(onRetry: { store.retry() })
+                        .listRowInsets(EdgeInsets(top: 0, leading: AppSpacing.space16, bottom: 0, trailing: AppSpacing.space16))
+                        .listRowSeparator(.hidden)
+                }
             }
         }
         .listStyle(.plain)
         .refreshable {
             await store.refresh()
         }
+    }
+
+    /// Fills the list below the filters, which only scroll with the list at accessibility text sizes.
+    private func fullPageRowHeight(viewportHeight: CGFloat) -> CGFloat {
+        max(0, viewportHeight - (dynamicTypeSize.isAccessibilitySize ? overviewFiltersHeight : 0))
+    }
+
+    private func announce(_ key: String) {
+        UIAccessibility.post(notification: .announcement, argument: NSLocalizedString(key, comment: ""))
     }
 
     private var overviewFilters: some View {
@@ -460,6 +480,93 @@ private struct EarthquakeRow: View {
     }
 }
 
+private struct FullPageListRow: ViewModifier {
+    let minHeight: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity, minHeight: minHeight)
+            .listRowInsets(EdgeInsets(top: 0, leading: AppSpacing.space16, bottom: 0, trailing: AppSpacing.space16))
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+    }
+}
+
+private struct LoadErrorStateView: View {
+    let sourceLabel: String
+    let alternativeSource: EarthquakeSource?
+    let onRetry: () -> Void
+    let onSelectSource: (EarthquakeSource) -> Void
+
+    var body: some View {
+        EmptyStateView(
+            title: "earthquakes_load_failed",
+            systemImage: "exclamationmark.icloud",
+            verbatimMessage: String(
+                format: NSLocalizedString("earthquakes_load_failed_description", comment: ""),
+                sourceLabel
+            )
+        ) {
+            // Explicit styles also keep each button's tap separate inside a List row.
+            Button(action: onRetry) {
+                Text("retry")
+                    .appFont(.body, weight: .semibold)
+                    .foregroundStyle(AppColors.onPrimary)
+            }
+            .buttonStyle(.borderedProminent)
+            if let source = alternativeSource {
+                Button {
+                    onSelectSource(source)
+                } label: {
+                    Text(String(format: NSLocalizedString("try_source", comment: ""), source.label))
+                        .appFont(.body, weight: .semibold)
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .controlSize(.large)
+    }
+}
+
+private struct LoadMoreErrorRow: View {
+    let onRetry: () -> Void
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: AppSpacing.space8) {
+                    message
+                    retryButton
+                }
+            } else {
+                HStack(spacing: AppSpacing.space12) {
+                    message
+                    Spacer()
+                    retryButton
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, AppSpacing.space8)
+    }
+
+    private var message: some View {
+        Text("load_more_failed")
+            .appFont(.subheadline)
+            .foregroundStyle(.secondary)
+    }
+
+    private var retryButton: some View {
+        Button(action: onRetry) {
+            Text("retry")
+                .appFont(.subheadline, weight: .semibold)
+        }
+        .buttonStyle(.borderless)
+    }
+}
+
 private struct CountrySelectionView: View {
     let countries: [CountryOption]
     let countrySearch: ([CountryOption], String) -> [CountryOption]
@@ -600,6 +707,29 @@ private struct EarthquakeOverviewComponents_Previews: PreviewProvider {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .dynamicTypeSize(.accessibility3)
         .previewDisplayName("Empty results • Large text")
+        loadError
+            .previewDisplayName("Load error")
+        loadError
+            .dynamicTypeSize(.accessibility3)
+            .previewDisplayName("Load error • Large text")
+        loadError
+            .preferredColorScheme(.dark)
+            .previewDisplayName("Load error • Dark")
+        loadMoreError
+            .previewDisplayName("Load more error")
+        loadMoreError
+            .dynamicTypeSize(.accessibility3)
+            .previewDisplayName("Load more error • Large text")
+    }
+
+    private static var loadError: some View {
+        LoadErrorStateView(sourceLabel: "EMSC", alternativeSource: .usgs, onRetry: {}, onSelectSource: { _ in })
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private static var loadMoreError: some View {
+        LoadMoreErrorRow(onRetry: {})
+            .padding(.horizontal, AppSpacing.space16)
     }
 
     private static var emscFilters: some View {

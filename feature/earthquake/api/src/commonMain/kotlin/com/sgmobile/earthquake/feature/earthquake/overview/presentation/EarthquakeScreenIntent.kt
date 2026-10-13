@@ -6,6 +6,7 @@ import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Magnitu
 sealed interface EarthquakeScreenIntent {
     data class Refresh(val isPullToRefresh: Boolean) : EarthquakeScreenIntent
     data object LoadMore : EarthquakeScreenIntent
+    data object Retry : EarthquakeScreenIntent
     data class SelectMagnitude(val selectedMagnitude: MagnitudeThreshold) : EarthquakeScreenIntent
     data class SelectCountry(val country: CountryOption) : EarthquakeScreenIntent
     data class SelectSource(val source: EarthquakeSource) : EarthquakeScreenIntent
