@@ -41,6 +41,7 @@ import com.sgmobile.earthquake.core.resource.map
 import com.sgmobile.earthquake.core.resource.settings
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import org.jetbrains.compose.resources.stringResource
 
 internal data class BottomBarItem(
@@ -107,7 +108,7 @@ internal fun BottomNavigationBar(
                             label = {
                                 Text(
                                     text = item.label,
-                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    modifier = Modifier.padding(horizontal = Spacing.space8),
                                     style = labelStyle,
                                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
                                     textAlign = TextAlign.Center,

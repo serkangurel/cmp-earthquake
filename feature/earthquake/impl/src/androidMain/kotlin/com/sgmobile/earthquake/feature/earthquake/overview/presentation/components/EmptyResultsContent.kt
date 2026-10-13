@@ -21,6 +21,7 @@ import com.sgmobile.earthquake.core.resource.no_earthquakes_found
 import com.sgmobile.earthquake.core.resource.no_earthquakes_found_description
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -30,9 +31,9 @@ internal fun EmptyResultsContent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(32.dp),
+        modifier = modifier.padding(Spacing.space32),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(Spacing.space12, Alignment.CenterVertically),
     ) {
         Icon(
             imageVector = Icons.Outlined.SearchOff,

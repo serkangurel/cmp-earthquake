@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,17 +31,17 @@ import androidx.compose.ui.UiComposable
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_earthquake
 import com.sgmobile.earthquake.core.resource.epicenter_map
+import com.sgmobile.earthquake.core.ui.components.map.EarthquakePin
 import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
+import com.sgmobile.earthquake.core.ui.theme.Spacing
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
 import eu.buney.maps.CameraPosition
 import eu.buney.maps.CameraUpdateFactory
@@ -74,7 +73,6 @@ private const val CIRCLE_WAVE_MAX_RADIUS_SCREEN_UNITS = 56.0
 private const val EARTH_CIRCUMFERENCE_METERS = 40_075_016.686
 private const val MAP_WORLD_SIZE_AT_ZOOM_ZERO = 256.0
 private const val MAX_MERCATOR_LATITUDE = 85.05112878
-private val MAP_CONTROL_PADDING: Dp = 16.dp
 
 // No preview: GoogleMap hosts a native map view that cannot render in Compose previews.
 @Composable
@@ -91,7 +89,7 @@ internal fun EarthquakeMap(
     val motionScale = coroutineScope.coroutineContext[MotionDurationScale]?.scaleFactor ?: 1f
     val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateFlow.collectAsState()
     val animationsEnabled = lifecycleState.isAtLeast(Lifecycle.State.RESUMED) && motionScale > 0f
-    val circleColor = earthquake.magnitudeThreshold.toTierColor()
+    val circleColor = earthquake.magnitudeThreshold.toTierColors().fill
     val isDark = isSystemInDarkTheme()
     val properties = remember(isDark) {
         MapProperties(
@@ -140,7 +138,7 @@ internal fun EarthquakeMap(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(contentPadding)
-                .padding(MAP_CONTROL_PADDING)
+                .padding(Spacing.space16)
                 .size(48.dp)
                 .shadow(4.dp, CircleShape),
             colors = IconButtonDefaults.iconButtonColors(
@@ -204,20 +202,7 @@ private fun CircleWave(
 @GoogleMapComposable
 private fun EpicenterMarker(center: LatLng, place: String, color: Color) {
     val density = LocalDensity.current
-    val centerColor = if (color.luminance() > 0.5f) Color.Black else Color.White
-    val iconContent: @Composable @UiComposable () -> Unit = {
-        Canvas(Modifier.size(44.dp)) {
-            drawCircle(
-                color = Color.Black.copy(alpha = 0.15f),
-                radius = 17.dp.toPx(),
-                center = this.center + Offset(0f, 1.dp.toPx()),
-            )
-            drawCircle(Color.White, radius = 16.dp.toPx())
-            drawCircle(color, radius = 14.dp.toPx())
-            drawCircle(centerColor, radius = 5.dp.toPx())
-            drawCircle(color, radius = 2.dp.toPx())
-        }
-    }
+    val iconContent: @Composable @UiComposable () -> Unit = { EarthquakePin(color) }
     val icon = rememberComposeBitmapDescriptor(color, density.density, content = iconContent)
     Marker(
         state = rememberUpdatedMarkerState(position = center),

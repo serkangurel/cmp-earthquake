@@ -19,6 +19,8 @@ import com.sgmobile.earthquake.core.resource.map_no_loaded_earthquakes_descripti
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.core.ui.theme.Radius
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapBounds
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapCountry
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapSnapshot
@@ -29,7 +31,7 @@ internal fun EarthquakeMapStatus(snapshot: EarthquakeMapSnapshot, modifier: Modi
     if (!snapshot.isLoading && snapshot.country != null && snapshot.pins.isNotEmpty()) return
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(Radius.xl),
         color = MaterialTheme.colorScheme.surfaceContainerLowest,
         shadowElevation = 4.dp,
     ) {
@@ -37,10 +39,13 @@ internal fun EarthquakeMapStatus(snapshot: EarthquakeMapSnapshot, modifier: Modi
             snapshot.isLoading -> SGLoading(Modifier.size(64.dp))
             snapshot.country == null -> Text(
                 stringResource(Res.string.map_load_earthquakes),
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(Spacing.space16),
                 style = MaterialTheme.typography.bodyMedium,
             )
-            else -> Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            else -> Column(
+                Modifier.padding(Spacing.space16),
+                verticalArrangement = Arrangement.spacedBy(Spacing.space8),
+            ) {
                 Text(
                     stringResource(Res.string.map_no_loaded_earthquakes),
                     style = MaterialTheme.typography.titleMedium,
@@ -57,7 +62,11 @@ internal fun EarthquakeMapStatus(snapshot: EarthquakeMapSnapshot, modifier: Modi
 @PreviewThemes
 @Composable
 private fun EarthquakeMapInitialPreview() {
-    SGPreview { Box(Modifier.padding(16.dp)) { EarthquakeMapStatus(EarthquakeMapSnapshot.INITIAL) } }
+    SGPreview {
+        Box(Modifier.padding(Spacing.space16)) {
+            EarthquakeMapStatus(EarthquakeMapSnapshot.INITIAL)
+        }
+    }
 }
 
 @PreviewThemes

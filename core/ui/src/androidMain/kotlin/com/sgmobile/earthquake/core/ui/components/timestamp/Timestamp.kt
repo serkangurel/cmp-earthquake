@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.earthquake_time_unavailable
 import com.sgmobile.earthquake.core.resource.earthquake_timestamp_accessibility
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import org.jetbrains.compose.resources.stringResource
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -78,8 +79,8 @@ fun TimestampContent(timestamp: TimestampDisplay?, fallbackText: String?) {
         return
     }
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.space12),
+        verticalArrangement = Arrangement.spacedBy(Spacing.space4),
     ) {
         TimestampPart(Icons.Outlined.DateRange, timestamp.date)
         TimestampPart(Icons.Outlined.Schedule, timestamp.time)
@@ -91,7 +92,7 @@ private fun TimestampPart(icon: ImageVector, text: String) {
     val contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.space4),
     ) {
         Icon(
             imageVector = icon,

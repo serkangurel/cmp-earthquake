@@ -6,21 +6,21 @@ struct EmptyStateView: View {
     var message: LocalizedStringKey?
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: AppSpacing.space12) {
             Image(systemName: systemImage)
                 .font(.system(size: 56))
                 .foregroundStyle(AppColors.primary)
                 .accessibilityHidden(true)
             Text(title)
-                .font(.title3.weight(.semibold))
+                .appFont(.title3, weight: .semibold)
                 .multilineTextAlignment(.center)
             if let message {
                 Text(message)
-                    .font(.subheadline)
+                    .appFont(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
         }
-        .padding(32)
+        .padding(AppSpacing.space32)
     }
 }

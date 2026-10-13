@@ -27,6 +27,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
+            export(projects.core.designsystem)
             export(projects.core.navigation.api)
             export(projects.feature.settings.api)
             export(projects.feature.earthquake.api)
@@ -37,6 +38,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.network)
+            api(projects.core.designsystem)
             api(projects.core.navigation.api)
             implementation(projects.core.navigation.impl)
             api(projects.feature.settings.api)

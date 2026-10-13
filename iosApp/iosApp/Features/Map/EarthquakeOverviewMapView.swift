@@ -156,7 +156,7 @@ struct EarthquakeOverviewMapView: UIViewRepresentable {
                 if let cached = icons[iconKey] {
                     icon = cached
                 } else {
-                    let color = UIColor(AppColors.magnitudeText(pin.earthquake.magnitudeThreshold))
+                    let color = UIColor(AppColors.magnitudeFill(pin.earthquake.magnitudeThreshold))
                         .resolvedColor(with: traits)
                     icon = EarthquakeMarkerImage.make(color: color, selected: selected)
                     icons[iconKey] = icon

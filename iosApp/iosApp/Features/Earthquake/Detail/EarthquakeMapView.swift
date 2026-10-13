@@ -86,7 +86,7 @@ struct EarthquakeMapView: UIViewRepresentable {
 
     private var markerColor: UIColor {
         let traits = UITraitCollection(userInterfaceStyle: colorScheme == .dark ? .dark : .light)
-        return UIColor(AppColors.magnitudeText(earthquake.magnitudeThreshold))
+        return UIColor(AppColors.magnitudeFill(earthquake.magnitudeThreshold))
             .resolvedColor(with: traits)
     }
 

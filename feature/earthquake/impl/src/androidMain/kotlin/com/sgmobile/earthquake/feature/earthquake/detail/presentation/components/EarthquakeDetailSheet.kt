@@ -52,7 +52,9 @@ import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
 import com.sgmobile.earthquake.core.ui.components.timestamp.rememberTimestamp
 import com.sgmobile.earthquake.core.ui.components.timestamp.timestampDescription
-import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColor
+import com.sgmobile.earthquake.core.ui.theme.Radius
+import com.sgmobile.earthquake.core.ui.theme.Spacing
+import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import org.jetbrains.compose.resources.painterResource
@@ -89,7 +91,7 @@ internal fun EarthquakeDetailSheet(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        shape = RoundedCornerShape(topStart = Radius.xxl, topEnd = Radius.xxl),
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         shadowElevation = 8.dp,
     ) {
@@ -97,18 +99,18 @@ internal fun EarthquakeDetailSheet(
             modifier = Modifier
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+                .padding(Spacing.space20),
+            verticalArrangement = Arrangement.spacedBy(Spacing.space20),
         ) {
             if (LocalDensity.current.fontScale >= 1.5f) {
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.space16)) {
                     MagnitudeBadge(earthquake)
                     Location(earthquake)
                 }
             } else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.space16),
                 ) {
                     MagnitudeBadge(earthquake)
                     Location(earthquake, Modifier.weight(1f))
@@ -117,7 +119,7 @@ internal fun EarthquakeDetailSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(Radius.lg))
                     .background(MaterialTheme.colorScheme.surfaceContainerLowest),
             ) {
                 DetailRow(
@@ -144,14 +146,15 @@ internal fun EarthquakeDetailSheet(
 
 @Composable
 private fun MagnitudeBadge(earthquake: EarthquakeDetail) {
-    val color = earthquake.magnitudeThreshold.toTierColor()
+    val tierColors = earthquake.magnitudeThreshold.toTierColors()
+    val color = tierColors.text
     Column(
         modifier = Modifier
             .semantics(mergeDescendants = true) {}
-            .background(color.copy(alpha = 0.12f), RoundedCornerShape(16.dp))
-            .padding(12.dp),
+            .background(tierColors.tint, RoundedCornerShape(Radius.lg))
+            .padding(Spacing.space12),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.spacedBy(Spacing.space2),
     ) {
         Text(
             text = stringResource(Res.string.magnitude),
@@ -194,13 +197,13 @@ private fun DetailRow(icon: Painter, label: String, value: String) {
             .fillMaxWidth()
             .heightIn(min = 52.dp)
             .semantics(mergeDescendants = true) {}
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = Spacing.space16, vertical = Spacing.space12),
     ) {
         val requiredWidth = textMeasurer.measure(label, labelStyle, maxLines = 1).size.width +
             textMeasurer.measure(value, valueStyle, maxLines = 1).size.width +
             with(density) { 48.dp.roundToPx() }
         if (requiredWidth > constraints.maxWidth) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.space8)) {
                 DetailLabel(icon, label, labelStyle)
                 DetailValue(value, valueStyle)
             }
@@ -208,7 +211,7 @@ private fun DetailRow(icon: Painter, label: String, value: String) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 DetailLabel(icon, label, labelStyle)
                 Spacer(Modifier.weight(1f))
-                Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.width(Spacing.space16))
                 DetailValue(value, valueStyle, TextAlign.End)
             }
         }
@@ -219,7 +222,7 @@ private fun DetailRow(icon: Painter, label: String, value: String) {
 private fun DetailLabel(icon: Painter, label: String, style: TextStyle) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.space12),
     ) {
         Icon(
             painter = icon,
@@ -239,7 +242,7 @@ private fun DetailValue(value: String, style: TextStyle, textAlign: TextAlign = 
 @Composable
 private fun DetailDivider() {
     HorizontalDivider(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = Modifier.padding(horizontal = Spacing.space16),
         color = MaterialTheme.colorScheme.outlineVariant,
     )
 }

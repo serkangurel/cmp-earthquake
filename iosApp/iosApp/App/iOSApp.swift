@@ -28,6 +28,13 @@ struct iOSApp: App {
         if !apiKey.isEmpty {
             GMSServices.provideAPIKey(apiKey)
         }
+
+        // Tab labels are drawn by UIKit, so they take Montserrat through UIAppearance (the iOS 26 tab
+        // bar ignores these attributes). Bold Text is read once at launch.
+        let bold = UIAccessibility.isBoldTextEnabled
+        let tabItem = UITabBarItem.appearance()
+        tabItem.setTitleTextAttributes([.font: AppFont.uiFont(size: 10, weight: bold ? .bold : .medium)], for: .normal)
+        tabItem.setTitleTextAttributes([.font: AppFont.uiFont(size: 10, weight: bold ? .bold : .semibold)], for: .selected)
     }
 
     var body: some Scene {

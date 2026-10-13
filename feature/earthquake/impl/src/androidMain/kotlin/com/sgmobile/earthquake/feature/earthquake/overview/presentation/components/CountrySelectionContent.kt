@@ -51,6 +51,7 @@ import com.sgmobile.earthquake.core.resource.search_countries
 import com.sgmobile.earthquake.core.resource.select_country
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
+import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.CountryOption
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.filterCountries
 import org.jetbrains.compose.resources.stringResource
@@ -75,7 +76,7 @@ internal fun CountrySelectionContent(
 
     Column(modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.space24),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -88,7 +89,9 @@ internal fun CountrySelectionContent(
         OutlinedTextField(
             value = searchText,
             onValueChange = { searchText = it },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Spacing.space24, vertical = Spacing.space12),
             label = { Text(stringResource(Res.string.search_countries)) },
             singleLine = true,
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
@@ -123,9 +126,9 @@ internal fun CountrySelectionContent(
                                 onClick = { onCountryClick(country) },
                             )
                             .heightIn(min = 56.dp)
-                            .padding(horizontal = 24.dp, vertical = 12.dp),
+                            .padding(horizontal = Spacing.space24, vertical = Spacing.space12),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.space16),
                     ) {
                         Text(
                             text = country.flag,
@@ -141,7 +144,7 @@ internal fun CountrySelectionContent(
                             Icon(Icons.Filled.Check, contentDescription = null)
                         }
                     }
-                    HorizontalDivider(Modifier.padding(horizontal = 24.dp))
+                    HorizontalDivider(Modifier.padding(horizontal = Spacing.space24))
                 }
             }
         }

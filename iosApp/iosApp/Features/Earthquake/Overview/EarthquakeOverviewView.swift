@@ -30,8 +30,8 @@ struct EarthquakeOverviewView: View {
             if store.state.showsBlockingLoader {
                 ProgressView("loading")
                     .controlSize(.large)
-                    .padding(24)
-                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+                    .padding(AppSpacing.space24)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppRadius.lg))
                     .accessibilityLabel(Text("loading"))
             }
         }
@@ -154,7 +154,7 @@ struct EarthquakeOverviewView: View {
                         viewportHeight - (dynamicTypeSize.isAccessibilitySize ? overviewFiltersHeight : 0)
                     )
                 )
-                .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                .listRowInsets(EdgeInsets(top: 0, leading: AppSpacing.space16, bottom: 0, trailing: AppSpacing.space16))
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
             } else {
@@ -162,10 +162,13 @@ struct EarthquakeOverviewView: View {
                     NavigationLink(value: NavigationRoute(key: EarthquakeRoutes.Detail(id: earthquake.id).key)) {
                         EarthquakeRow(earthquake: earthquake)
                     }
+                    .listRowInsets(EdgeInsets(top: 0, leading: AppSpacing.space16, bottom: 0, trailing: AppSpacing.space16))
                     .listRowSeparator(
                         earthquake.id == store.state.earthquakes.first?.id ? .hidden : .automatic,
                         edges: .top
                     )
+                    // Start the separator at the magnitude badge instead of the first text.
+                    .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     .accessibilityElement(children: .ignore)
                     .accessibilityAddTraits(.isButton)
                     .accessibilityLabel(
@@ -187,7 +190,7 @@ struct EarthquakeOverviewView: View {
                 if store.state.showsPagingLoader {
                     ProgressView("loading")
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
+                        .padding(.vertical, AppSpacing.space16)
                         .listRowSeparator(.hidden)
                 }
             }
@@ -208,8 +211,8 @@ struct EarthquakeOverviewView: View {
             ),
             onSelectCountry: { isCountrySheetPresented = true }
         )
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, AppSpacing.space16)
+        .padding(.vertical, AppSpacing.space12)
         .background(.bar)
     }
 }
@@ -258,23 +261,27 @@ private struct OverviewFilters: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            VStack(spacing: 8) {
-                countryButton
-                magnitudeMenu
-            }
-        } else {
-            HStack(alignment: .top, spacing: 12) {
-                countryButton
-                magnitudeMenu
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: AppSpacing.space8) {
+                    countryButton
+                    magnitudeMenu
+                }
+            } else {
+                HStack(alignment: .top, spacing: AppSpacing.space12) {
+                    countryButton
+                    magnitudeMenu
+                }
             }
         }
+        // Size to content, so side-by-side cards share the taller card's height when a title wraps.
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private var countryButton: some View {
         Button(action: onSelectCountry) {
             filterLabel(title: "country") {
-                HStack(spacing: 6) {
+                HStack(spacing: AppSpacing.space6) {
                     if let flag = selectedCountry?.flag, !flag.isEmpty {
                         Text(flag)
                             .accessibilityHidden(true)
@@ -321,25 +328,26 @@ private struct OverviewFilters: View {
         title: LocalizedStringKey,
         @ViewBuilder value: () -> Value
     ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.space4) {
             Text(title)
-                .font(.caption)
+                .appFont(.caption)
                 .foregroundStyle(.secondary)
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
+            HStack(alignment: .firstTextBaseline, spacing: AppSpacing.space8) {
                 value()
-                    .font(.subheadline.weight(.semibold))
+                    .appFont(.subheadline, weight: .semibold)
                     .foregroundStyle(AppColors.primary)
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.down")
-                    .font(.caption.weight(.semibold))
+                    .appFont(.caption, weight: .semibold)
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
             }
         }
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-        .padding(10)
-        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+        .frame(maxHeight: .infinity, alignment: .top)
+        .padding(AppSpacing.space12)
+        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: AppRadius.md))
         .contentShape(Rectangle())
     }
 }
@@ -352,26 +360,26 @@ private struct EarthquakeRow: View {
     var body: some View {
         Group {
             if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: AppSpacing.space12) {
                     magnitudeBadge
                     locationAndTime
                 }
             } else {
-                HStack(alignment: .center, spacing: 14) {
+                HStack(alignment: .center, spacing: AppSpacing.space12) {
                     magnitudeBadge
                     locationAndTime
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 8)
+        .padding(.vertical, AppSpacing.space12)
         .contentShape(Rectangle())
     }
 
     private var locationAndTime: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.space6) {
             Text(earthquake.place)
-                .font(.headline)
+                .appFont(.headline, weight: .semibold)
                 .foregroundStyle(.primary)
             EarthquakeTimestampView(timestamp: earthquake.timestamp)
         }
@@ -380,19 +388,22 @@ private struct EarthquakeRow: View {
     }
 
     private var magnitudeBadge: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: AppSpacing.space2) {
             Text("magnitude_short")
-                .font(.caption2.weight(.semibold))
+                .appFont(.caption2, weight: .semibold)
             Text(earthquake.magnitude)
-                .font(.title3.weight(.bold))
+                .appFont(.title3, weight: .bold)
                 .monospacedDigit()
         }
         .fixedSize()
         .frame(minWidth: 56)
-        .padding(.vertical, 8)
-        .padding(.horizontal, 6)
+        .padding(.vertical, AppSpacing.space8)
+        .padding(.horizontal, AppSpacing.space6)
         .foregroundStyle(magnitudeColor)
-        .background(magnitudeColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+        .background(
+            AppColors.magnitudeTint(earthquake.magnitudeThreshold),
+            in: RoundedRectangle(cornerRadius: AppRadius.md)
+        )
     }
 
     private var magnitudeColor: Color {
@@ -419,7 +430,7 @@ private struct CountrySelectionView: View {
                 Button {
                     onSelect(country)
                 } label: {
-                    HStack(spacing: 16) {
+                    HStack(spacing: AppSpacing.space16) {
                         Text(country.flag)
                             .font(.title2)
                             .fixedSize()

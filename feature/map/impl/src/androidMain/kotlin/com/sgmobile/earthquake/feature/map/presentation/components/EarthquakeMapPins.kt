@@ -1,22 +1,18 @@
 package com.sgmobile.earthquake.feature.map.presentation.components
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.map_earthquake_pin
 import com.sgmobile.earthquake.core.resource.map_selected_earthquake_pin
+import com.sgmobile.earthquake.core.ui.components.map.EarthquakePin
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapPin
-import com.sgmobile.earthquake.feature.map.presentation.extensions.toTierColor
+import com.sgmobile.earthquake.feature.map.presentation.extensions.toTierColors
 import eu.buney.maps.GoogleMapComposable
 import eu.buney.maps.LatLng
 import eu.buney.maps.Marker
@@ -32,7 +28,7 @@ internal fun EarthquakeMapPins(
     onEarthquakeSelected: (String) -> Unit,
 ) {
     val icons = MagnitudeThreshold.entries.associateWith { tier ->
-        val color = tier.toTierColor()
+        val color = tier.toTierColors().fill
         listOf(rememberPinIcon(color, false), rememberPinIcon(color, true))
     }
     pins.forEach { pin ->
@@ -63,20 +59,6 @@ internal fun EarthquakeMapPins(
 @Composable
 private fun rememberPinIcon(color: Color, selected: Boolean): eu.buney.maps.BitmapDescriptor {
     val density = LocalDensity.current.density
-    val centerColor = if (color.luminance() > 0.5f) Color.Black else Color.White
-    val content: @Composable @UiComposable () -> Unit = {
-        Canvas(Modifier.size(48.dp)) {
-            if (selected) {
-                drawCircle(color.copy(alpha = 0.3f), radius = 23.dp.toPx())
-                drawCircle(color, radius = 20.dp.toPx())
-            }
-            drawCircle(Color.Black.copy(alpha = 0.15f), radius = 17.dp.toPx(),
-                center = center + Offset(0f, 1.dp.toPx()))
-            drawCircle(Color.White, radius = 16.dp.toPx())
-            drawCircle(color, radius = 14.dp.toPx())
-            drawCircle(centerColor, radius = 5.dp.toPx())
-            drawCircle(color, radius = 2.dp.toPx())
-        }
-    }
+    val content: @Composable @UiComposable () -> Unit = { EarthquakePin(color, selected) }
     return rememberComposeBitmapDescriptor(color, selected, density, content = content)
 }
