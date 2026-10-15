@@ -26,6 +26,7 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.materialIconsExtended)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.maps.compose)
         }
     }
 }

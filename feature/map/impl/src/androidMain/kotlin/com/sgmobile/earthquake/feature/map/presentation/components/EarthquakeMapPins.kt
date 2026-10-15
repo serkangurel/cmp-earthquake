@@ -6,6 +6,13 @@ import androidx.compose.ui.UiComposable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMapComposable
+import com.google.maps.android.compose.MapsComposeExperimentalApi
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberComposeBitmapDescriptor
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.map_earthquake_pin
 import com.sgmobile.earthquake.core.resource.map_selected_earthquake_pin
@@ -13,11 +20,6 @@ import com.sgmobile.earthquake.core.ui.components.map.EarthquakePin
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapPin
 import com.sgmobile.earthquake.feature.map.presentation.extensions.toTierColors
-import eu.buney.maps.GoogleMapComposable
-import eu.buney.maps.LatLng
-import eu.buney.maps.Marker
-import eu.buney.maps.rememberComposeBitmapDescriptor
-import eu.buney.maps.rememberUpdatedMarkerState
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -56,8 +58,9 @@ internal fun EarthquakeMapPins(
     }
 }
 
+@OptIn(MapsComposeExperimentalApi::class)
 @Composable
-private fun rememberPinIcon(color: Color, selected: Boolean): eu.buney.maps.BitmapDescriptor {
+private fun rememberPinIcon(color: Color, selected: Boolean): BitmapDescriptor {
     val density = LocalDensity.current.density
     val content: @Composable @UiComposable () -> Unit = { EarthquakePin(color, selected) }
     return rememberComposeBitmapDescriptor(color, selected, density, content = content)

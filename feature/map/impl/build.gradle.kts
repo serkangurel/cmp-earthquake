@@ -48,7 +48,7 @@ kotlin {
             implementation(libs.koin.core.viewmodel)
             implementation(libs.koin.compose.navigation3)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.kmp.maps.compose)
+            implementation(libs.maps.compose)
         }
     }
 }

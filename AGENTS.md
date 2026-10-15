@@ -92,8 +92,9 @@ Treat `settings.gradle.kts` as the source of truth for included modules and
   (`AppColors`, `AppSpacing`, `AppRadius`, `EarthquakeMarkerImage`) read from it. Do not hard-code
   them as numeric literals on either platform; zero values, fixed sizes, view shadows and
   elevation, layout math (including map-camera insets), the list divider and argument-less
-  `.padding()` are not tokens. (The Google Maps night-style JSON in `core:ui` is map styling, not
-  palette.)
+  `.padding()` are not tokens. (Maps take their light and dark looks from the Google Maps SDK's
+  built-in color schemes; the night-style JSON in `core:ui` is only a fallback for Android's
+  legacy map renderer. Neither is palette.)
 - On iOS, set text with `AppFont` (Montserrat, bundled from the `core:resource` font files and sized
   by iOS text styles) and pick weights through its `weight` argument, not `.fontWeight` or `.bold()`:
   only Regular, Medium, SemiBold and Bold are bundled, and `appFont` steps them up for Bold Text.
