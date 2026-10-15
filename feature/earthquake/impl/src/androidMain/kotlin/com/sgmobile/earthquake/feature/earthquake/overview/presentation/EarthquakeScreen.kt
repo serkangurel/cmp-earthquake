@@ -271,11 +271,17 @@ internal fun EarthquakeContent(
                                 icon = Icons.Outlined.CloudOff,
                                 announce = true,
                             ) {
-                                Button(onClick = { onIntent(EarthquakeScreenIntent.Retry) }) {
+                                Button(
+                                    onClick = { onIntent(EarthquakeScreenIntent.Retry) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
                                     Text(stringResource(Res.string.retry))
                                 }
                                 uiState.alternativeSource?.let { source ->
-                                    OutlinedButton(onClick = { onIntent(EarthquakeScreenIntent.SelectSource(source)) }) {
+                                    OutlinedButton(
+                                        onClick = { onIntent(EarthquakeScreenIntent.SelectSource(source)) },
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
                                         Text(stringResource(Res.string.try_source, source.label))
                                     }
                                 }

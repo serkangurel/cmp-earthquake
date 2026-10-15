@@ -48,13 +48,40 @@ struct EmptyStateView<Actions: View>: View {
             }
             // An empty actions stack would still add its spacing and top padding.
             if Actions.self != EmptyView.self {
-                VStack(spacing: AppSpacing.space12) {
+                EqualWidthVStack(spacing: AppSpacing.space12) {
                     actions
                 }
                 .padding(.top, AppSpacing.space12)
             }
         }
         .padding(AppSpacing.space32)
+    }
+}
+
+/// Stacks views at the widest one's ideal width, capped to the offered width, so actions whose
+/// labels fill the width share one size.
+private struct EqualWidthVStack: Layout {
+    let spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = sharedWidth(proposal: proposal, subviews: subviews)
+        let heights = subviews.map { $0.sizeThatFits(ProposedViewSize(width: width, height: nil)).height }
+        let totalSpacing = spacing * CGFloat(max(subviews.count - 1, 0))
+        return CGSize(width: width, height: heights.reduce(0, +) + totalSpacing)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let childProposal = ProposedViewSize(width: bounds.width, height: nil)
+        var y = bounds.minY
+        for subview in subviews {
+            subview.place(at: CGPoint(x: bounds.minX, y: y), proposal: childProposal)
+            y += subview.sizeThatFits(childProposal).height + spacing
+        }
+    }
+
+    private func sharedWidth(proposal: ProposedViewSize, subviews: Subviews) -> CGFloat {
+        let widest = subviews.map { $0.sizeThatFits(.unspecified).width }.max() ?? 0
+        return proposal.width.map { min(widest, $0) } ?? widest
     }
 }
 

@@ -512,6 +512,7 @@ private struct LoadErrorStateView: View {
                 Text("retry")
                     .appFont(.body, weight: .semibold)
                     .foregroundStyle(AppColors.onPrimary)
+                    .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             if let source = alternativeSource {
@@ -520,6 +521,7 @@ private struct LoadErrorStateView: View {
                 } label: {
                     Text(String(format: NSLocalizedString("try_source", comment: ""), source.label))
                         .appFont(.body, weight: .semibold)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
             }

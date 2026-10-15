@@ -3,9 +3,12 @@ package com.sgmobile.earthquake.feature.earthquake.overview.presentation.compone
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.SearchOff
@@ -75,8 +78,11 @@ internal fun EmptyResultsContent(
             textAlign = TextAlign.Center,
         )
         if (actions != null) {
+            // Sized to the widest action so actions filling the width share one size.
             Column(
-                modifier = Modifier.padding(top = Spacing.space12),
+                modifier = Modifier
+                    .padding(top = Spacing.space12)
+                    .width(IntrinsicSize.Max),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(Spacing.space12),
                 content = actions,
@@ -110,10 +116,10 @@ private fun ErrorResultsContentPreview() {
             icon = Icons.Outlined.CloudOff,
             announce = true,
         ) {
-            Button(onClick = {}) {
+            Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(Res.string.retry))
             }
-            OutlinedButton(onClick = {}) {
+            OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(Res.string.try_source, EarthquakeSource.USGS.label))
             }
         }
