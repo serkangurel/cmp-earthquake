@@ -41,7 +41,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.ComposeMapColorScheme
 import com.google.maps.android.compose.GoogleMap
@@ -57,7 +56,7 @@ import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_earthquake
 import com.sgmobile.earthquake.core.resource.epicenter_map
 import com.sgmobile.earthquake.core.ui.components.map.EarthquakePin
-import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
+import com.sgmobile.earthquake.core.ui.components.map.rememberLegacyRendererNightStyle
 import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
@@ -96,11 +95,8 @@ internal fun EarthquakeMap(
     val animationsEnabled = lifecycleState.isAtLeast(Lifecycle.State.RESUMED) && motionScale > 0f
     val circleColor = earthquake.magnitudeThreshold.toTierColors().fill
     val isDark = isSystemInDarkTheme()
-    val properties = remember(isDark) {
-        MapProperties(
-            mapStyleOptions = if (isDark) MapStyleOptions(mapNightStyleJson()) else null,
-        )
-    }
+    val nightStyle = rememberLegacyRendererNightStyle(isDark)
+    val properties = remember(nightStyle) { MapProperties(mapStyleOptions = nightStyle) }
     val uiSettings = remember {
         MapUiSettings(
             compassEnabled = false,
@@ -127,8 +123,7 @@ internal fun EarthquakeMap(
             properties = properties,
             uiSettings = uiSettings,
             contentPadding = contentPadding,
-            // Dark theme comes from the night style; keep the base map light underneath it.
-            mapColorScheme = ComposeMapColorScheme.LIGHT,
+            mapColorScheme = if (isDark) ComposeMapColorScheme.DARK else ComposeMapColorScheme.LIGHT,
         ) {
             EpicenterMarker(epicenter, earthquake.place, circleColor)
             if (animationsEnabled) {

@@ -1,10 +1,45 @@
 package com.sgmobile.earthquake.core.ui.components.map
 
-fun mapNightStyleJson(): String = MAP_NIGHT_STYLE_JSON
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.model.MapStyleOptions
 
-// Google Maps Styling Wizard "Night" preset. Must stay valid JSON:
-// MapStyleOptions.fromJson throws on iOS for malformed input.
-internal val MAP_NIGHT_STYLE_JSON = """
+// The renderer is chosen once per process, so maps created later can be styled on their first frame.
+private var loadedRenderer: MapsInitializer.Renderer? = null
+
+/**
+ * Night style for maps on the legacy renderer, which ignores the SDK's dark color scheme. The latest
+ * renderer needs Play Store, so devices and emulator images without it stay on the legacy one.
+ * Returns null in light theme and on the latest renderer.
+ */
+@Composable
+fun rememberLegacyRendererNightStyle(darkTheme: Boolean): MapStyleOptions? {
+    val context = LocalContext.current.applicationContext
+    var renderer by remember { mutableStateOf(loadedRenderer) }
+    LaunchedEffect(Unit) {
+        if (renderer == null) {
+            // A null preference only reports the renderer; it does not change which one loads.
+            MapsInitializer.initialize(context, null) {
+                loadedRenderer = it
+                renderer = it
+            }
+        }
+    }
+    // Compared against LATEST because the SDK deprecates the LEGACY constant.
+    val legacy = renderer != null && renderer != MapsInitializer.Renderer.LATEST
+    return remember(darkTheme, legacy) {
+        if (darkTheme && legacy) MapStyleOptions(MAP_NIGHT_STYLE_JSON) else null
+    }
+}
+
+// Google Maps Styling Wizard "Night" preset. Must stay valid JSON: the map ignores a malformed style.
+private val MAP_NIGHT_STYLE_JSON = """
 [
   { "elementType": "geometry", "stylers": [{ "color": "#242f3e" }] },
   { "elementType": "labels.text.fill", "stylers": [{ "color": "#746855" }] },

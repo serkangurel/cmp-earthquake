@@ -34,7 +34,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.ComposeMapColorScheme
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -42,7 +41,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_country
-import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
+import com.sgmobile.earthquake.core.ui.components.map.rememberLegacyRendererNightStyle
 import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapCountry
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapState
@@ -71,11 +70,8 @@ internal fun EarthquakeOverviewMap(
     val scope = rememberCoroutineScope()
     val motionScale = scope.coroutineContext[MotionDurationScale]?.scaleFactor ?: 1f
     val darkTheme = isSystemInDarkTheme()
-    val properties = remember(darkTheme) {
-        MapProperties(mapStyleOptions = if (darkTheme) {
-            MapStyleOptions(mapNightStyleJson())
-        } else null)
-    }
+    val nightStyle = rememberLegacyRendererNightStyle(darkTheme)
+    val properties = remember(nightStyle) { MapProperties(mapStyleOptions = nightStyle) }
     val settings = remember {
         MapUiSettings(compassEnabled = false, indoorLevelPickerEnabled = false,
             mapToolbarEnabled = false, myLocationButtonEnabled = false, zoomControlsEnabled = false)
@@ -108,8 +104,7 @@ internal fun EarthquakeOverviewMap(
             properties = properties,
             uiSettings = settings,
             contentPadding = contentPadding,
-            // Dark theme comes from the night style; keep the base map light underneath it.
-            mapColorScheme = ComposeMapColorScheme.LIGHT,
+            mapColorScheme = if (darkTheme) ComposeMapColorScheme.DARK else ComposeMapColorScheme.LIGHT,
             onMapLoaded = { mapLoaded = true },
             onMapClick = { onSelectionDismissed() },
         ) {
