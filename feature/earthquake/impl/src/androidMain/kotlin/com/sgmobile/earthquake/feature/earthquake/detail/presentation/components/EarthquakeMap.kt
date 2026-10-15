@@ -20,10 +20,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.MotionDurationScale
@@ -35,6 +38,21 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.maps.android.compose.Circle
+import com.google.maps.android.compose.ComposeMapColorScheme
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.GoogleMapComposable
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.MapsComposeExperimentalApi
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberComposeBitmapDescriptor
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_earthquake
 import com.sgmobile.earthquake.core.resource.epicenter_map
@@ -43,19 +61,6 @@ import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
 import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.extensions.toTierColors
 import com.sgmobile.earthquake.feature.earthquake.detail.presentation.models.EarthquakeDetail
-import eu.buney.maps.CameraPosition
-import eu.buney.maps.CameraUpdateFactory
-import eu.buney.maps.Circle
-import eu.buney.maps.GoogleMap
-import eu.buney.maps.GoogleMapComposable
-import eu.buney.maps.LatLng
-import eu.buney.maps.MapProperties
-import eu.buney.maps.MapStyleOptions
-import eu.buney.maps.MapUiSettings
-import eu.buney.maps.Marker
-import eu.buney.maps.rememberCameraPositionState
-import eu.buney.maps.rememberComposeBitmapDescriptor
-import eu.buney.maps.rememberUpdatedMarkerState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.PI
@@ -83,7 +88,7 @@ internal fun EarthquakeMap(
 ) {
     val epicenter = LatLng(earthquake.latitude, earthquake.longitude)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition(target = epicenter, zoom = EPICENTER_ZOOM)
+        position = CameraPosition.fromLatLngZoom(epicenter, EPICENTER_ZOOM)
     }
     val coroutineScope = rememberCoroutineScope()
     val motionScale = coroutineScope.coroutineContext[MotionDurationScale]?.scaleFactor ?: 1f
@@ -93,7 +98,7 @@ internal fun EarthquakeMap(
     val isDark = isSystemInDarkTheme()
     val properties = remember(isDark) {
         MapProperties(
-            mapStyleOptions = if (isDark) MapStyleOptions.fromJson(mapNightStyleJson()) else null,
+            mapStyleOptions = if (isDark) MapStyleOptions(mapNightStyleJson()) else null,
         )
     }
     val uiSettings = remember {
@@ -106,6 +111,15 @@ internal fun EarthquakeMap(
         )
     }
 
+    // Re-center the camera target in the padded area once the detail sheet is measured.
+    var appliedPadding by remember { mutableStateOf(contentPadding) }
+    LaunchedEffect(contentPadding) {
+        if (contentPadding != appliedPadding) {
+            cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
+            appliedPadding = contentPadding
+        }
+    }
+
     Box(modifier = modifier) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -113,6 +127,8 @@ internal fun EarthquakeMap(
             properties = properties,
             uiSettings = uiSettings,
             contentPadding = contentPadding,
+            // Dark theme comes from the night style; keep the base map light underneath it.
+            mapColorScheme = ComposeMapColorScheme.LIGHT,
         ) {
             EpicenterMarker(epicenter, earthquake.place, circleColor)
             if (animationsEnabled) {
@@ -198,6 +214,7 @@ private fun CircleWave(
     }
 }
 
+@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 @GoogleMapComposable
 private fun EpicenterMarker(center: LatLng, place: String, color: Color) {

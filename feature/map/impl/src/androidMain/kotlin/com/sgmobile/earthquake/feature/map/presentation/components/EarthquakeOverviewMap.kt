@@ -29,27 +29,28 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.maps.android.compose.ComposeMapColorScheme
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.rememberCameraPositionState
 import com.sgmobile.earthquake.core.resource.Res
 import com.sgmobile.earthquake.core.resource.center_map_on_country
 import com.sgmobile.earthquake.core.ui.components.map.mapNightStyleJson
 import com.sgmobile.earthquake.core.ui.theme.Spacing
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapCountry
 import com.sgmobile.earthquake.feature.map.presentation.EarthquakeMapState
-import eu.buney.maps.CameraPosition
-import eu.buney.maps.CameraUpdate
-import eu.buney.maps.CameraUpdateFactory
-import eu.buney.maps.GoogleMap
-import eu.buney.maps.LatLng
-import eu.buney.maps.LatLngBounds
-import eu.buney.maps.MapProperties
-import eu.buney.maps.MapStyleOptions
-import eu.buney.maps.MapUiSettings
-import eu.buney.maps.rememberCameraPositionState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 private const val MAX_MERCATOR_LATITUDE = 85.05112878
-private val WORLD_CAMERA = CameraPosition(target = LatLng(0.0, 0.0), zoom = 1f)
+private val WORLD_CAMERA = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 1f)
 
 // The native map is verified on the emulator; only its overlays have Compose previews.
 @Composable
@@ -72,7 +73,7 @@ internal fun EarthquakeOverviewMap(
     val darkTheme = isSystemInDarkTheme()
     val properties = remember(darkTheme) {
         MapProperties(mapStyleOptions = if (darkTheme) {
-            MapStyleOptions.fromJson(mapNightStyleJson())
+            MapStyleOptions(mapNightStyleJson())
         } else null)
     }
     val settings = remember {
@@ -91,6 +92,15 @@ internal fun EarthquakeOverviewMap(
         }
     }
 
+    // Re-center the camera target in the padded area when the selection summary resizes it.
+    var appliedPadding by remember { mutableStateOf(contentPadding) }
+    LaunchedEffect(contentPadding) {
+        if (contentPadding != appliedPadding) {
+            camera.move(CameraUpdateFactory.newCameraPosition(camera.position))
+            appliedPadding = contentPadding
+        }
+    }
+
     Box(modifier) {
         GoogleMap(
             modifier = Modifier.fillMaxSize().onSizeChanged { mapSize = it },
@@ -98,6 +108,8 @@ internal fun EarthquakeOverviewMap(
             properties = properties,
             uiSettings = settings,
             contentPadding = contentPadding,
+            // Dark theme comes from the night style; keep the base map light underneath it.
+            mapColorScheme = ComposeMapColorScheme.LIGHT,
             onMapLoaded = { mapLoaded = true },
             onMapClick = { onSelectionDismissed() },
         ) {
@@ -139,8 +151,12 @@ internal fun countryCameraUpdate(country: EarthquakeMapCountry, paddingPx: Int):
     ) {
         return CameraUpdateFactory.newCameraPosition(WORLD_CAMERA)
     }
+    // The builder takes the shorter longitude span, as GMSCoordinateBounds does on iOS.
     return CameraUpdateFactory.newLatLngBounds(
-        LatLngBounds(LatLng(south, bounds.minLongitude), LatLng(north, bounds.maxLongitude)),
+        LatLngBounds.builder()
+            .include(LatLng(south, bounds.minLongitude))
+            .include(LatLng(north, bounds.maxLongitude))
+            .build(),
         paddingPx,
     )
 }

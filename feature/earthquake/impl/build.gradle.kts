@@ -63,7 +63,7 @@ kotlin {
             implementation(libs.compose.materialIconsExtended)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.kmp.maps.compose)
+            implementation(libs.maps.compose)
             implementation(libs.koin.core.viewmodel)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
