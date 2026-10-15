@@ -16,6 +16,7 @@ interface EarthquakeOverviewController {
     fun observe(observer: (EarthquakeOverviewState) -> Unit): Observation
     fun refresh()
     fun refresh(completion: () -> Unit)
+    fun retry()
     fun onIntent(intent: EarthquakeScreenIntent)
     fun loadMore()
     fun onEarthquakeDisplayed(id: String)

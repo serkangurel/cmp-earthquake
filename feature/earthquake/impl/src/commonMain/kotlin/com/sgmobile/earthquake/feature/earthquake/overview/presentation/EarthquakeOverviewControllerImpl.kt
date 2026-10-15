@@ -13,6 +13,7 @@ import com.sgmobile.earthquake.feature.earthquake.overview.domain.LoadNextEarthq
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.RefreshEarthquakesUseCase
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.Country
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeSource
+import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.EarthquakeState
 import com.sgmobile.earthquake.feature.earthquake.overview.domain.models.MagnitudeThreshold
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.mapToListItems
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.extensions.toCountryFlagEmoji
@@ -96,10 +97,22 @@ internal class EarthquakeOverviewControllerImpl(
         dispatchJob.invokeOnCompletion { completion() }
     }
 
+    override fun retry() {
+        scope.launch {
+            when (state.value.loadError) {
+                EarthquakeLoadError.LOAD_MORE -> requestLoadMore(isRetry = true)
+                EarthquakeLoadError.REFRESH -> requestRefresh(isPullToRefresh = false)
+                // A request already started (e.g. a second tap before the error UI went away).
+                null -> Unit
+            }
+        }
+    }
+
     override fun onIntent(intent: EarthquakeScreenIntent) {
         when (intent) {
             is EarthquakeScreenIntent.Refresh -> refresh()
             is EarthquakeScreenIntent.LoadMore -> loadMore()
+            is EarthquakeScreenIntent.Retry -> retry()
             is EarthquakeScreenIntent.SelectMagnitude -> selectMagnitude(intent.selectedMagnitude)
             is EarthquakeScreenIntent.SelectCountry -> selectCountry(intent.country.code)
             is EarthquakeScreenIntent.SelectSource -> selectSource(intent.source)
@@ -147,8 +160,10 @@ internal class EarthquakeOverviewControllerImpl(
         scope.cancel()
     }
 
-    private fun requestLoadMore() {
+    private fun requestLoadMore(isRetry: Boolean = false) {
         if (state.value.isEndReached || state.value.isLoading || state.value.isPullToRefresh) return
+        // After a failure only an explicit retry fetches again, so scrolling doesn't hammer the source.
+        if (state.value.loadError != null && !isRetry) return
         executeWithLoading(isPullToRefresh = false, reset = false) {
             loadNextEarthquakesUseCase()
         }
@@ -173,28 +188,34 @@ internal class EarthquakeOverviewControllerImpl(
     private fun executeWithLoading(
         isPullToRefresh: Boolean,
         reset: Boolean,
-        block: suspend () -> Unit,
+        block: suspend () -> EarthquakeState,
     ): Job {
         val generation = ++requestGeneration
         val previousJob = requestJob
         previousJob?.cancel()
         isResetting = reset
         _state.update {
-            it.copy(isLoading = !isPullToRefresh, isPullToRefresh = isPullToRefresh)
+            it.copy(isLoading = !isPullToRefresh, isPullToRefresh = isPullToRefresh, loadError = null)
         }
         publishDataset()
         val job = scope.launch {
+            var failure: EarthquakeLoadError? = null
             try {
                 previousJob?.cancelAndJoin()
                 requestMutex.withLock {
                     ensureActive()
-                    block()
+                    val result = block()
                     ensureActive()
+                    // The APIs' runCatching reports cancellation as Error, so only read the result once still active.
+                    if (result == EarthquakeState.Error) {
+                        failure = if (reset) EarthquakeLoadError.REFRESH else EarthquakeLoadError.LOAD_MORE
+                    }
                 }
             } finally {
                 if (generation == requestGeneration) {
                     isResetting = false
-                    _state.update { it.copy(isLoading = false, isPullToRefresh = false) }
+                    // One update, so neither platform renders the empty state before the error.
+                    _state.update { it.copy(isLoading = false, isPullToRefresh = false, loadError = failure) }
                     publishDataset()
                 }
             }

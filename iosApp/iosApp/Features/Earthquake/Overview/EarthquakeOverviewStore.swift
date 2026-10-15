@@ -26,6 +26,10 @@ final class EarthquakeOverviewStore: ObservableObject {
         }
     }
 
+    func retry() {
+        controller.retry()
+    }
+
     func earthquakeDisplayed(id: String) {
         controller.onEarthquakeDisplayed(id: id)
     }

@@ -15,10 +15,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -47,8 +52,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sgmobile.earthquake.core.navigation.LocalNavScaffoldPadding
 import com.sgmobile.earthquake.core.navigation.LocalNavigator
 import com.sgmobile.earthquake.core.resource.Res
+import com.sgmobile.earthquake.core.resource.earthquakes_load_failed
+import com.sgmobile.earthquake.core.resource.earthquakes_load_failed_description
 import com.sgmobile.earthquake.core.resource.no_earthquakes_found
 import com.sgmobile.earthquake.core.resource.no_earthquakes_found_description
+import com.sgmobile.earthquake.core.resource.retry
+import com.sgmobile.earthquake.core.resource.try_source
 import com.sgmobile.earthquake.core.ui.components.loading.SGLoading
 import com.sgmobile.earthquake.core.ui.components.preview.PreviewThemes
 import com.sgmobile.earthquake.core.ui.components.preview.SGPreview
@@ -62,6 +71,7 @@ import com.sgmobile.earthquake.feature.earthquake.overview.presentation.componen
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeFilters
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EarthquakeRowItem
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.EmptyResultsContent
+import com.sgmobile.earthquake.feature.earthquake.overview.presentation.components.LoadMoreErrorRow
 import com.sgmobile.earthquake.feature.earthquake.overview.presentation.models.EarthquakeListItem
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -249,6 +259,35 @@ internal fun EarthquakeContent(
                             )
                         }
                     }
+                    if (uiState.showsErrorState) {
+                        item(key = "error", contentType = "error") {
+                            EmptyResultsContent(
+                                title = stringResource(Res.string.earthquakes_load_failed),
+                                message = stringResource(
+                                    Res.string.earthquakes_load_failed_description,
+                                    uiState.selectedSource.label,
+                                ),
+                                modifier = Modifier.fillMaxWidth().heightIn(min = emptyHeight),
+                                icon = Icons.Outlined.CloudOff,
+                                announce = true,
+                            ) {
+                                Button(
+                                    onClick = { onIntent(EarthquakeScreenIntent.Retry) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    Text(stringResource(Res.string.retry))
+                                }
+                                uiState.alternativeSource?.let { source ->
+                                    OutlinedButton(
+                                        onClick = { onIntent(EarthquakeScreenIntent.SelectSource(source)) },
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        Text(stringResource(Res.string.try_source, source.label))
+                                    }
+                                }
+                            }
+                        }
+                    }
                     itemsIndexed(
                         items = uiState.earthquakes,
                         key = { _, item -> "earthquake:${item.id}" },
@@ -267,56 +306,70 @@ internal fun EarthquakeContent(
                             SGLoading(Modifier.fillMaxWidth().height(64.dp))
                         }
                     }
+                    if (uiState.showsLoadMoreError) {
+                        item(key = "load_more_error", contentType = "load_more_error") {
+                            LoadMoreErrorRow(onRetry = { onIntent(EarthquakeScreenIntent.Retry) })
+                        }
+                    }
                 }
             }
         }
     }
 }
 
+private val previewEarthquakes = listOf(
+    EarthquakeListItem(
+        id = "1",
+        place = "San Francisco",
+        magnitude = "2.5",
+        magnitudeThreshold = MagnitudeThreshold.TWO_PLUS,
+        date = "19.10.2025 14:30"
+    ),
+    EarthquakeListItem(
+        id = "2",
+        place = "San Francisco",
+        magnitude = "5.2",
+        magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
+        date = "19.10.2025 14:30"
+    ),
+    EarthquakeListItem(
+        id = "3",
+        place = "San Francisco",
+        magnitude = "4.7",
+        magnitudeThreshold = MagnitudeThreshold.FOUR_PLUS,
+        date = "19.10.2025 14:30"
+    ),
+    EarthquakeListItem(
+        id = "4",
+        place = "San Francisco",
+        magnitude = "8.2",
+        magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
+        date = "19.10.2025 14:30"
+    )
+)
+
+private fun previewState(
+    earthquakes: List<EarthquakeListItem> = previewEarthquakes,
+    selectedSource: EarthquakeSource = EarthquakeSource.USGS,
+    loadError: EarthquakeLoadError? = null,
+) = EarthquakeOverviewState(
+    isLoading = false,
+    isPullToRefresh = false,
+    isEndReached = false,
+    selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
+    selectedCountry = null,
+    selectedSource = selectedSource,
+    loadError = loadError,
+    countries = emptyList(),
+    earthquakes = earthquakes,
+)
+
 @PreviewThemes
 @Composable
 private fun EarthquakeContentPreview(collapsed: Boolean = false) {
     SGPreview {
         EarthquakeContent(
-            uiState = EarthquakeOverviewState(
-                isLoading = false,
-                isPullToRefresh = false,
-                isEndReached = false,
-                selectedMagnitude = MagnitudeThreshold.TWO_PLUS,
-                selectedCountry = null,
-                selectedSource = EarthquakeSource.USGS,
-                countries = emptyList(),
-                earthquakes = listOf(
-                    EarthquakeListItem(
-                        id = "1",
-                        place = "San Francisco",
-                        magnitude = "2.5",
-                        magnitudeThreshold = MagnitudeThreshold.TWO_PLUS,
-                        date = "19.10.2025 14:30"
-                    ),
-                    EarthquakeListItem(
-                        id = "2",
-                        place = "San Francisco",
-                        magnitude = "5.2",
-                        magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
-                        date = "19.10.2025 14:30"
-                    ),
-                    EarthquakeListItem(
-                        id = "3",
-                        place = "San Francisco",
-                        magnitude = "4.7",
-                        magnitudeThreshold = MagnitudeThreshold.FOUR_PLUS,
-                        date = "19.10.2025 14:30"
-                    ),
-                    EarthquakeListItem(
-                        id = "4",
-                        place = "San Francisco",
-                        magnitude = "8.2",
-                        magnitudeThreshold = MagnitudeThreshold.FIVE_PLUS,
-                        date = "19.10.2025 14:30"
-                    )
-                )
-            ),
+            uiState = previewState(),
             onIntent = {},
             onEarthquakeClick = {},
             filterBarState = rememberTopAppBarState(
@@ -330,4 +383,32 @@ private fun EarthquakeContentPreview(collapsed: Boolean = false) {
 @Composable
 private fun EarthquakeContentCollapsedPreview() {
     EarthquakeContentPreview(collapsed = true)
+}
+
+@PreviewThemes
+@Composable
+private fun EarthquakeContentErrorPreview() {
+    SGPreview {
+        EarthquakeContent(
+            uiState = previewState(
+                earthquakes = emptyList(),
+                selectedSource = EarthquakeSource.EMSC,
+                loadError = EarthquakeLoadError.REFRESH,
+            ),
+            onIntent = {},
+            onEarthquakeClick = {},
+        )
+    }
+}
+
+@PreviewThemes
+@Composable
+private fun EarthquakeContentLoadMoreErrorPreview() {
+    SGPreview {
+        EarthquakeContent(
+            uiState = previewState(loadError = EarthquakeLoadError.LOAD_MORE),
+            onIntent = {},
+            onEarthquakeClick = {},
+        )
+    }
 }

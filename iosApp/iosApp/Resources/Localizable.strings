@@ -25,6 +25,11 @@
 "loading" = "Loading";
 "no_earthquakes_found" = "No earthquakes found";
 "no_earthquakes_found_description" = "Try changing the country or magnitude filters, or pull to refresh.";
+"earthquakes_load_failed" = "Couldn’t load earthquakes";
+"earthquakes_load_failed_description" = "%@ may be temporarily unavailable. Check your connection and try again.";
+"retry" = "Retry";
+"try_source" = "Try %@";
+"load_more_failed" = "Couldn’t load more earthquakes";
 "center_map_on_earthquake" = "Center map on earthquake";
 "earthquake_not_found" = "Earthquake not found";
 "country" = "Country";
